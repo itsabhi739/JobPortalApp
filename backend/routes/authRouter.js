@@ -1,6 +1,6 @@
 import express from 'express'
 import { register,login, logout, verifyEmail, verifyEmailOTP,ResetPassword,SendResetPasswordOTP } from '../controllers/AuthController.js'
-import { userAuth } from '../middlewares/userAuth.js';
+import { userAuth, authWithoutVerification } from '../middlewares/userAuth.js';
 
 const authRouter = express.Router();
 
@@ -11,19 +11,19 @@ authRouter.post('/register',register)
 authRouter.post('/login',login)
 // http://localhost:5001/api/auth/login
 
-authRouter.post('/logout',userAuth,logout)
+authRouter.post('/logout',userAuth(),logout)
 // http://localhost:5001/api/auth/logout
 
-authRouter.post('/send-verify-otp',userAuth,verifyEmailOTP)
+authRouter.post('/send-verify-otp',authWithoutVerification,verifyEmailOTP)
 //http://localhost:5001/api/auth/send-verify-otp
 
-authRouter.post('/verify-account',userAuth,verifyEmail)
+authRouter.post('/verify-account',authWithoutVerification,verifyEmail)
 //http://localhost:5001/api/auth/verify-account
 
 // Password reset routes - PUBLIC (user not logged in yet)
-authRouter.post('/send-reset-otp',SendResetPasswordOTP)
+authRouter.post('/send-reset-otp',authWithoutVerification,SendResetPasswordOTP)
 // http://localhost:5001/api/auth/send-reset-otp
 
-authRouter.post('/reset-password',ResetPassword)
+authRouter.post('/reset-password',authWithoutVerification,ResetPassword)
 // http://localhost:5001/api/auth/reset-password
 export default authRouter;

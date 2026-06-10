@@ -8,8 +8,8 @@ export const sendRegisterSuccessMail = async (email)=>{
     const transporter = nodemailer.createTransport({
     service:'gmail',
     auth:{
-        user: 'itsabhi739@gmail.com',
-        pass: 'xqio yocj yfec cblz',
+        user: process.env.SMTP_USER,
+        pass: process.env.SMTP_PASS,
     }
 })
 
@@ -91,7 +91,7 @@ export const sendVerificationOTPMail = async(email,otp)=>{
         service:'gmail',
         auth:{
             user: process.env.SMTP_USER,
-            pass: process.env.SMTP_PASSWORD,
+            pass: process.env.SMTP_PASS,
         }
     })
 
@@ -156,7 +156,7 @@ export const sendResetPasswordMail = async (email,otp)=>{
       service:'gmail',
       auth:{
         user:process.env.SMTP_USER,
-        pass:process.env.SMTP_PASSWORD
+        pass:process.env.SMTP_PASS
       }
     })
 

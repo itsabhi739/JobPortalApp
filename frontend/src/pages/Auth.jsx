@@ -12,6 +12,8 @@ const Auth = () => {
   const [email,setEmail] = useState('')
   const [password,setPassword] = useState('')
   const [confirmPassword,setConfirmPassword] = useState('')
+  const [phonenumber, setPhoneNumber] = useState('')
+  const [role, setRole] = useState('Student')
 
   const {backendURL,setIsLoggedIn,getUserData,inputClass} = useContext(AuthContext);
   const handleChange = (e)=>{
@@ -30,6 +32,12 @@ const Auth = () => {
     if(name === 'confirmpassword'){
       setConfirmPassword(value);
     }
+    if(name === 'phonenumber'){
+      setPhoneNumber(value)
+    }
+    if(name === 'role'){
+      setRole(value)
+    }
   }
 
   const handleSubmit = async(e)=>{
@@ -40,7 +48,7 @@ const Auth = () => {
         return
       }
       try{
-        const response = await axios.post(`${backendURL}/api/auth/register`,{username,email,password})
+        const response = await axios.post(`${backendURL}/api/auth/register`,{username,email,password,phonenumber,role})
         if(response.data.success){
           toast.success(response.data.message);
           navigate('/verify-email')
@@ -72,7 +80,7 @@ const Auth = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
+      <div className={`w-full bg-white rounded-2xl shadow-lg p-8 ${isSignup ? 'max-w-2xl' : 'max-w-md'}`}>
 
         <h2 className="text-3xl font-bold text-center mb-2">
           {isSignup ? "Create Account" : "Login"}
@@ -84,7 +92,8 @@ const Auth = () => {
             : "Welcome back! Please login to continue."}
         </p>
 
-        <form className="space-y-5" onSubmit={handleSubmit}>
+        <form onSubmit={handleSubmit}>
+          <div className={`${isSignup ? 'grid grid-cols-2 gap-4' : 'space-y-5'}`}>
 
           {/* Username only for Signup */}
           {isSignup && (
@@ -154,6 +163,57 @@ const Auth = () => {
             </div>
           )}
 
+          {/* Phone Number only for Signup */}
+          {isSignup && (
+            <div>
+              <label className="block mb-2 text-gray-700">
+                Phone Number
+              </label>
+
+              <input
+                type="text"
+                name="phonenumber"
+                value={phonenumber}
+                onChange={handleChange}
+                placeholder="Enter phone number"
+                className={inputClass}
+              />
+            </div>
+          )}
+
+          {/* Role Selection only for Signup */}
+          {isSignup && (
+            <div className="col-span-2">
+              <label className="block mb-3 text-gray-700">
+                Select Role
+              </label>
+
+              <div className="flex gap-6">
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="Student"
+                    checked={role === "Student"}
+                    onChange={handleChange}
+                  />
+                  Student
+                </label>
+
+                <label className="flex items-center gap-2">
+                  <input
+                    type="radio"
+                    name="role"
+                    value="Recruiter"
+                    checked={role === "Recruiter"}
+                    onChange={handleChange}
+                  />
+                  Recruiter
+                </label>
+              </div>
+            </div>
+          )}
+
           {/* Forgot Password only for Login */}
           {!isSignup && (
             <div className="text-right">
@@ -166,15 +226,16 @@ const Auth = () => {
               </button>
             </div>
           )}
+          </div>
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition-all"
+            className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition-all mt-6"
           >
             {isSignup ? "Create Account" : "Login"}
           </button>
 
-          <p className="text-center text-gray-600">
+          <p className="text-center text-gray-600 mt-4">
             {isSignup
               ? "Already have an account?"
               : "Don't have an account?"}

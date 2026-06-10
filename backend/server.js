@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser';
 import mongoose from "mongoose";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
+import companyRouter from "./routes/companyRouter.js";
 
 
 const PORT = process.env.PORT||5001;
@@ -21,6 +22,7 @@ app.get('/',(req,res)=>res.send("API Working"))
 //API Endpoints
 app.use('/api/auth',authRouter)
 app.use('/api/user',userRouter)
+app.use('/api/company',companyRouter)
 //creating the connection
 const mongodbConnection = async () => {
   try {

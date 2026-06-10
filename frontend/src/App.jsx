@@ -8,6 +8,8 @@ import "react-toastify/dist/ReactToastify.css";
 import VerifyEmail from './pages/VerifyEmail.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
 import { PrivateRoute } from './components/PrivateRoutes.jsx'
+import Jobs from './pages/Jobs.jsx'
+import Companies from './pages/Companies.jsx'
 
 function App() {
   const location = useLocation();
@@ -28,7 +30,9 @@ function App() {
       <Route path='/verify-email' element={<VerifyEmail/>}/>
       
       {/* Protected routes - only verified users */}
-      <Route path='/' element={<PrivateRoute><Home/></PrivateRoute>}/>
+      <Route path='/' element={<Home/>}/>
+      <Route path='/jobs' element={<Jobs/>}/>
+      <Route path='/companies' element={<Companies/>}/>
     </Routes>
     <ToastContainer/>
     </>

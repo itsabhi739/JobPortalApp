@@ -6,9 +6,9 @@ import { sendRegisterSuccessMail, sendVerificationOTPMail, sendResetPasswordMail
 
 export const register = async(req,res)=>{
 
-    const {username,email,password} = req.body;
+    const {username,email,password,phonenumber,role} = req.body;
 
-    if(!email||!password||!username){
+    if(!email||!password||!username ||!phonenumber||!role){
         return res.status(400).json({
             success:false,
             message:"Fill all the details to register the user"
@@ -28,19 +28,26 @@ export const register = async(req,res)=>{
         
         //generate verification OTP
         const otp = String(Math.floor(100000+Math.random()*900000));
-        //send OTP verification email
         
         //creating a new user with OTP
         const newUser = new User({
             username,
             email,
             password:hashedPassword,
+            phonenumber,
+            role,
             verifyOtp: otp,
             verifyOtpExpireAt: Date.now() + (24*60*60*1000)
         });
         await newUser.save();
         
-        await sendVerificationOTPMail(email, otp);
+        //send OTP verification email (don't fail registration if email fails)
+        try {
+            await sendVerificationOTPMail(email, otp);
+        } catch (emailError) {
+            console.error("Failed to send verification email:", emailError);
+        }
+        
         //creating jwt token (temporary, only for verification)
         const jwtToken = jwt.sign({id:newUser._id},process.env.SECRET_KEY,{expiresIn:'1hr'})
         //giving response as saving in cookie
@@ -119,7 +126,13 @@ export const login = async(req,res)=>{
         return res.status(200).json({
             success:true,
             message:"User logged in successfully",
-            token:jwtToken
+            token:jwtToken,
+            user:{
+                id:user._id,
+                username:user.username,
+                role:user.role,
+                isVerified:user.isVerified
+            }
         })
 
     }catch(e){
@@ -203,9 +216,11 @@ export const verifyEmailOTP = async(req,res)=>{
 export const verifyEmail = async(req,res)=>{
     const {otp} = req.body;
     const userId = req.userId;
+    
     if(!userId ||!otp){
         return res.status(400).json({success:false,message:"Email and OTP is required"})
     }
+    
     try{
         const user = await User.findById(userId);
         if(!user){
@@ -244,8 +259,6 @@ export const verifyEmail = async(req,res)=>{
         })
     }
 }
-
-//send Password reset OTP
 export const SendResetPasswordOTP = async(req,res)=>{
         const {email} = req.body;
         if(!email){

@@ -1,0 +1,43 @@
+import axios from "axios";
+import { useEffect, useContext, useState } from "react";
+import { AuthContext } from "../context/AuthContext";
+import { CompanyContext } from "../context/CompanyContext";
+
+const FeaturedCompanies = () => {
+
+  const {backendURL,inputClass} = useContext(AuthContext);
+  const {fetchCompanies,companies,setCompanies} = useContext(CompanyContext);
+
+  useEffect(()=>{
+    fetchCompanies()
+  },[])
+
+  //top 6 companies
+  const topCompanies = companies.slice(0,6);
+
+  return (
+    <section className="py-20">
+      <div className="max-w-7xl mx-auto px-6">
+
+        <h2 className="text-3xl font-bold text-center mb-12">
+          Trusted By Top Companies
+        </h2>
+
+        <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
+
+          {topCompanies.map((company) => (
+            <div
+              key={company._id}
+              className="border rounded-xl p-6 text-center hover:shadow-lg transition"
+            >
+              {company.name}
+            </div>
+          ))}
+
+        </div>
+      </div>
+    </section>
+  );
+};
+
+export default FeaturedCompanies;

@@ -43,7 +43,7 @@ const Navbar = () => {
       <div className="menu flex items-center gap-6 text-gray-700 text-lg font-medium">
         <div className="home" onClick={()=>navigate('/')}>Home</div>
         <div className="jobs" onClick={()=>navigate('/jobs')}>Jobs</div>
-        <div className="companies">Companies</div>
+        <div className="companies" onClick={()=>navigate('/companies')}>Companies</div>
         <div className="dashboard">Dashboard</div>
         <div className="contactus">Contact Us</div>
       </div>
@@ -55,7 +55,7 @@ const Navbar = () => {
             className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10"
           >
             <ul className="list-none m-0 p-2 bg-gray-100 text-sm">
-              {!userData.isVerified && (<li className="py-1 px-2 hover}bg-gray-200 cursor-pointer" onClick={sendVerificationOTP}>
+              {!userData.isVerified && (<li className="py-1 px-2 hover:bg-gray-200 cursor-pointer" onClick={sendVerificationOTP}>
                 Verify email
               </li>)}
               <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={logout}>
@@ -66,7 +66,7 @@ const Navbar = () => {
         </div>
       ) : (
         <button
-          className="flex items-center gap-2 border border-gray-500 rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all"
+          className="flex items-center gap-2 border-2 border-primary text-primary rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all"
           onClick={() => navigate("/login")}
         >
           Login

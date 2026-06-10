@@ -11,7 +11,7 @@ export const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const backendURL = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userData, setUserData] = useState([]);
+  const [userData, setUserData] = useState(null);
 
   const inputClass =
   "w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-black transition-all placeholder:text-gray-400";

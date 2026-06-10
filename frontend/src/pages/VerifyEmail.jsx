@@ -28,7 +28,20 @@ const EmailVerify = () => {
       } else {
         toast.error(data.message);
       }
-    } catch (error) {toast.error(error.message)}
+    } catch (error) {toast.error(error.response?.data?.message || error.message)}
+  };
+
+  const handleResendOTP = async () => {
+    try {
+      const { data } = await axios.post(`${backendURL}/api/auth/send-verify-otp`);
+      if (data.success) {
+        toast.success(data.message || "OTP sent to your email");
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || "Failed to resend OTP");
+    }
   };
 
   const handleSubmit = (e) => {
@@ -88,6 +101,7 @@ const EmailVerify = () => {
           <div className="text-center">
             <button
               type="button"
+              onClick={handleResendOTP}
               className="text-blue-600 hover:underline text-sm"
             >
               Resend OTP

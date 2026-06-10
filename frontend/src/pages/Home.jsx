@@ -1,12 +1,21 @@
 import React from 'react'
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import Hero from '../components/Hero';
+import SearchBar from '../components/Searchbar';
+import FeaturedCompanies from '../components/FeaturedCompanies';
+import FeaturedJobs from '../components/FeaturedJobs';
+import Footer from '../components/Footer';
 
 const Home = () => {
-  const {getUserData,isLoggedIn,userData,setUserData} = useContext(AuthContext)
+  const {backendURL,inputClass} = useContext(AuthContext)
   return (<>
   <div className='pt-24'>
-    Hi {userData?userData.username:"Developer"}
+    <Hero/>
+    <SearchBar/>
+    <FeaturedCompanies/>
+    <FeaturedJobs/>
+    <Footer/>
   </div>
   </>
   );
