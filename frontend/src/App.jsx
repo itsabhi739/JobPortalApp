@@ -10,6 +10,11 @@ import ResetPassword from './pages/ResetPassword.jsx'
 import { PrivateRoute } from './components/PrivateRoutes.jsx'
 import Jobs from './pages/Jobs.jsx'
 import Companies from './pages/Companies.jsx'
+import AdminDashboard from './pages/AdminDashboard.jsx'
+import StudentDashboard from './pages/StudentDashboard.jsx'
+import RecruiterDashboard from './pages/RecruiterDashboard.jsx'
+import { Search } from 'lucide-react'
+import CreateJobs from './pages/CreateJobs.jsx'
 
 function App() {
   const location = useLocation();
@@ -33,6 +38,11 @@ function App() {
       <Route path='/' element={<Home/>}/>
       <Route path='/jobs' element={<Jobs/>}/>
       <Route path='/companies' element={<Companies/>}/>
+      <Route path='/admin-dashboard' element={<PrivateRoute><AdminDashboard/></PrivateRoute>}/>
+      <Route path='/student-dashboard' element={<PrivateRoute><StudentDashboard/></PrivateRoute>}/>
+      <Route path='/recruiter-dashboard' element={<PrivateRoute><RecruiterDashboard/></PrivateRoute>}/>
+      <Route path='/search' element={<Search/>}/>
+      <Route path='/createjobs' element={<PrivateRoute><CreateJobs/></PrivateRoute>}/>
     </Routes>
     <ToastContainer/>
     </>

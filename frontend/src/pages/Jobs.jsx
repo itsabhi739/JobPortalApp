@@ -1,16 +1,63 @@
 import { Search } from "lucide-react";
+import { useContext, useState } from "react";
+import { JobsContext } from "../context/JobsContext.jsx";
+import { useEffect } from "react";
+import { FaPlus } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const Jobs = () => {
-  const jobs = Array(8).fill({
-    title: "Frontend Developer",
-    company: "Microsoft",
-    location: "Bangalore",
-    salary: "₹8-12 LPA",
-    type: "Full Time",
-  });
+const Jobs = ()=>{
+  const [selectedJobType,setSelectedJobType] = useState("All");
+  const [selectedExperience,setSelectedExperience] = useState("All")
+  const [selectedLocation,setSelectedLocation] = useState("")
+
+  const navigate = useNavigate();
+
+const {fetchJobs,
+    jobs,
+    setJobs,
+    keyword,setKeyword,
+    location,setLocation
+  } = useContext(JobsContext);
+
+  useEffect(() => {
+    const timer = setTimeout(()=>{
+      fetchJobs();
+    },500)
+    return ()=> clearTimeout(timer);
+  },[keyword,location]);
+
+  const jobTypes = ["All", ...new Set(jobs.map(job => job.jobType))];
+
+  const filteredJobs = jobs.filter((job) => {
+    // Job Type Filter
+    const jobTypeMatch =
+        selectedJobType === "All" ||
+        job.jobType === selectedJobType;
+
+    // Location Filter
+    const locationMatch =
+        !selectedLocation ||
+        job.location.toLowerCase().includes(selectedLocation.toLowerCase());
+
+    // Experience Filter
+    let experienceMatch = true;
+
+    if (selectedExperience === "Fresher") {
+        experienceMatch = job.experience === "Fresher";
+    } else if (selectedExperience === "1-3") {
+        experienceMatch = ["1", "2", "3"].includes(job.experience);
+    } else if (selectedExperience === "3+") {
+        experienceMatch =
+            job.experience !== "Fresher" &&
+            Number(job.experience) >= 3;
+    }
+
+    return jobTypeMatch && locationMatch && experienceMatch;
+});
+ 
 
   return (
-    <div className="mt-32">
+    // <div className="mt-32">
         <div className="bg-[#F8FAFC] min-h-screen">
 
       {/* Hero */}
@@ -29,14 +76,18 @@ const Jobs = () => {
           <div className="bg-white rounded-2xl p-4 mt-8 flex flex-col md:flex-row gap-4">
 
             <input
+              name="keyword"
               type="text"
               placeholder="Job title, keyword..."
+              onChange={(e)=>setKeyword(e.target.value)}
               className="flex-1 outline-none text-black px-4"
             />
 
             <input
               type="text"
               placeholder="Location"
+              name="location"
+              onChange={(e)=>setLocation(e.target.value)}
               className="flex-1 outline-none text-black px-4"
             />
 
@@ -62,17 +113,15 @@ const Jobs = () => {
             </h2>
 
             <div className="space-y-5">
-
+          
               <div>
                 <label className="font-medium block mb-2">
                   Job Type
                 </label>
-
-                <select className="w-full border rounded-lg p-3">
-                  <option>All</option>
-                  <option>Full Time</option>
-                  <option>Internship</option>
-                  <option>Remote</option>
+                <select className="w-full border rounded-lg p-3" value={selectedJobType} onChange={(e)=>(setSelectedJobType(e.target.value))}>
+                  {jobTypes.map((jobtype)=>(
+                  <option key={jobtype} value={jobtype}>{jobtype}</option>
+                  ))}
                 </select>
               </div>
 
@@ -81,11 +130,11 @@ const Jobs = () => {
                   Experience
                 </label>
 
-                <select className="w-full border rounded-lg p-3">
-                  <option>All</option>
-                  <option>Fresher</option>
-                  <option>1-3 Years</option>
-                  <option>3+ Years</option>
+                <select className="w-full border rounded-lg p-3"  onChange={(e)=>(setSelectedExperience(e.target.value))}>
+                  <option value={"All"}>All</option>
+                  <option value={"Fresher"}>Fresher</option>
+                  <option value={"1-3"}>1-3 Years</option>
+                  <option value="3+">3+ Years</option>
                 </select>
               </div>
 
@@ -96,6 +145,8 @@ const Jobs = () => {
 
                 <input
                   type="text"
+                  value={selectedLocation}
+                  onChange={(e)=>setSelectedLocation(e.target.value)}
                   placeholder="Location"
                   className="w-full border rounded-lg p-3"
                 />
@@ -114,17 +165,18 @@ const Jobs = () => {
                 Available Jobs
               </h2>
 
-              <p className="text-gray-500">
+              <p className="text-gray-500 flex-col gap-2">
                 250 Jobs Found
+                <button className="bg-[#2F368C] hover:bg-[#434ec1] rounded-2xl m-2 py-4 px-4 gap-2 flex items-center  text-white" onClick={()=>navigate('/createjobs')}>Create Job <FaPlus className="text-shadow-white"/></button>
               </p>
 
             </div>
 
             <div className="space-y-6">
 
-              {jobs.map((job, index) => (
+              {filteredJobs.map((job) => (
                 <div
-                  key={index}
+                  key={job._id}
                   className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition"
                 >
                   <div className="flex flex-col md:flex-row justify-between">
@@ -140,12 +192,12 @@ const Jobs = () => {
                       </h3>
 
                       <p className="text-gray-500 mt-1">
-                        {job.company}
+                        {job.company?.name}
                       </p>
 
                       <div className="flex gap-4 mt-4 text-gray-600">
                         <span>{job.location}</span>
-                        <span>{job.salary}</span>
+                        <span>₹{job.salary}</span>
                       </div>
 
                       <div className="flex gap-2 mt-4">
@@ -190,7 +242,7 @@ const Jobs = () => {
 
       </section>
     </div>
-    </div>
+    // </div>
     
   );
 };

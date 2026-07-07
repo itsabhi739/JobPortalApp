@@ -5,12 +5,15 @@ const registerCompany = async (req, res) => {
     try {
         const userId = req.userId;
         const user = User.findById(userId);
-        const { companyName, description, website, location } = req.body;
+        const { companyName, description, website, location,logo } = req.body;
         if (!companyName) {
             return res.status(400).json({ success: false, message: "companyName is required" })
         }
         if (!description) {
             return res.status(400).json({ success: false, message: "description is required" })
+        }
+        if(!logo){
+           return res.status(400).json({ success: false, message: "Logo is required" }) 
         }
         const exCompany = await Company.findOne({ name: companyName });
 
@@ -21,6 +24,7 @@ const registerCompany = async (req, res) => {
         new Company(
             { name: companyName,
                  description,
+                 logo,
                  website,
                  location,
                  userId: req.userId });
@@ -28,7 +32,7 @@ const registerCompany = async (req, res) => {
         return res.status(201).json({ success: true, message: "Company created successfully" })
 
     } catch (e) {
-
+        return res.status(500).json({success:false,message:e.message})
     }
 }
 

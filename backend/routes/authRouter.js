@@ -21,9 +21,9 @@ authRouter.post('/verify-account',authWithoutVerification,verifyEmail)
 //http://localhost:5001/api/auth/verify-account
 
 // Password reset routes - PUBLIC (user not logged in yet)
-authRouter.post('/send-reset-otp',authWithoutVerification,SendResetPasswordOTP)
+authRouter.post('/send-reset-otp',SendResetPasswordOTP)
 // http://localhost:5001/api/auth/send-reset-otp
 
-authRouter.post('/reset-password',authWithoutVerification,ResetPassword)
+authRouter.post('/reset-password',ResetPassword)
 // http://localhost:5001/api/auth/reset-password
 export default authRouter;

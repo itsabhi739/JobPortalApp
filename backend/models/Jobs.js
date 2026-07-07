@@ -9,19 +9,24 @@ const jobSchema = mongoose.Schema({
         type:String,
         required:true
     },
-    requirements:{
+    requirements:[{
         type:String,
         required:true
-    },
+    },],
     location:{
         type:String,
         required:true
     },
     salary:{
-        type:Number,
+        type:String,
         required:true
     },
     jobType:{
+        type:String,
+        enum: ["Full Time", "Part Time", "Internship", "Remote"],
+        required:true
+    },
+    experience:{
         type:String,
         required:true
     },
@@ -39,12 +44,11 @@ const jobSchema = mongoose.Schema({
         ref:"User",
         required:true
     },
-    application:{
+    application:[{
         type:mongoose.Schema.Types.ObjectId,
         ref:"Application",
-        required:true
-    }
-})
+    },],
+},{timestamps:true})
 
 
 export const Job = mongoose.model('Job',jobSchema);

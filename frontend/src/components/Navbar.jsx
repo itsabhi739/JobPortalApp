@@ -31,21 +31,41 @@ const Navbar = () => {
       }
     }
 
+    const handleDashboard = () =>{
+      if(!userData){
+        navigate('/login')
+        toast.error("Dashboard is restricted: Login to continue")
+      }
+      if(userData.role === 'Admin'){
+        navigate('/admin-dashboard');
+      }
+      else if(userData.role === "Recruiter"){
+        navigate('/recruiter-dashboard');
+      }
+      else if(userData.role === "Student"){
+        navigate('/student-dashboard');
+      }
+      else{
+        navigate("/login")
+        toast.info("User not logged in cannot access dashboard")
+      }
+    }
+
 
   return (
-    <div className="w-full flex justify-between items-center p-4 sm:p-6 sm:px-24 absolute top-0 h-25">
+    <div className="flex justify-between items-center h-20 px-6 sm:px-10 border-b bg-white">
       <img
         src="https://cdn.dribbble.com/userupload/42179759/file/original-8939a7332eb5bdc39b71ea43d0b14965.jpg?resize=800x600&vertical=center"
         alt=""
-        className="w-28 sm:w-32"
+        className="w-28 sm:w-32 h-19.5"
       />
 
       <div className="menu flex items-center gap-6 text-gray-700 text-lg font-medium">
         <div className="home" onClick={()=>navigate('/')}>Home</div>
         <div className="jobs" onClick={()=>navigate('/jobs')}>Jobs</div>
         <div className="companies" onClick={()=>navigate('/companies')}>Companies</div>
-        <div className="dashboard">Dashboard</div>
-        <div className="contactus">Contact Us</div>
+        <div className="dashboard" onClick={handleDashboard}>Dashboard</div>
+        <div className="contactus" onClick={()=>navigate('/contact-us')}>Contact Us</div>
       </div>
 
       {userData ? (

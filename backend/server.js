@@ -6,6 +6,7 @@ import mongoose from "mongoose";
 import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import companyRouter from "./routes/companyRouter.js";
+import jobRouter from "./routes/jobRouter.js";
 
 
 const PORT = process.env.PORT||5001;
@@ -23,6 +24,7 @@ app.get('/',(req,res)=>res.send("API Working"))
 app.use('/api/auth',authRouter)
 app.use('/api/user',userRouter)
 app.use('/api/company',companyRouter)
+app.use('/api/job',jobRouter)
 //creating the connection
 const mongodbConnection = async () => {
   try {

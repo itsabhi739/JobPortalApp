@@ -1,0 +1,126 @@
+import React from "react";
+import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+
+const jobs = [
+  {
+    id: 1,
+    title: "React Developer",
+    applications: 25,
+    status: "Active",
+    posted: "2 Jul 2026",
+  },
+  {
+    id: 2,
+    title: "Java Developer",
+    applications: 18,
+    status: "Active",
+    posted: "30 Jun 2026",
+  },
+  {
+    id: 3,
+    title: "Node.js Developer",
+    applications: 42,
+    status: "Closed",
+    posted: "25 Jun 2026",
+  },
+  {
+    id: 4,
+    title: "UI/UX Designer",
+    applications: 12,
+    status: "Paused",
+    posted: "20 Jun 2026",
+  },
+];
+
+const statusColor = {
+  Active: "bg-green-100 text-green-700",
+  Closed: "bg-red-100 text-red-600",
+  Paused: "bg-yellow-100 text-yellow-700",
+};
+
+const RecentJobs = () => {
+  return (
+    <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-4 lg:p-5">
+      <div className="flex justify-between items-center mb-4">
+        <div>
+          <h2 className="text-lg font-bold">
+            Recent Jobs
+          </h2>
+
+          <p className="text-gray-500 text-sm">
+            Latest jobs posted by your company
+          </p>
+        </div>
+
+        <button className="text-[#2F368C] font-semibold hover:underline text-sm">
+          View All
+        </button>
+      </div>
+
+      <div className="overflow-x-auto">
+
+        <table className="w-full">
+
+          <thead>
+
+            <tr className="text-left border-b">
+
+              <th className="pb-3">Job</th>
+              <th className="pb-3">Applications</th>
+              <th className="pb-3">Status</th>
+              <th className="pb-3">Posted</th>
+              <th className="pb-3">Action</th>
+
+            </tr>
+
+          </thead>
+
+          <tbody>
+
+            {jobs.map((job) => (
+
+              <tr key={job.id} className="border-b hover:bg-gray-50">
+                <td className="py-3 font-medium text-sm">
+                  {job.title}
+                </td>
+
+                <td className="text-sm">{job.applications}</td>
+
+                <td>
+                  <span
+                    className={`px-2.5 py-1 rounded-full text-xs ${statusColor[job.status]}`}
+                  >
+                    {job.status}
+                  </span>
+                </td>
+
+                <td className="text-sm">{job.posted}</td>
+
+                <td>
+                  <div className="flex gap-3 text-[#2F368C] text-sm">
+
+                    <FaEye className="cursor-pointer hover:text-black" />
+
+                    <FaEdit className="cursor-pointer hover:text-green-600" />
+
+                    <FaTrash className="cursor-pointer hover:text-red-500" />
+
+                  </div>
+
+                </td>
+
+              </tr>
+
+            ))}
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+  );
+};
+
+export default RecentJobs;

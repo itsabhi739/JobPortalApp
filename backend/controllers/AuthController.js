@@ -61,6 +61,7 @@ export const register = async(req,res)=>{
             maxAge:1*60*60*1000
         })
         
+        sendRegisterSuccessMail(user.email);
         
         res.status(201).json({
             success:true,

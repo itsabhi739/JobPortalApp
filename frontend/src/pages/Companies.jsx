@@ -4,12 +4,14 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { CompanyContext } from "../context/CompanyContext";
+import { JobsContext } from "../context/JobsContext";
 
 
 const Companies = () => {
   
   const { backendURL } = useContext(AuthContext);
   const {fetchCompanies,companies,setCompanies,search,setSearch} = useContext(CompanyContext);
+  const {jobs} = useContext(JobsContext)
 
   useEffect(() => {
     const timer = setTimeout(()=>{
@@ -28,7 +30,6 @@ const Companies = () => {
   }
 
   return (
-    <div className="mt-32">
       <div className="bg-[#F8FAFC] min-h-screen">
         {/* Hero Section */}
         <section className="bg-[#2F368C] text-white py-16">
@@ -61,12 +62,12 @@ const Companies = () => {
         <section className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-2xl p-6 shadow text-center">
-              <h2 className="text-4xl font-bold text-[#2F368C]">250+</h2>
+              <h2 className="text-4xl font-bold text-[#2F368C]">{companies.length}</h2>
               <p className="text-gray-500 mt-2">Partner Companies</p>
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow text-center">
-              <h2 className="text-4xl font-bold text-[#2F368C]">1200+</h2>
+              <h2 className="text-4xl font-bold text-[#2F368C]">1200+ </h2>
               <p className="text-gray-500 mt-2">Active Jobs</p>
             </div>
 
@@ -164,7 +165,6 @@ const Companies = () => {
           </div>
         </section>
       </div>
-    </div>
   );
 };
 

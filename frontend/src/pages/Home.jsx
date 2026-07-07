@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
 import Hero from '../components/Hero';
@@ -8,13 +8,17 @@ import FeaturedJobs from '../components/FeaturedJobs';
 import Footer from '../components/Footer';
 
 const Home = () => {
-  const {backendURL,inputClass} = useContext(AuthContext)
+  const {backendURL,inputClass,getUserData,userData} = useContext(AuthContext)
+  useEffect(()=>{
+    getUserData()
+  },[])
+
   return (<>
   <div className='pt-24'>
-    <Hero/>
+    <Hero user ={userData}/>
     <SearchBar/>
-    <FeaturedCompanies/>
-    <FeaturedJobs/>
+    <FeaturedCompanies user={userData}/>
+    <FeaturedJobs user={userData}/>
     <Footer/>
   </div>
   </>
