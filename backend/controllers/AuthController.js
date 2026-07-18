@@ -1,12 +1,13 @@
 import User from '../models/Users.js'
+import { Company } from '../models/Companies.js'
 import bcrypt from 'bcryptjs'
 import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import { sendRegisterSuccessMail, sendVerificationOTPMail, sendResetPasswordMail } from '../config/sendMails.js'
 
-export const register = async(req,res)=>{
+export const register = async (req, res) => {
 
-    const {username,email,password,phonenumber,role} = req.body;
+    const {username,email,password,phonenumber,role,companyName,companyId} = req.body;
 
     if(!email||!password||!username ||!phonenumber||!role){
         return res.status(400).json({
@@ -14,21 +15,53 @@ export const register = async(req,res)=>{
             message:"Fill all the details to register the user"
         })
     }
+
+    if (role === 'Recruiter' && !companyName) {
+        return res.status(400).json({
+            success: false,
+            message: "Recruiters must provide a company name"
+        })
+    }
     try{
-        const existingUser = await User.findOne({email});
+        const existingUser = await User.findOne({ $or: [{ email }, { phonenumber }] });
         if(existingUser){
             return res.status(400).json({
                 success:false,
                 message:"User already exists!!"
             })
         }
-
+        let recruiterCompany = null;
+        if (role === "Recruiter") {
+            if (!companyId) {
+                recruiterCompany = await Company.findOne({
+                    name: {
+                        $regex: `^${companyName.trim()}$`,
+                        $options: "i"
+                    }
+                });
+                if (!recruiterCompany) {
+                    return res.status(404).json({
+                        success: false,
+                        message: "Company not found. Please create a company profile first.",
+                        requiresCompanyProfile: true,
+                        companyName
+                    });
+                }
+            } else {
+                recruiterCompany = await Company.findById(companyId);
+                if (!recruiterCompany) {
+                    return res.status(404).json({
+                        success: false,
+                        message: "Company not found"
+                    });
+                }
+            }
+        }
         //password hashing with salt vaue 10
         const hashedPassword = await bcrypt.hash(password,10);
-        
         //generate verification OTP
         const otp = String(Math.floor(100000+Math.random()*900000));
-        
+
         //creating a new user with OTP
         const newUser = new User({
             username,
@@ -36,18 +69,28 @@ export const register = async(req,res)=>{
             password:hashedPassword,
             phonenumber,
             role,
+            profile:{
+                company: recruiterCompany?._id || null
+            },
             verifyOtp: otp,
             verifyOtpExpireAt: Date.now() + (24*60*60*1000)
         });
         await newUser.save();
-        
+
+        if (recruiterCompany) {
+            if (!recruiterCompany.userId.includes(newUser._id)) {
+                recruiterCompany.userId.push(newUser._id);
+                await recruiterCompany.save();
+            }
+        }
+
         //send OTP verification email (don't fail registration if email fails)
         try {
             await sendVerificationOTPMail(email, otp);
         } catch (emailError) {
             console.error("Failed to send verification email:", emailError);
         }
-        
+
         //creating jwt token (temporary, only for verification)
         const jwtToken = jwt.sign({id:newUser._id},process.env.SECRET_KEY,{expiresIn:'1hr'})
         //giving response as saving in cookie
@@ -60,9 +103,9 @@ export const register = async(req,res)=>{
             sameSite:process.env.NODE_ENV === 'production' ? 'none' :'strict',
             maxAge:1*60*60*1000
         })
-        
-        sendRegisterSuccessMail(user.email);
-        
+
+        sendRegisterSuccessMail(email);
+
         res.status(201).json({
             success:true,
             message:"User created successfully. Please verify your email with the OTP sent.",
@@ -73,7 +116,7 @@ export const register = async(req,res)=>{
     }catch(e){
         return res.status(500).json({
             success:false,
-            message:"Failed to register the user"
+            message: e.message
         })
     }
 }
@@ -90,17 +133,17 @@ export const login = async(req,res)=>{
         const user = await User.findOne({email});
 
         if(!user){
-             return res.status(400).json({
+            return res.status(400).json({
             success:false,
             message:"User not found"
-        })
+            })
         }
         const isMatched = await bcrypt.compare(password,user.password)
         if(!isMatched){
-             return res.status(400).json({
+            return res.status(400).json({
             success:false,
             message:"Please add the correct password"
-        })
+            })
         }
 
         // Check if user email is verified
@@ -111,7 +154,7 @@ export const login = async(req,res)=>{
             })
         }
 
-         //creating jwt token
+        //creating jwt token
         const jwtToken = jwt.sign({id:user._id},process.env.SECRET_KEY,{expiresIn:'7d'})
         //giving response as saving in cookie
         res.cookie('token',jwtToken,{
@@ -167,7 +210,7 @@ export const logout = async(req,res)=>{
 export const verifyEmailOTP = async(req,res)=>{
     try{
         const userId = req.userId;
-        
+
         // Check if userId exists
         if(!userId){
             return res.status(400).json({
@@ -175,7 +218,7 @@ export const verifyEmailOTP = async(req,res)=>{
                 message:"User not authenticated. Please login again"
             })
         }
-        
+
         const user = await User.findById(userId);
 
         // Check if user exists in database
@@ -185,7 +228,7 @@ export const verifyEmailOTP = async(req,res)=>{
                 message:"User not found"
             })
         }
-        
+
         if(user.isVerified){
             return res.status(403).json({
                 success:false,
@@ -217,11 +260,11 @@ export const verifyEmailOTP = async(req,res)=>{
 export const verifyEmail = async(req,res)=>{
     const {otp} = req.body;
     const userId = req.userId;
-    
+
     if(!userId ||!otp){
         return res.status(400).json({success:false,message:"Email and OTP is required"})
     }
-    
+
     try{
         const user = await User.findById(userId);
         if(!user){
@@ -235,14 +278,14 @@ export const verifyEmail = async(req,res)=>{
             return res.status(400).json({
                 success:false,
                 message:"Invalid OTP"
-            }) 
+            })
         }
 
         if(user.verifyOtpExpireAt < Date.now()){
-             return res.status(400).json({
+            return res.status(400).json({
                 success:false,
                 message:"OTP has expired"
-            }) 
+            })
         }
 
         user.isVerified = true,
@@ -264,14 +307,14 @@ export const SendResetPasswordOTP = async(req,res)=>{
         const {email} = req.body;
         if(!email){
             return res.status(400).json({success:false,message:"Email is required"})
-        }
+    }
         const user = await User.findOne({email});
         if(!user){
-            return res.status(400).json({
+        return res.status(400).json({
                 success:false,
                 message:"User not found"
-            })
-        }
+        })
+    }
 
     try{
         const otp = Math.floor(100000+Math.random() * 900000)
@@ -305,12 +348,12 @@ export const ResetPassword = async (req,res)=>{
             message:"User not found"
         })
     }
-    
+
     if(user.resetOtp === '' ||String(user.resetOtp) !== String(otp)){
-     return res.status(400).json({
+        return res.status(400).json({
         success:false,
         message:"Reset OTP is invalid"
-     })   
+        })
     }
 
     if(user.resetOtpExpireAt<Date.now()){
@@ -324,7 +367,7 @@ export const ResetPassword = async (req,res)=>{
     user.password = hashedPassword;
     user.resetOtp = ''
     user.resetOtpExpireAt=0
-   await user.save();
+    await user.save();
 
    return res.status(200).json({success:true,message:"Password Changed Successfully"})
 

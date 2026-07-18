@@ -41,7 +41,10 @@ const stats = [
   },
 ];
 
-const StatCards = () => {
+const StatCards = ({userJobs}) => {
+
+  const jobCount = userJobs.length
+
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
       {stats.map((stat, index) => (
@@ -56,7 +59,7 @@ const StatCards = () => {
               </p>
 
               <h2 className="text-2xl font-bold mt-1">
-                {stat.value}
+                {jobCount}
               </h2>
 
               <p className="text-green-600 text-sm mt-1">

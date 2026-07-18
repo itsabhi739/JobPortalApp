@@ -78,9 +78,12 @@ const Navbar = () => {
               {!userData.isVerified && (<li className="py-1 px-2 hover:bg-gray-200 cursor-pointer" onClick={sendVerificationOTP}>
                 Verify email
               </li>)}
+              <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={()=>navigate("/user-profile")}>
+                Profile
+              </li>
               <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={logout}>
                 Logout
-              </li>
+              </li>  
             </ul>
           </div>
         </div>

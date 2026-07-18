@@ -4,7 +4,7 @@ import { userAuth } from '../middlewares/userAuth.js';
 
 const companyRouter = new express.Router();
 
-companyRouter.post('/register',userAuth(['Admin','Recruiter']),registerCompany) //http://localhost:5001/api/company/register
+companyRouter.post('/register',registerCompany) //http://localhost:5001/api/company/register
 
 companyRouter.get('/get/:id',userAuth(),getCompanyById ) //http://localhost:5001/api/company/get/{id}
 

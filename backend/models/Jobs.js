@@ -39,6 +39,11 @@ const jobSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    status:{
+        type:String,
+        enum: ["Pending", "Active", "Paused", "Closed"],
+        default: "Active",
+    },
     createdBy:{
         type:mongoose.Schema.Types.ObjectId,
         ref:"User",

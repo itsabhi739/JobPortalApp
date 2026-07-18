@@ -11,16 +11,9 @@ import {
   Star,
 } from "lucide-react";
 
-const Sidebar = () => {
+const Sidebar = ({user,companyLocation}) => {
   return (
     <div className="w-72 min-h-screen bg-white border-r shadow-sm flex flex-col">
-      {/* Logo */}
-      {/* <div className="px-8 py-7 border-b">
-        <h1 className="text-3xl font-bold">
-          <span className="text-[#2F368C]">Job</span>
-          <span className="text-[#F4BC19]">Portal</span>
-        </h1>
-      </div> */}
 
       {/* Company */}
 
@@ -31,9 +24,9 @@ const Sidebar = () => {
           </div>
 
           <div>
-            <h3 className="font-semibold">Google Pvt Ltd</h3>
+            <h3 className="font-semibold">{user?.companyName}</h3>
 
-            <p className="text-sm text-gray-500">Bangalore</p>
+            <p className="text-sm text-gray-500">{companyLocation}</p>
           </div>
         </div>
       </div>

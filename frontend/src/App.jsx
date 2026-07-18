@@ -15,6 +15,7 @@ import StudentDashboard from './pages/StudentDashboard.jsx'
 import RecruiterDashboard from './pages/RecruiterDashboard.jsx'
 import { Search } from 'lucide-react'
 import CreateJobs from './pages/CreateJobs.jsx'
+import RegisterCompany from './pages/RegisterCompany.jsx'
 
 function App() {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
       <Route path='/recruiter-dashboard' element={<PrivateRoute><RecruiterDashboard/></PrivateRoute>}/>
       <Route path='/search' element={<Search/>}/>
       <Route path='/createjobs' element={<PrivateRoute><CreateJobs/></PrivateRoute>}/>
+      <Route path="/register-company" element={<RegisterCompany />} />
     </Routes>
     <ToastContainer/>
     </>

@@ -2,7 +2,7 @@ import React from "react";
 import { FaBriefcase, FaPlus } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
-const Welcome = () => {
+const Welcome = ({user}) => {
   const navigate = useNavigate();
 
   return (
@@ -14,7 +14,7 @@ const Welcome = () => {
           </p>
 
           <h1 className="text-3xl font-bold mt-2">
-            Welcome Back 👋
+            Welcome Back {user?.username}
           </h1>
 
           <p className="mt-3 text-gray-200 max-w-xl leading-6 text-sm">

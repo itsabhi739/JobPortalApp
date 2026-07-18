@@ -11,7 +11,7 @@ const companySchema = mongoose.Schema({
     },
     logo:{
         type:String,
-        required:true
+        required:false
     },
     website: {
         type: String,
@@ -23,9 +23,8 @@ const companySchema = mongoose.Schema({
     userId: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
-        required: true
     }],
-}, { timestamp: true });
+}, { timestamps: true });
 
 
 export const Company = mongoose.model('Company',companySchema)

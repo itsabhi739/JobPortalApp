@@ -14,6 +14,7 @@ const Auth = () => {
   const [confirmPassword,setConfirmPassword] = useState('')
   const [phonenumber, setPhoneNumber] = useState('')
   const [role, setRole] = useState('Student')
+  const [companyName, setCompanyName] = useState('')
 
   const {backendURL,setIsLoggedIn,getUserData,inputClass} = useContext(AuthContext);
   const handleChange = (e)=>{
@@ -38,6 +39,9 @@ const Auth = () => {
     if(name === 'role'){
       setRole(value)
     }
+    if(name === 'companyName'){
+      setCompanyName(value)
+    }
   }
 
   const handleSubmit = async(e)=>{
@@ -47,22 +51,52 @@ const Auth = () => {
         toast.error("Password and Confirm Password must be the same")
         return
       }
+      if (role === 'Recruiter' && !companyName) {
+        toast.error("Please enter your company name")
+        return
+      }
+
+       const payload = { username, email, password, phonenumber, role }
+        if (role === 'Recruiter') {
+          payload.companyName = companyName
+        }
+
       try{
-        const response = await axios.post(`${backendURL}/api/auth/register`,{username,email,password,phonenumber,role})
+        const response = await axios.post(`${backendURL}/api/auth/register`,payload)
         if(response.data.success){
           toast.success(response.data.message);
           navigate('/verify-email')
+        } 
+        else if (response.data.requiresCompanyProfile || response.data.message?.includes('company profile')) {
+          navigate('/register-company', {
+            replace: true,
+            state: {
+              companyName: companyName.trim(),
+              recruiterPayload: payload
+            }
+          });
+          toast.info(response.data.message)
         }else{
           toast.error(response.data.message)
         }
       }catch(e){
         const errorMessage = e.response?.data?.message || e.message || "Registration failed";
-        toast.error(errorMessage);
+        if (e.response?.data?.requiresCompanyProfile || errorMessage.includes('company profile')) {
+          navigate('/register-company', {
+            replace: true,
+            state: {
+              companyName: companyName.trim(),
+              recruiterPayload: payload
+            }
+          });
+          toast.info(errorMessage)
+        } else {
+          toast.error(errorMessage);
+        }
       }
-    }
-    else{
+    }else{
       try {
-       const response = await axios.post(`${backendURL}/api/auth/login`,{email,password})
+        const response = await axios.post(`${backendURL}/api/auth/login`,{email,password})
         if(response.data.success){
           toast.success(response.data.message);
           setIsLoggedIn(true);
@@ -70,13 +104,13 @@ const Auth = () => {
           navigate('/')
         }else{
           toast.error(response.data.message)
-        } 
+        }
       } catch (e) {
         const errorMessage = e.response?.data?.message || e.message || "Login failed";
         toast.error(errorMessage);
       }
-      }
     }
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
@@ -214,8 +248,25 @@ const Auth = () => {
             </div>
           )}
 
+          {isSignup && role === 'Recruiter' && (
+            <div>
+              <label className="block mb-2 text-gray-700">
+                Company Name
+              </label>
+
+              <input
+                type="text"
+                name="companyName"
+                value={companyName}
+                onChange={handleChange}
+                placeholder="Enter company name"
+                className={inputClass}
+              />
+            </div>
+          )}
+
           {/* Forgot Password only for Login */}
-          {!isSignup && (
+   {!isSignup && (
             <div className="text-right">
               <button
                 type="button"

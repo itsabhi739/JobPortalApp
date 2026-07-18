@@ -27,12 +27,33 @@ const JobsProvider = ({children})=>{
     }
   };
 
+  const experiences = ["0", "1", "2", "3", "4", "5+"];
+  
+  const locations = [
+    "Bangalore",
+    "Hyderabad",
+    "Mumbai",
+    "Pune",
+    "Delhi",
+    "Remote",
+  ];
+
+  const jobTypes = [
+    "Full Time",
+    "Part Time",
+    "Internship",
+    "Remote",
+  ];
+
   const value = {
     fetchJobs,
     jobs,
     setJobs,
     keyword,setKeyword,
-    location,setLocation
+    location,setLocation,
+    experiences,
+    locations,
+    jobTypes
   }
     
     return <JobsContext.Provider value={value}>

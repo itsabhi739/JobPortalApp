@@ -38,14 +38,24 @@ const statusColor = {
   Paused: "bg-yellow-100 text-yellow-700",
 };
 
-const RecentJobs = () => {
+const RecentJobs = ({ userData, userJobs }) => {
+
+  const convertDate = (updatedAt) => {
+    const date = new Date(updatedAt).toLocaleDateString("en-IN", {
+      day: "2-digit",
+      month: "short",
+      year: "numeric",
+    });
+    return date;
+  };
+
   return (
     <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-4 lg:p-5">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-lg font-bold">
             Recent Jobs
-          </h2>
+            </h2>
 
           <p className="text-gray-500 text-sm">
             Latest jobs posted by your company
@@ -60,32 +70,27 @@ const RecentJobs = () => {
       <div className="overflow-x-auto">
 
         <table className="w-full">
-
+          
           <thead>
-
             <tr className="text-left border-b">
-
+              
               <th className="pb-3">Job</th>
-              <th className="pb-3">Applications</th>
+              <th className="pb-3">Location</th>
               <th className="pb-3">Status</th>
               <th className="pb-3">Posted</th>
               <th className="pb-3">Action</th>
-
             </tr>
-
           </thead>
 
           <tbody>
-
-            {jobs.map((job) => (
-
-              <tr key={job.id} className="border-b hover:bg-gray-50">
+            {userJobs.map((job) => (
+              <tr key={job.id} className="border-b hover:bg-gray-50" key={job._id}
+              >
                 <td className="py-3 font-medium text-sm">
                   {job.title}
                 </td>
 
-                <td className="text-sm">{job.applications}</td>
-
+                <td className="text-sm">{job.location}</td>
                 <td>
                   <span
                     className={`px-2.5 py-1 rounded-full text-xs ${statusColor[job.status]}`}
@@ -94,7 +99,7 @@ const RecentJobs = () => {
                   </span>
                 </td>
 
-                <td className="text-sm">{job.posted}</td>
+                <td className="text-sm">{convertDate(job.updatedAt)}</td>
 
                 <td>
                   <div className="flex gap-3 text-[#2F368C] text-sm">

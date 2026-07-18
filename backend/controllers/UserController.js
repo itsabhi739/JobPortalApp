@@ -1,4 +1,5 @@
 import User from "../models/Users.js"
+import { Company } from "../models/Companies.js"
 
 export const GetUserData = async (req, res) => {
     try {
@@ -11,12 +12,22 @@ export const GetUserData = async (req, res) => {
         if (!user) {
             return res.status(400).json({ success: false, message: "User not found " })
         }
+
+        let companyName = "";
+        if (user.profile?.company) {
+            const company = await Company.findById(user.profile.company);
+            companyName = company?.name || "";
+        }
+
         return res.status(200).json({
             success: true,
             userData: {
+                userId: user._id,
                 username: user.username,
                 role:user.role,
-                isVerified: user.isVerified
+                isVerified: user.isVerified,
+                company: user.profile?.company || null,
+                companyName
             }
         })
     } catch (e) {

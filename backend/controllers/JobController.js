@@ -4,10 +4,7 @@ import User from "../models/Users.js";
 
 export const createJob = async (req, res) => {
     try {
-        const { title, description, requirements, location, salary, jobType,experience, company, position } = req.body;
-        if (!title || !description || !requirements?.length || !location || !salary || !jobType || !experience|| !company || !position) {
-            return res.status(400).json({ success: false, message: "Job Details are missing" })
-        }
+        const { title, description, requirements, location, salary, jobType,experience, company, position} = req.body;
         const userId = req.userId;
         const user = await User.findById(userId);
 
@@ -19,7 +16,11 @@ export const createJob = async (req, res) => {
             return res.status(401).json({ success: false, message: "You are not authorized to create jobs" })
         }
 
-        const companyExists = await Company.findById(company);
+        const companyId = company || user.profile?.company;
+        if (!title || !description || !requirements?.length || !location || !salary || !jobType || !experience || !companyId || !position) {
+            return res.status(400).json({ success: false, message: "Job Details are missing" })
+        }
+        const companyExists = await Company.findById(companyId);
 
         if (!companyExists) {
             return res.status(404).json({
@@ -38,8 +39,9 @@ export const createJob = async (req, res) => {
             salary,
             jobType,
             experience,
-            company,
+            company: companyId,
             position,
+            // status,
             createdBy: userId
         })
 
