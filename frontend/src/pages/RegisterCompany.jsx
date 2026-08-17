@@ -49,7 +49,6 @@ const RegisterCompany = () => {
         },
       );
       const companyId = companyResponse.data.companyId;
-      console.log("Created companyId:", companyId);
 
       if (!companyResponse.data.success) {
         toast.error(companyResponse.data.message || "Unable to create company");

@@ -12,6 +12,8 @@ export const AuthProvider = ({ children }) => {
   const backendURL = import.meta.env.VITE_BACKEND_URL;
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+  const [isStudent,setIsStudent] = useState(false);
 
   const inputClass =
   "w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-black transition-all placeholder:text-gray-400";
@@ -21,6 +23,9 @@ export const AuthProvider = ({ children }) => {
       const response = await axios.get(`${backendURL}/api/user/data`);
       if(response.data.success) {
         setUserData(response.data.userData);
+        if(userData.role === "Student"){
+          setIsStudent(true);
+        }
         return response.data.userData;
       } else {
         toast.error(response.data.message);
@@ -36,12 +41,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const response = await axios.get(`${backendURL}/api/user/is-auth`); 
       setIsLoggedIn(true);
-      getUserData();
+      await getUserData();
     } catch (e) {
       console.log(e.message)
       setIsLoggedIn(false);
       // Only show error toast if it's not the initial auth check
       // (avoid spamming toast on page load when user isn't logged in)
+    }finally{
+       setAuthLoading(false);
     }
   };
 
@@ -49,11 +56,25 @@ export const AuthProvider = ({ children }) => {
       getAuthState();
     } , []);
 
+    const logout = async(req,res)=>{
+      try{
+        axios.defaults.withCredentials = true;
+        const {data} = await axios.post(`${backendURL}/api/auth/logout`);
+        data.success && setIsLoggedIn(false);
+        data.success && setUserData(false);
+        navigate('/login')
+      }catch(e){
+        toast.error(e.message)
+      }
+    }
+
   const value = {
     backendURL,
     isLoggedIn,setIsLoggedIn,
     userData,setUserData,
-    getUserData,inputClass
+    getUserData,inputClass,
+    authLoading,logout,
+    isStudent,setIsStudent
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

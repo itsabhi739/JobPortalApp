@@ -1,6 +1,6 @@
 import express from 'express'
 import { userAuth } from '../middlewares/userAuth.js';
-import { createJob, deleteJob, getJobById, getJobs } from '../controllers/JobController.js';
+import { createJob, deleteJob, updateJobs, getJobById, getJobs } from '../controllers/JobController.js';
 
 const jobRouter = new express.Router();
 
@@ -15,5 +15,8 @@ jobRouter.get('/get/:id',getJobById)
 
 jobRouter.delete('/delete/:id', userAuth(['Recruiter','Admin']),deleteJob) 
 //http://localhost:5001/api/job/delete/sd648646464864
+
+jobRouter.patch('/update/:id', userAuth(['Recruiter','Admin']),updateJobs) 
+//http://localhost:5001/api/job/update/sd648646464864
 
 export default jobRouter;

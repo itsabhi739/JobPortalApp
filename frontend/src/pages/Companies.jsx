@@ -5,6 +5,7 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { CompanyContext } from "../context/CompanyContext";
 import { JobsContext } from "../context/JobsContext";
+import { useNavigate } from "react-router-dom";
 
 
 const Companies = () => {
@@ -12,6 +13,7 @@ const Companies = () => {
   const { backendURL } = useContext(AuthContext);
   const {fetchCompanies,companies,setCompanies,search,setSearch} = useContext(CompanyContext);
   const {jobs} = useContext(JobsContext)
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(()=>{
@@ -32,7 +34,7 @@ const Companies = () => {
   return (
       <div className="bg-[#F8FAFC] min-h-screen">
         {/* Hero Section */}
-        <section className="bg-[#2F368C] text-white py-16">
+        <section className="relative bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
           <div className="max-w-7xl mx-auto px-6">
             <h1 className="text-5xl font-bold">Explore Top Companies</h1>
 
@@ -141,7 +143,7 @@ const Companies = () => {
                     </div>
                   </div>
 
-                  <button className="w-full mt-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700">
+                  <button className="w-full mt-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-medium hover:bg-blue-700"  onClick={() => navigate(`/jobs?company=${company._id}`)}>
                     View Jobs
                   </button>
                 </div>

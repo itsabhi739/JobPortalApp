@@ -16,11 +16,11 @@ import RecruiterDashboard from './pages/RecruiterDashboard.jsx'
 import { Search } from 'lucide-react'
 import CreateJobs from './pages/CreateJobs.jsx'
 import RegisterCompany from './pages/RegisterCompany.jsx'
+import ContactUs from './pages/ContactUs.jsx'
+import UpdateJobs from './pages/UpdateJobs.jsx'
 
 function App() {
   const location = useLocation();
-  
-  // Hide navbar on auth pages
   const hideNavbarRoutes = ['/login', '/verify-email', '/reset-password'];
   const showNavbar = !hideNavbarRoutes.includes(location.pathname);
   
@@ -44,7 +44,10 @@ function App() {
       <Route path='/recruiter-dashboard' element={<PrivateRoute><RecruiterDashboard/></PrivateRoute>}/>
       <Route path='/search' element={<Search/>}/>
       <Route path='/createjobs' element={<PrivateRoute><CreateJobs/></PrivateRoute>}/>
+      <Route path='/update-job/:id' element={<PrivateRoute><UpdateJobs/></PrivateRoute>}/>
+      <Route path='/view-job/:id' element={<PrivateRoute><UpdateJobs/></PrivateRoute>}/>
       <Route path="/register-company" element={<RegisterCompany />} />
+      <Route path="/contact-us" element={<ContactUs />} />
     </Routes>
     <ToastContainer/>
     </>

@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
+import { CompanyContext } from "../context/CompanyContext";
 
 
 const Hero = ({user}) => {
   const navigate = useNavigate();
-  const isStudent = user?.role === "Student";
+  const {isLoggedIn,setIsLoggedIn,userData,setUserData,getUserData,inputClass,authLoading,logout,isStudent} = useContext(AuthContext);
+  const {companies} = useContext(CompanyContext)
+  
   return (
     <section className="bg-background py-20">
       <div className="max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-10 items-center">
@@ -26,22 +30,37 @@ const Hero = ({user}) => {
           </p>
 
           <div className="flex gap-4 mt-8">
-            {isStudent?(<button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl" onClick={()=>navigate('/jobs')}>
+            {isLoggedIn && isStudent?
+            (<button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl" onClick={()=>navigate('/jobs')}>
               Find Jobs
-            </button>):(<button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl" onClick={()=>navigate('/createjobs')}>
+            </button>)
+            :isLoggedIn && !isStudent?(
+            <button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl" onClick={()=>navigate('/createjobs')}>
               Create Jobs
-            </button>)}
+            </button>):(
+              <button className="bg-primary hover:bg-primary/90 text-white px-8 py-4 rounded-xl" onClick={()=>navigate('/jobs')}>
+              Explore Jobs
+            </button>
+            )}
 
-            {isStudent?(<button className="border px-6 py-3 rounded-lg">
+            {isLoggedIn && isStudent?
+            (<button className="border px-6 py-3 rounded-lg" onClick={()=>navigate(`/profile`)}>
               Upload Resume
-            </button>):(<button className="border px-6 py-3 rounded-lg">
+            </button>):
+            isLoggedIn && !isStudent?
+            (
+            <button className="border px-6 py-3 rounded-lg" onClick={()=>navigate("/recruiter-dashboard")}>
               Check Applicants
-            </button>)}
+            </button>):(
+               <button className="border px-6 py-3 rounded-lg" onClick={()=>navigate("/register")}>
+              Register Company
+            </button>
+            )}
           </div>
 
           <div className="flex gap-10 mt-10">
             <div>
-              <h3 className="text-2xl font-bold">500+</h3>
+              <h3 className="text-2xl font-bold">{companies.length}+</h3>
               <p>Companies</p>
             </div>
 

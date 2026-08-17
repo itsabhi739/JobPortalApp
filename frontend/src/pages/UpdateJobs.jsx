@@ -1,44 +1,74 @@
-import { useContext, useState } from "react";
-import { Briefcase, Plus } from "lucide-react";
+import React, { useContext, useEffect, useState } from "react";
+import { Briefcase, Pencil } from "lucide-react";
+import { useNavigate, useParams } from "react-router-dom";
 import { JobsContext } from "../context/JobsContext";
 import { AuthContext } from "../context/AuthContext";
-import { useNavigate } from "react-router-dom";
-import { toast } from "react-toastify";
-import axios from "axios";
+import { CompanyContext } from "../context/CompanyContext";
 
-const CreateJob = () => {
+const UpdateJobs = () => {
+  const navigate = useNavigate();
+  const { id } = useParams();
+
+  const {jobs,locations,jobTypes,updateJob} = useContext(JobsContext)
+  const {userData} = useContext(AuthContext);
+
   const [formData, setFormData] = useState({
     title: "",
     position: "",
     description: "",
-    requirements: "",
     location: "",
-    salary: "",
     jobType: "",
+    salary: "",
     experience: "",
+    requirements: "",
+    status: "Active",
   });
 
-  const { fetchJobs, jobs, setJobs, keyword, setKeyword, location, setLocation, experiences, jobTypes, locations,createJobs }
-   = useContext(JobsContext);
-  const { backendURL, userData } = useContext(AuthContext);
+  // Find job using URL ID
+  const job = jobs.find((job) => job._id === id);
 
-  const navigate = useNavigate();
+  // Pre-fill form when job is available
+  useEffect(() => {
+    if (job) {
+      setFormData({
+        title: job.title || "",
+        position: job.position || "",
+        description: job.description || "",
+        location: job.location || "",
+        jobType: job.jobType || "",
+        salary: job.salary || "",
+        experience: job.experience || "",
+
+        // Array -> comma separated string for input
+        requirements: Array.isArray(job.requirements)? job.requirements.join(", "): job.requirements || "",
+        status: job.status || "Active",
+      });
+    }
+  }, [job]);
 
   const handleChange = (e) => {
+    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
   const handleSubmit = async (e) => {
-      e.preventDefault();
-      const payload = {
-        ...formData,
-        ...(userData?.company ? { company: userData.company } : {})
-      };
-      await createJobs(payload);
-    }
+    e.preventDefault();
+    await updateJob(formData,id);
+  };
+
+  if (!job) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-xl font-semibold text-gray-600">
+          Loading job details...
+        </p>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-slate-50 min-h-screen pb-16">
 
@@ -48,31 +78,39 @@ const CreateJob = () => {
         <div className="max-w-7xl mx-auto px-10 py-14 flex justify-between items-center">
 
           <div>
-            <p className="text-indigo-200 text-lg">Recruiter Portal</p>
+            <p className="text-indigo-200 text-lg">
+              Recruiter Portal
+            </p>
 
             <h1 className="text-5xl font-bold text-white mt-2">
-              Create New Job
+              Update Job
             </h1>
 
             <p className="text-indigo-100 mt-5 max-w-xl text-lg">
-              Post a new opportunity and hire the best candidates for your
-              company.
+              Update your job details and keep the opportunity
+              information up to date.
             </p>
 
             <div className="flex gap-4 mt-8">
 
-              <button className="bg-yellow-400 hover:bg-yellow-300 text-black px-6 py-3 rounded-xl font-semibold flex items-center gap-2">
-                <Plus size={20} />
-                Create Job
+              <button
+                className="bg-yellow-400 hover:bg-yellow-300 text-black px-6 py-3 rounded-xl font-semibold flex items-center gap-2"
+              >
+                <Pencil size={20} />
+                Update Job
               </button>
 
-              <button className="border border-white text-white px-6 py-3 rounded-xl hover:bg-white hover:text-indigo-700 transition" onClick={()=>navigate("/jobs")}>
+              <button
+                className="border border-white text-white px-6 py-3 rounded-xl hover:bg-white hover:text-indigo-700 transition"
+                onClick={() => navigate("/jobs")}
+              >
                 View Jobs
               </button>
 
             </div>
-
           </div>
+
+          {/* Job Summary */}
 
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-8 w-72">
 
@@ -82,30 +120,31 @@ const CreateJob = () => {
 
             <div className="space-y-4 text-indigo-100">
 
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span>Company</span>
-                <span>Google</span>
+                <span className="text-right">
+                  {job.company?.name || "N/A"}
+                </span>
               </div>
 
-              <div className="flex justify-between">
+              <div className="flex justify-between gap-4">
                 <span>Location</span>
-                <span>Hyderabad</span>
+                <span>{formData.location || "N/A"}</span>
               </div>
 
-              <div className="flex justify-between">
-                <span>Active Jobs</span>
-                <span>8</span>
+              <div className="flex justify-between gap-4">
+                <span>Job Type</span>
+                <span>{formData.jobType || "N/A"}</span>
               </div>
 
-              <div className="flex justify-between">
-                <span>Applications</span>
-                <span>128</span>
+              <div className="flex justify-between gap-4">
+                <span>Status</span>
+                <span>{formData.status}</span>
               </div>
 
             </div>
 
           </div>
-
         </div>
       </section>
 
@@ -127,15 +166,18 @@ const CreateJob = () => {
               </h2>
 
               <p className="text-gray-500">
-                Fill in the information below.
+                Update the information below.
               </p>
             </div>
 
           </div>
 
-          <form className="space-y-10" onSubmit={handleSubmit}>
+          <form
+            className="space-y-10"
+            onSubmit={handleSubmit}
+          >
 
-            {/* Basic */}
+            {/* Basic Information */}
 
             <div>
 
@@ -143,7 +185,7 @@ const CreateJob = () => {
                 Basic Information
               </h3>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <input
                   name="title"
@@ -182,7 +224,7 @@ const CreateJob = () => {
                 Job Details
               </h3>
 
-              <div className="grid grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 <select
                   name="location"
@@ -190,10 +232,17 @@ const CreateJob = () => {
                   onChange={handleChange}
                   className="border rounded-xl p-4"
                 >
-                  <option>Select Location</option>
+                  <option value="">
+                    Select Location
+                  </option>
 
                   {locations.map((location) => (
-                    <option key={location}>{location}</option>
+                    <option
+                      key={location}
+                      value={location}
+                    >
+                      {location}
+                    </option>
                   ))}
 
                 </select>
@@ -204,10 +253,17 @@ const CreateJob = () => {
                   onChange={handleChange}
                   className="border rounded-xl p-4"
                 >
-                  <option>Select Job Type</option>
+                  <option value="">
+                    Select Job Type
+                  </option>
 
                   {jobTypes.map((type) => (
-                    <option key={type}>{type}</option>
+                    <option
+                      key={type}
+                      value={type}
+                    >
+                      {type}
+                    </option>
                   ))}
 
                 </select>
@@ -250,10 +306,34 @@ const CreateJob = () => {
 
             </div>
 
+            {/* Job Status */}
+
+            <div>
+
+              <h3 className="border-l-4 border-indigo-600 pl-3 text-xl font-semibold mb-6">
+                Job Status
+              </h3>
+
+              <select
+                name="status"
+                value={formData.status}
+                onChange={handleChange}
+                className="border rounded-xl p-4 w-full md:w-1/2"
+              >
+                <option value="Active">Active</option>
+                <option value="Paused">Paused</option>
+                <option value="Closed">Closed</option>
+              </select>
+
+            </div>
+
+            {/* Buttons */}
+
             <div className="flex justify-end gap-4 pt-4">
 
               <button
                 type="button"
+                onClick={() => navigate("/jobs")}
                 className="border border-indigo-600 text-indigo-700 px-8 py-3 rounded-xl hover:bg-indigo-50"
               >
                 Cancel
@@ -263,7 +343,7 @@ const CreateJob = () => {
                 type="submit"
                 className="bg-indigo-700 hover:bg-indigo-800 text-white px-10 py-3 rounded-xl font-semibold"
               >
-                Create Job
+                Update Job
               </button>
 
             </div>
@@ -278,4 +358,4 @@ const CreateJob = () => {
   );
 };
 
-export default CreateJob;
+export default UpdateJobs;
