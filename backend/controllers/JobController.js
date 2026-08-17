@@ -61,7 +61,7 @@ export const deleteJob = async (req, res) => {
         if (!user) {
             return res.status(400).json({ success: false, message: "User not found: deleteJob" })
         }
-        if (user.role !== "Recruiter" || user.role !== "Admin") {
+        if (user.role !== "Recruiter" && user.role !== "Admin") {
             return res.status(400).json({ success: false, message: "User dont have req permission to delete the job" })
         }
 
@@ -132,6 +132,59 @@ export const getJobById = async (req, res) => {
         return res.status(200).json({ success: true, job });
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
+    }
+}
+
+export const updateJobs = async(req , res)=>{
+    try{
+        const id = req.params.id;
+        const userId = req.userId;
+        const {title,
+      description,requirements,location,salary,jobType,experience,position,status} = req.body;
+
+        const job = await Job.findById(id);
+        if(!job){
+            return res.status(400).json({success:false , message: "Job Not found"})
+        }
+        //only the recruiter who created the job can delete it
+        if (job.createdBy.toString() !== userId.toString()) {
+        return res.status(403).json({
+        success: false,
+        message: "You are not authorized to update this job",
+        });
+
+      // Convert requirements string to array if needed
+        if (requirements !== undefined) {
+        job.requirements = Array.isArray(requirements)? 
+        requirements: requirements
+            .split(",")
+            .map((item) => item.trim())
+            .filter(Boolean);
+        }
+        }
+     //check the fields and assign
+        if (title !== undefined) job.title = title;
+        if (description !== undefined) job.description = description;
+        if (location !== undefined) job.location = location;
+        if (salary !== undefined) job.salary = salary;
+        if (jobType !== undefined) job.jobType = jobType;
+        if (experience !== undefined) job.experience = experience;
+        if (position !== undefined) job.position = position;
+        if (status !== undefined) job.status = status;
+
+        await job.save();
+
+        return res.status(200).json({
+         success: true,
+         message: "Job updated successfully",
+         job,
+        });
+
+    }catch(e){
+        return res.status(500).json({
+        success: false,
+        message: e.message,
+    });
     }
 }
 

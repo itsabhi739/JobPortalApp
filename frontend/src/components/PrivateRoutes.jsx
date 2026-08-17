@@ -3,14 +3,20 @@ import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 
 
-export const PrivateRoute = ({children})=>{
-    const {isLoggedIn,userData} = useContext(AuthContext)
+export const PrivateRoute = ({ children }) => {
+  const { isLoggedIn, userData, authLoading } = useContext(AuthContext);
 
-    // Logged in but not verified → Redirect to verify
-    if(isLoggedIn && !userData?.isVerified){
-        return <Navigate to="/verify-email" replace/>
-    }
+  if (authLoading) {
+    return <div>Loading...</div>;
+  }
 
-    //loggedin and verfied ==> Allow children
-    return children;
+  if (!isLoggedIn) {
+    return <Navigate to="/login" replace />;
+  }
+
+  if (!userData?.isVerified) {
+    return <Navigate to="/verify-email" replace />;
+  }
+
+  return children;
 };

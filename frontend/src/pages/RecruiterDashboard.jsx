@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import Welcome from '../components/Welcome';
 import StatCards from '../components/StatCards';
@@ -7,6 +7,9 @@ import JobsChart from '../components/JobsChart';
 import TopApplicants from '../components/TopApplicants';
 import RecentJobs from '../components/RecentJobs';
 import Notifications from '../components/Notifications';
+import { AuthContext } from '../context/AuthContext';
+import { CompanyContext } from '../context/CompanyContext';
+import { JobsContext } from '../context/JobsContext';
 
 const RecruiterDashboard = () => {
   const {
@@ -19,18 +22,28 @@ const RecruiterDashboard = () => {
     inputClass,
   } = useContext(AuthContext);
   const { companies } = useContext(CompanyContext);
-  const {jobs} = useContext(JobsContext)
-  const userCompany = companies.find(
-    (company) => company.name === userData.companyName,
-  );
+  const {jobs,fetchJobs,updateJob,deleteJob,viewJob} = useContext(JobsContext)
+  const [userJobs,setUserJobs] = useState([]);
+  const [userCompany,setUserCompany] = useState(null);
 
-  console.log(jobs);
-  console.log(userData)
-  const userJobs = jobs.filter(
-  (job) => job.createdBy === userData.userId
-  );
+  const getJobsAndCompany = ()=>{
+    const company = companies.find(
+      (company) => company.name === userData?.companyName,
+    );
+    const jobsCreated = jobs.filter(
+      (job) => job.createdBy === userData?.userId
+    );
+    setUserJobs(jobsCreated);
+    setUserCompany(company);
+  }
 
-  console.log("Job created by user:",userJobs)
+  useEffect(()=>{
+    if(userData){
+      fetchJobs();
+      getJobsAndCompany();
+    }
+  },[userData,companies])
+
   return (
     <div className="flex min-h-screen bg-slate-50">
       <Sidebar user={userData} companyLocation={userCompany?.location} />
@@ -46,7 +59,7 @@ const RecruiterDashboard = () => {
           </div>
 
           <div className="grid gap-4 xl:grid-cols-[1.45fr_0.85fr]">
-            <RecentJobs user={userData} userJobs={userJobs}/>
+            <RecentJobs user={userData} userJobs={userJobs} updateJob={updateJob} deleteJob={deleteJob}/>
             <Notifications />
           </div>
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import {
   LayoutDashboard,
   BriefcaseBusiness,
@@ -10,8 +10,12 @@ import {
   LogOut,
   Star,
 } from "lucide-react";
+import { useNavigate } from "react-router-dom";
+import { AuthContext } from "../context/AuthContext";
 
-const Sidebar = ({user,companyLocation}) => {
+const Sidebar = ({user,companyLocation,viewid}) => {
+  const navigate = useNavigate();
+  const {logout} = useContext(AuthContext);
   return (
     <div className="w-72 min-h-screen bg-white border-r shadow-sm flex flex-col">
 
@@ -39,12 +43,14 @@ const Sidebar = ({user,companyLocation}) => {
           Dashboard
         </button>
 
-        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
+        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4"
+        onClick={()=>navigate("/jobs")}>
           <BriefcaseBusiness size={20} />
           Jobs
         </button>
 
-        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
+        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4"
+        onClick={()=>navigate('/createjobs')}>
           <PlusCircle size={20} />
           Create Job
         </button>
@@ -56,6 +62,7 @@ const Sidebar = ({user,companyLocation}) => {
 
         <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
           <Building2 size={20} />
+          {/* <Building2 size={20} onClick={()=>navigate(`/view-job/:${viewid}`)}/> */}
           Company Profile
         </button>
 
@@ -68,17 +75,12 @@ const Sidebar = ({user,companyLocation}) => {
           <Star size={20} />
           Shortlisted
         </button>
-
-        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
-          <Settings size={20} />
-          Settings
-        </button>
       </div>
 
       {/* CTA */}
 
       <div className="p-5">
-        <button className="w-full bg-[#2F368C] hover:bg-[#434ec1] text-white rounded-xl py-4 font-semibold">
+        <button className="w-full bg-[#2F368C] hover:bg-[#434ec1] text-white rounded-xl py-4 font-semibold" onClick={()=>navigate("/createjobs")}>
           + Create New Job
         </button>
       </div>
@@ -86,7 +88,7 @@ const Sidebar = ({user,companyLocation}) => {
       {/* Logout */}
 
       <div className="border-t p-5">
-        <button className="w-full flex items-center justify-center gap-3 text-red-500 hover:bg-red-50 rounded-xl py-3">
+        <button className="w-full flex items-center justify-center gap-3 text-red-500 hover:bg-red-50 rounded-xl py-3" onClick={logout}>
           <LogOut size={18} />
           Logout
         </button>

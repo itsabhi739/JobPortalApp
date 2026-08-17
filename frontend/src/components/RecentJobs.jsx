@@ -1,5 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import Popup from "./Popup";
 
 const jobs = [
   {
@@ -38,7 +39,9 @@ const statusColor = {
   Paused: "bg-yellow-100 text-yellow-700",
 };
 
-const RecentJobs = ({ userData, userJobs }) => {
+const RecentJobs = ({ userData, userJobs,updateJob,deleteJob }) => {
+  const [showPopup, setShowPopup] = useState(false);
+  const [selectedJobId, setSelectedJobId] = useState(null);
 
   const convertDate = (updatedAt) => {
     const date = new Date(updatedAt).toLocaleDateString("en-IN", {
@@ -49,7 +52,19 @@ const RecentJobs = ({ userData, userJobs }) => {
     return date;
   };
 
+  const handleDeleteClick = (jobId) => {
+  setSelectedJobId(jobId);
+  setShowPopup(true);
+};
+  const handleConfirmDelete = async () => {
+    await deleteJob(selectedJobId);
+    setShowPopup(false);
+    setSelectedJobId(null);
+  };
+
   return (
+    <>
+    
     <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-4 lg:p-5">
       <div className="flex justify-between items-center mb-4">
         <div>
@@ -84,8 +99,7 @@ const RecentJobs = ({ userData, userJobs }) => {
 
           <tbody>
             {userJobs.map((job) => (
-              <tr key={job.id} className="border-b hover:bg-gray-50" key={job._id}
-              >
+              <tr  className="border-b hover:bg-gray-50" key={job._id}>
                 <td className="py-3 font-medium text-sm">
                   {job.title}
                 </td>
@@ -106,9 +120,9 @@ const RecentJobs = ({ userData, userJobs }) => {
 
                     <FaEye className="cursor-pointer hover:text-black" />
 
-                    <FaEdit className="cursor-pointer hover:text-green-600" />
+                    <FaEdit className="cursor-pointer hover:text-green-600" onClick={()=>updateJob(job._id)} />
 
-                    <FaTrash className="cursor-pointer hover:text-red-500" />
+                    <FaTrash className="cursor-pointer hover:text-red-500" onClick={()=>handleDeleteClick(job._id)}/>
 
                   </div>
 
@@ -125,6 +139,15 @@ const RecentJobs = ({ userData, userJobs }) => {
       </div>
 
     </div>
+    {showPopup && (
+        <Popup
+          title="Delete Job?"
+          message="Are you sure you want to delete this job? This action cannot be undone."
+          onCancel={()=>setShowPopup(false)}
+          onConfirm={()=>handleConfirmDelete()}
+        />
+      )}
+    </>
   );
 };
 

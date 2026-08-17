@@ -28,9 +28,13 @@ const FeaturedCompanies = () => {
           {topCompanies.map((company) => (
             <div
               key={company._id}
-              className="border rounded-xl p-6 text-center hover:shadow-lg transition"
-            >
+              className="border rounded-xl p-6 text-center hover:shadow-lg transition flex items-center justify-evenly"
+            ><div className="h-10 w-10 object-fit">
+              <img src={company.logo} alt="" srcset="" />
+            </div>
+            <div className="text-black">
               {company.name}
+            </div>
             </div>
           ))}
 

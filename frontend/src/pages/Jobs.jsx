@@ -6,14 +6,17 @@ import { FaPlus } from "react-icons/fa";
 import { MdWorkHistory } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext.jsx";
+import { useSearchParams } from "react-router-dom";
 
 const Jobs = () => {
   //calling hooks
   const [selectedJobType, setSelectedJobType] = useState("All");
   const [selectedExperience, setSelectedExperience] = useState("All");
   const [selectedLocation, setSelectedLocation] = useState("");
+  const [showMyJobs, setShowMyJobs] = useState(false);
 
   const navigate = useNavigate();
+  
   const {
     fetchJobs,
     jobs,
@@ -24,8 +27,8 @@ const Jobs = () => {
     setLocation,
   } = useContext(JobsContext);
 
-  const { getUserData, userData } = useContext(AuthContext);
-
+  const { getUserData, userData,isStudent } = useContext(AuthContext);
+  const [searchParams] = useSearchParams();
   useEffect(() => {
     const timer = setTimeout(()=>{
       fetchJobs();
@@ -35,7 +38,7 @@ const Jobs = () => {
   },[keyword,location]);
 
   //custom data
-  const isStudent = userData?.role === "Student";
+  const companyId = searchParams.get("company");
   const jobTypes = ["All", ...new Set(jobs.map((job) => job.jobType))];
 
   const filteredJobs = jobs.filter((job) => {
@@ -62,7 +65,10 @@ const Jobs = () => {
         Number(job.experience) >= 3;
     }
 
-    return jobTypeMatch && locationMatch && experienceMatch;
+    const companyMatch =!companyId ||(job.company?._id || job.company)?.toString() === companyId;
+    const ownerMatch =!showMyJobs || job?.createdBy?.toString() === userData?.userId?.toString();
+
+    return jobTypeMatch && locationMatch && experienceMatch && ownerMatch && companyMatch;
   });
 
 
@@ -71,7 +77,7 @@ const Jobs = () => {
     <div className="bg-[#F8FAFC] min-h-screen">
 
       {/* Hero */}
-      <section className="bg-[#2F368C] text-white py-16">
+      <section className="relative bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
         <div className="max-w-7xl mx-auto px-6">
 
           <h1 className="text-5xl font-bold">
@@ -171,11 +177,11 @@ const Jobs = () => {
             <div className="flex justify-between items-center mb-6">
 
               <h2 className="text-2xl font-bold">
-                Available Jobs
+                 {companyId? `${filteredJobs[0]?.company?.name || "Company"} Jobs`: "Available Jobs"}
                 </h2>
 
               <div className="text-gray-500 flex-col gap-2">
-                250 Jobs Found
+                {filteredJobs.length} Jobs Found
                 {!isStudent && (
                   <div className="job-buttons flex items-center justify-center">
                     <button
@@ -186,9 +192,9 @@ const Jobs = () => {
                     </button>
                     <button
                       className="bg-[#2F368C] hover:bg-[#434ec1] rounded-2xl m-2 py-4 px-4 gap-2 flex items-center  text-white"
-                      onClick={() => navigate("/")}
+                      onClick={() => setShowMyJobs(!showMyJobs)}
                     >
-                      My Jobs
+                       {showMyJobs ? "All Jobs" : "My Jobs"}
                       <MdWorkHistory
                         className="text-shadow-white"
                         size={"22px"}
@@ -200,7 +206,9 @@ const Jobs = () => {
             </div>
 
             <div className="space-y-6">
-              {filteredJobs.map((job) => (
+              {filteredJobs.map((job) => {
+                const isOwner =userData?.userId.toString() === (job?.createdBy?.toString())
+                return(
                 <div
                   key={job._id}
                   className="bg-white rounded-2xl shadow p-6 hover:shadow-xl transition"
@@ -240,10 +248,15 @@ const Jobs = () => {
                     </div>
 
                     <div className="mt-6 md:mt-0 flex flex-col gap-3">
-
+                      {isStudent?(
                       <button className="bg-[#2F368C] text-white px-8 py-3 rounded-xl">
                         Apply Now
                       </button>
+                      ):(isOwner?(
+                         <button className="bg-[#2F368C] text-white px-8 py-3 rounded-xl" onClick={()=>navigate(`/update-job/${job._id}`)}>
+                        Edit
+                      </button>
+                      ):(``))}
 
                       <button className="border border-[#2F368C] text-[#2F368C] px-8 py-3 rounded-xl">
                         View Details
@@ -253,7 +266,8 @@ const Jobs = () => {
 
                   </div>
                 </div>
-              ))}
+              );
+              })}
 
             </div>
 

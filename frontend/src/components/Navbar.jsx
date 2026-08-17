@@ -6,20 +6,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 const Navbar = () => {
   const navigate = useNavigate();
-  const { userData, backendURL, isLoggedIn, setUserData, setIsLoggedIn } =
+  const { userData, backendURL, isLoggedIn, setUserData, setIsLoggedIn,logout } =
     useContext(AuthContext);
-
-    const logout = async(req,res)=>{
-      try{
-        axios.defaults.withCredentials = true;
-        const {data} = await axios.post(`${backendURL}/api/auth/logout`);
-        data.success && setIsLoggedIn(false);
-        data.success && setUserData(false);
-        navigate('/login')
-      }catch(e){
-        toast.error(e.message)
-      }
-    }
 
     const sendVerificationOTP = async (req,res)=>{
       try{
@@ -56,7 +44,7 @@ const Navbar = () => {
     <div className="flex justify-between items-center h-20 px-6 sm:px-10 border-b bg-white">
       <img
         src="https://cdn.dribbble.com/userupload/42179759/file/original-8939a7332eb5bdc39b71ea43d0b14965.jpg?resize=800x600&vertical=center"
-        alt=""
+        alt="Logo"
         className="w-28 sm:w-32 h-19.5"
       />
 
@@ -64,7 +52,9 @@ const Navbar = () => {
         <div className="home" onClick={()=>navigate('/')}>Home</div>
         <div className="jobs" onClick={()=>navigate('/jobs')}>Jobs</div>
         <div className="companies" onClick={()=>navigate('/companies')}>Companies</div>
+        {isLoggedIn?(
         <div className="dashboard" onClick={handleDashboard}>Dashboard</div>
+        ):null}
         <div className="contactus" onClick={()=>navigate('/contact-us')}>Contact Us</div>
       </div>
 
