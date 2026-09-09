@@ -39,6 +39,10 @@ const jobSchema = mongoose.Schema({
         type:String,
         required:true
     },
+    applyLink:{
+        type:String,
+        default:""
+    },
     status:{
         type:String,
         enum: ["Pending", "Active", "Paused", "Closed"],

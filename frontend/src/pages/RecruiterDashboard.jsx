@@ -6,7 +6,7 @@ import ApplicationsChart from '../components/ApplicationsChart';
 import JobsChart from '../components/JobsChart';
 import TopApplicants from '../components/TopApplicants';
 import RecentJobs from '../components/RecentJobs';
-import Notifications from '../components/Notifications';
+import Notifications from '../components/AppliedJobs';
 import { AuthContext } from '../context/AuthContext';
 import { CompanyContext } from '../context/CompanyContext';
 import { JobsContext } from '../context/JobsContext';

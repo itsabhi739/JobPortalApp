@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { FaPlus } from "react-icons/fa";
 import { MdWorkHistory } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useSearchParams } from "react-router-dom";
 
@@ -19,8 +20,10 @@ const Jobs = () => {
   
   const {
     fetchJobs,
+    fetchMyApplications,
+    applyToJob,
     jobs,
-    setJobs,
+    myApplications,
     keyword,
     setKeyword,
     location,
@@ -28,20 +31,25 @@ const Jobs = () => {
   } = useContext(JobsContext);
 
   const { getUserData, userData,isStudent,isLoggedIn } = useContext(AuthContext);
-  const [searchParams] = useSearchParams();
-  useEffect(() => {
+  const [searchParams] = useSearchParams();useEffect(() => {
     const timer = setTimeout(()=>{
       fetchJobs();
+      if(isLoggedIn && isStudent) {
+        fetchMyApplications();
+      }
       if(isLoggedIn){
         getUserData();
       }
     },500)
     return ()=> clearTimeout(timer);
-  },[keyword,location,isLoggedIn]);
+  },[keyword,location,isLoggedIn,isStudent]);
 
   //custom data
   const companyId = searchParams.get("company");
   const jobTypes = ["All", ...new Set(jobs.map((job) => job.jobType))];
+  const appliedJobIds = new Set(
+    myApplications.map((application) => (application.job?._id || application.job)?.toString())
+  );
 
   const filteredJobs = jobs.filter((job) => {
     // Job Type Filter
@@ -72,7 +80,33 @@ const Jobs = () => {
 
     return jobTypeMatch && locationMatch && experienceMatch && ownerMatch && companyMatch;
   });
+  const handleApply = async (job) => {
+    if (!userData) {
+      navigate("/login");
+      return;
+    }
 
+    const applied = appliedJobIds.has(job._id?.toString());
+    if (applied) {
+      return;
+    }
+
+    if (job.applyLink) {
+      const applyMessage = `Application started for ${job.title}. Please come back to continue.`;
+      sessionStorage.setItem("jobPortalApplyToast", JSON.stringify({
+        title: job.title,
+        message: applyMessage,
+      }));
+      window.open(job.applyLink, "_blank", "noopener,noreferrer");
+    }
+
+    const result = await applyToJob(job._id);
+    if (result.success) {
+      toast.success(result.alreadyApplied ? "Already applied to this role." : "Application submitted successfully.");
+    } else {
+      toast.error(result.message || "Unable to apply to this job.");
+    }
+  };
 
   return (
     // <div className="mt-32">
@@ -220,7 +254,7 @@ const Jobs = () => {
                     <div>
 
                       <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                        {job.type}
+                        {job.jobType}
                       </span>
 
                       <h3 className="text-2xl font-bold mt-3">{job.title}</h3>
@@ -251,14 +285,18 @@ const Jobs = () => {
 
                     <div className="mt-6 md:mt-0 flex flex-col gap-3">
                       {isStudent?(
-                      <button className="bg-[#2F368C] text-white px-8 py-3 rounded-xl">
-                        Apply Now
-                      </button>
-                      ):(isOwner?(
-                         <button className="bg-[#2F368C] text-white px-8 py-3 rounded-xl" onClick={()=>navigate(`/update-job/${job._id}`)}>
+                        <button
+                          className={`px-8 py-3 rounded-xl ${appliedJobIds.has(job._id?.toString()) ? "bg-green-600 text-white cursor-default" : "bg-[#2F368C] text-white"}`}
+                          onClick={() => !appliedJobIds.has(job._id?.toString()) && handleApply(job)}
+                          disabled={appliedJobIds.has(job._id?.toString())}
+                        >
+                          {appliedJobIds.has(job._id?.toString()) ? "Applied" : "Apply Now"}
+                        </button>
+                      ):isOwner?(
+                        <button className="bg-[#2F368C] text-white px-8 py-3 rounded-xl" onClick={()=>navigate(`/update-job/${job._id}`)}>
                         Edit
                       </button>
-                      ):(``))}
+                      ):null}
 
                       <button className="border border-[#2F368C] text-[#2F368C] px-8 py-3 rounded-xl">
                         View Details

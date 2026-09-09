@@ -1,10 +1,11 @@
 import { Company } from "../models/Companies.js";
 import { Job } from "../models/Jobs.js";
 import User from "../models/Users.js";
+import { Application } from "../models/Applications.js";
 
 export const createJob = async (req, res) => {
     try {
-        const { title, description, requirements, location, salary, jobType,experience, company, position} = req.body;
+        const { title, description, requirements, location, salary, jobType,experience, company, position,applyLink} = req.body;
         const userId = req.userId;
         const user = await User.findById(userId);
 
@@ -20,6 +21,7 @@ export const createJob = async (req, res) => {
         if (!title || !description || !requirements?.length || !location || !salary || !jobType || !experience || !companyId || !position) {
             return res.status(400).json({ success: false, message: "Job Details are missing" })
         }
+        const normalizedLink = applyLink && typeof applyLink === "string" ? applyLink.trim() : "";
         const companyExists = await Company.findById(companyId);
 
         if (!companyExists) {
@@ -41,7 +43,7 @@ export const createJob = async (req, res) => {
             experience,
             company: companyId,
             position,
-            // status,
+            applyLink: normalizedLink,
             createdBy: userId
         })
 
@@ -140,29 +142,27 @@ export const updateJobs = async(req , res)=>{
         const id = req.params.id;
         const userId = req.userId;
         const {title,
-      description,requirements,location,salary,jobType,experience,position,status} = req.body;
+      description,requirements,location,salary,jobType,experience,position,status,applyLink} = req.body;
 
         const job = await Job.findById(id);
         if(!job){
             return res.status(400).json({success:false , message: "Job Not found"})
         }
-        //only the recruiter who created the job can delete it
         if (job.createdBy.toString() !== userId.toString()) {
-        return res.status(403).json({
-        success: false,
-        message: "You are not authorized to update this job",
-        });
+            return res.status(403).json({
+                success: false,
+                message: "You are not authorized to update this job",
+            });
+        }
 
-      // Convert requirements string to array if needed
         if (requirements !== undefined) {
-        job.requirements = Array.isArray(requirements)? 
-        requirements: requirements
-            .split(",")
-            .map((item) => item.trim())
-            .filter(Boolean);
+            job.requirements = Array.isArray(requirements)?
+            requirements: requirements
+                    .split(",")
+                    .map((item) => item.trim())
+                    .filter(Boolean);
         }
-        }
-     //check the fields and assign
+
         if (title !== undefined) job.title = title;
         if (description !== undefined) job.description = description;
         if (location !== undefined) job.location = location;
@@ -171,6 +171,7 @@ export const updateJobs = async(req , res)=>{
         if (experience !== undefined) job.experience = experience;
         if (position !== undefined) job.position = position;
         if (status !== undefined) job.status = status;
+        if (applyLink !== undefined) job.applyLink = applyLink.trim();
 
         await job.save();
 
@@ -187,4 +188,71 @@ export const updateJobs = async(req , res)=>{
     });
     }
 }
+
+export const applyToJob = async (req, res) => {
+    try {
+        const { jobId } = req.body;
+        const userId = req.userId;
+
+        if (!jobId) {
+            return res.status(400).json({ success: false, message: "Job id is required" });
+        }
+
+        const job = await Job.findById(jobId);
+        if (!job) {
+            return res.status(404).json({ success: false, message: "Job not found" });
+        }
+
+        const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
+        if (existingApplication) {
+            return res.status(200).json({
+                success: true,
+                alreadyApplied: true,
+                message: "You have already applied to this job.",
+                application: existingApplication
+            });
+        }
+
+        const application = new Application({
+            job: jobId,
+            applicant: userId,
+            status: "pending"
+        });
+
+        await application.save();
+        job.application.push(application._id);
+        await job.save();
+
+        return res.status(201).json({
+            success: true,
+            alreadyApplied: false,
+            message: "Application submitted successfully.",
+            application
+        });
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+};
+
+export const getMyApplications = async (req, res) => {
+    try {
+        const userId = req.userId;
+        const applications = await Application.find({ applicant: userId })
+            .populate({
+                path: "job",
+                populate: {
+                    path: "company",
+                    select: "name logo"
+                }
+            })
+            .sort({ createdAt: -1 });
+
+        return res.status(200).json({
+            success: true,
+            applications
+        });
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+};
 
