@@ -25,23 +25,38 @@ const RecruiterDashboard = () => {
   const {jobs,fetchJobs,updateJob,deleteJob,viewJob} = useContext(JobsContext)
   const [userJobs,setUserJobs] = useState([]);
   const [userCompany,setUserCompany] = useState(null);
+  const [jobsLoading, setJobsLoading] = useState(true);
 
-  const getJobsAndCompany = ()=>{
+  const getJobsAndCompany = (fetchedJobs = jobs)=>{
     const company = companies.find(
       (company) => company.name === userData?.companyName,
     );
-    const jobsCreated = jobs.filter(
-      (job) => job.createdBy === userData?.userId
-    );
+    const jobsCreated = fetchedJobs.filter((job) => {
+      const createdBy = job.createdBy?._id || job.createdBy;
+      return String(createdBy) === String(userData?.userId);
+    });
     setUserJobs(jobsCreated);
     setUserCompany(company);
   }
 
   useEffect(()=>{
-    if(userData){
-      fetchJobs();
-      getJobsAndCompany();
-    }
+    if(!userData) return;
+
+    let isCurrent = true;
+    setJobsLoading(true);
+
+    const loadRecruiterJobs = async () => {
+      const fetchedJobs = await fetchJobs();
+      if (!isCurrent) return;
+      getJobsAndCompany(fetchedJobs);
+      setJobsLoading(false);
+    };
+
+    loadRecruiterJobs();
+
+    return () => {
+      isCurrent = false;
+    };
   },[userData,companies])
 
   return (
@@ -59,7 +74,7 @@ const RecruiterDashboard = () => {
           </div>
 
           <div className="grid gap-4 xl:grid-cols-[1.45fr_0.85fr]">
-            <RecentJobs user={userData} userJobs={userJobs} updateJob={updateJob} deleteJob={deleteJob}/>
+            <RecentJobs user={userData} userJobs={userJobs} loading={jobsLoading} updateJob={updateJob} deleteJob={deleteJob}/>
             <Notifications />
           </div>
         </div>

@@ -131,7 +131,7 @@ const Jobs = () => {
               type="text"
               placeholder="Job title, keyword..."
               onChange={(e) => setKeyword(e.target.value)}
-              className="flex-1 outline-none text-black px-4"
+              className="flex-1 border border-gray-200 rounded-xl outline-none text-black px-4 py-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
 
             <input
@@ -139,7 +139,7 @@ const Jobs = () => {
               placeholder="Location"
               name="location"
               onChange={(e)=>setLocation(e.target.value)}
-              className="flex-1 outline-none text-black px-4"
+              className="flex-1 border border-gray-200 rounded-xl outline-none text-black px-4 py-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
             />
 
             <button className="bg-[#F4BC19] text-black px-8 py-3 rounded-xl font-semibold flex items-center gap-2 justify-center">

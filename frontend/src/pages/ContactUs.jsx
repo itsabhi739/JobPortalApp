@@ -38,18 +38,18 @@ const ContactUs = () => {
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
 
-       <section className="relative bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
+      <section className="relative min-h-[344px] bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
           <div className="max-w-7xl mx-auto px-6">
-            <h1 className="text-5xl font-bold">Explore Top Companies</h1>
+            <h1 className="text-5xl font-bold">Get in Touch With Us</h1>
 
             <p className="mt-4 text-lg text-gray-200">
-              Discover companies actively hiring students and freshers.
+              Have a question or need help? Our team is here to support you.
             </p>
             </div>
 
         </section>
 
-      <section className="max-w-7xl mx-auto px-6 py-12">
+      <section className="relative z-10 max-w-7xl mx-auto -mt-[5cm] px-6 py-12">
 
         <div className="grid lg:grid-cols-3 gap-8">
 

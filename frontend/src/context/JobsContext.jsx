@@ -26,10 +26,14 @@ const JobsProvider = ({children})=>{
         `${backendURL}/api/job/jobs/all?keyword=${keyword}&&location=${location}`,
       );
       if (response.data.success) {
-        setJobs(response.data.jobs);
+        const fetchedJobs = response.data.jobs || [];
+        setJobs(fetchedJobs);
+        return fetchedJobs;
       }
+      return [];
     } catch (error) {
       console.log(error.message);
+      return [];
     }
   };
 

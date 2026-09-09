@@ -12,15 +12,21 @@ const Companies = () => {
   
   const { backendURL } = useContext(AuthContext);
   const {fetchCompanies,companies,setCompanies,search,setSearch} = useContext(CompanyContext);
-  const {jobs} = useContext(JobsContext)
+  const {fetchJobs, jobs} = useContext(JobsContext)
   const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setTimeout(()=>{
       fetchCompanies();
+      fetchJobs();
     },500)
     return ()=> clearTimeout(timer);
   },[search]);
+
+  const getCompanyJobCount = (companyId) => jobs.filter((job) => {
+    const jobCompanyId = job.company?._id || job.company;
+    return String(jobCompanyId) === String(companyId);
+  }).length;
 
 
 
@@ -34,7 +40,7 @@ const Companies = () => {
   return (
       <div className="bg-[#F8FAFC] min-h-screen">
         {/* Hero Section */}
-        <section className="relative bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
+        <section className="companies-hero relative bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
           <div className="max-w-7xl mx-auto px-6">
             <h1 className="text-5xl font-bold">Explore Top Companies</h1>
 
@@ -47,7 +53,7 @@ const Companies = () => {
                 type="text"
                 name='search'
                 placeholder="Search company..."
-                className="flex-1 outline-none text-black px-4"
+                className="flex-1 border border-gray-200 rounded-xl outline-none text-black px-4 py-4 focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
                 value={search}
                 onChange={handleChange}
               />
@@ -131,7 +137,7 @@ const Companies = () => {
                   </p>
 
                   {/* Info */}
-                  <div className="mt-4 space-y-2 text-sm">
+                  <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm">
                     <div className="flex items-center gap-2">
                       <Globe size={15} className="text-blue-500" />
                       <span className="truncate">{company.website}</span>
@@ -140,6 +146,11 @@ const Companies = () => {
                     <div className="flex items-center gap-2">
                       <Users size={15} className="text-green-500" />
                       <span>{company.userCount??company.userId?.length??0} Users</span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <Briefcase size={15} className="text-blue-500" />
+                      <span>{getCompanyJobCount(company._id)} Jobs</span>
                     </div>
                   </div>
 
