@@ -66,7 +66,16 @@ const getAllCompanies = async (req, res) => {
         if (!companies) {
             return res.status(400).json({ success: false, message: "Unable to fetch companies" });
         }
-        return res.status(200).json({success:true, message: "fetched all companies successfully", companies })
+        const companiesWithCounts = await Promise.all(
+            companies.map(async (company) => {
+                const userCount = await User.countDocuments({ "profile.company": company._id });
+                return {
+                    ...company.toObject(),
+                    userCount
+                };
+            })
+        );
+        return res.status(200).json({success:true, message: "fetched all companies successfully", companies : companiesWithCounts})
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message })
     }

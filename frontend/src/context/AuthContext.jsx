@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { createContext } from "react";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import axios from "axios";
 
@@ -10,28 +11,36 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const backendURL = import.meta.env.VITE_BACKEND_URL;
+  const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
   const [authLoading, setAuthLoading] = useState(true);
   const [isStudent,setIsStudent] = useState(false);
 
   const inputClass =
-  "w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-black transition-all placeholder:text-gray-400";
+    "w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-black transition-all placeholder:text-gray-400";
 
   const getUserData = async () => {
     try {
       const response = await axios.get(`${backendURL}/api/user/data`);
       if(response.data.success) {
+        const user=response.data.userData;
         setUserData(response.data.userData);
-        if(userData.role === "Student"){
-          setIsStudent(true);
-        }
+        setIsStudent(response.data.userData?.role === "Student");
         return response.data.userData;
-      } else {
-        toast.error(response.data.message);
+      }
+      setUserData(null);
+      setIsLoggedIn(false);
+      setIsStudent(false);
+      return null;
+    } catch (e) {
+      const message = e.response?.data?.message || e.message;
+      if (!message || /not authorized|not authenticated|login again|failed to authorized/i.test(message)) {
+        setUserData(null);
+        setIsLoggedIn(false);
+        setIsStudent(false);
         return null;
       }
-    } catch (e) {
       toast.error(e.response?.data?.message || e.message);
       return null;
     }
@@ -39,34 +48,40 @@ export const AuthProvider = ({ children }) => {
 
   const getAuthState = async () => {
     try {
-      const response = await axios.get(`${backendURL}/api/user/is-auth`); 
+      await axios.get(`${backendURL}/api/user/is-auth`);
       setIsLoggedIn(true);
       await getUserData();
     } catch (e) {
-      console.log(e.message)
       setIsLoggedIn(false);
-      // Only show error toast if it's not the initial auth check
-      // (avoid spamming toast on page load when user isn't logged in)
-    }finally{
-       setAuthLoading(false);
+      setUserData(null);
+      setIsStudent(false);
+    } finally {
+      setAuthLoading(false);
     }
   };
 
-    useEffect(() => {
-      getAuthState();
-    } , []);
+  useEffect(() => {
+    getAuthState();
+  } , []);
 
-    const logout = async(req,res)=>{
-      try{
-        axios.defaults.withCredentials = true;
-        const {data} = await axios.post(`${backendURL}/api/auth/logout`);
-        data.success && setIsLoggedIn(false);
-        data.success && setUserData(false);
-        navigate('/login')
-      }catch(e){
-        toast.error(e.message)
+  const logout = async()=>{
+    try{
+      axios.defaults.withCredentials = true;
+      const {data} = await axios.post(`${backendURL}/api/auth/logout`);
+      if (data.success) {
+        setIsLoggedIn(false);
+        setUserData(null);
+        setIsStudent(false);
+        navigate("/login",{replace:true});
       }
+    }catch(e){
+      setIsLoggedIn(false);
+      setUserData(null);
+      setIsStudent(false);
+      toast.error(e.response?.data?.message ||e.message|| "Logout failed");
+      navigate("/login", { replace: true });
     }
+  }
 
   const value = {
     backendURL,

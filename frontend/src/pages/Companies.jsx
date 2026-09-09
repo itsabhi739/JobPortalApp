@@ -139,7 +139,7 @@ const Companies = () => {
 
                     <div className="flex items-center gap-2">
                       <Users size={15} className="text-green-500" />
-                      <span>{company.userId?.length || 0} Users</span>
+                      <span>{company.userCount??company.userId?.length??0} Users</span>
                     </div>
                   </div>
 

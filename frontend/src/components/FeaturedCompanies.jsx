@@ -6,14 +6,14 @@ import { CompanyContext } from "../context/CompanyContext";
 const FeaturedCompanies = () => {
 
   const {backendURL,inputClass} = useContext(AuthContext);
-  const {fetchCompanies,companies,setCompanies} = useContext(CompanyContext);
+  const {fetchCompanies,allCompanies} = useContext(CompanyContext);
 
   useEffect(()=>{
-    fetchCompanies()
+    fetchCompanies('');
   },[])
 
   //top 6 companies
-  const topCompanies = companies.slice(0,6);
+  const topCompanies = allCompanies.slice(0,6);
 
   return (
     <section className="py-20">

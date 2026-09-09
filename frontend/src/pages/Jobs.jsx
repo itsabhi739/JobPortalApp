@@ -27,15 +27,17 @@ const Jobs = () => {
     setLocation,
   } = useContext(JobsContext);
 
-  const { getUserData, userData,isStudent } = useContext(AuthContext);
+  const { getUserData, userData,isStudent,isLoggedIn } = useContext(AuthContext);
   const [searchParams] = useSearchParams();
   useEffect(() => {
     const timer = setTimeout(()=>{
       fetchJobs();
-      getUserData();
+      if(isLoggedIn){
+        getUserData();
+      }
     },500)
     return ()=> clearTimeout(timer);
-  },[keyword,location]);
+  },[keyword,location,isLoggedIn]);
 
   //custom data
   const companyId = searchParams.get("company");

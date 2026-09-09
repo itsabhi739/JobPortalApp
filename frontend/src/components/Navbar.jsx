@@ -23,6 +23,7 @@ const Navbar = () => {
       if(!userData){
         navigate('/login')
         toast.error("Dashboard is restricted: Login to continue")
+        return;
       }
       if(userData.role === 'Admin'){
         navigate('/admin-dashboard');
