@@ -14,8 +14,9 @@ const JobsProvider = ({children})=>{
     const [keyword,setKeyword] = useState('')
     const [location,setLocation] = useState('');
     const [jobs, setJobs] = useState([]);
+    const [myApplications, setMyApplications] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
-    const {backendURL} = useContext(AuthContext);
+    const {backendURL, userData} = useContext(AuthContext);
 
     const navigate = useNavigate();
     
@@ -29,6 +30,31 @@ const JobsProvider = ({children})=>{
       }
     } catch (error) {
       console.log(error.message);
+    }
+  };
+
+  const fetchMyApplications = async () => {
+    try {
+      const response = await axios.get(`${backendURL}/api/job/my-applications`);
+      if (response.data.success) {
+        setMyApplications(response.data.applications || []);
+      }
+    } catch (error) {
+      console.log(error.message);
+      setMyApplications([]);
+    }
+  };
+
+  const applyToJob = async (jobId) => {
+    try {
+      const response = await axios.post(`${backendURL}/api/job/apply`, { jobId });
+      if (response.data.success) {
+        await fetchMyApplications();
+        return response.data;
+      }
+      return response.data;
+    } catch (error) {
+      return { success: false, message: error.response?.data?.message || error.message };
     }
   };
 
@@ -97,7 +123,10 @@ const JobsProvider = ({children})=>{
 
   const value = {
     fetchJobs,
+    fetchMyApplications,
+    applyToJob,
     jobs,
+    myApplications,
     setJobs,
     keyword,setKeyword,
     location,setLocation,

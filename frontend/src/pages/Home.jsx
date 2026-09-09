@@ -8,10 +8,13 @@ import FeaturedJobs from '../components/FeaturedJobs';
 import Footer from '../components/Footer';
 
 const Home = () => {
-  const {backendURL,inputClass,getUserData,userData} = useContext(AuthContext)
+  const { getUserData, userData, isLoggedIn } = useContext(AuthContext)
+
   useEffect(()=>{
-    getUserData()
-  },[])
+    if(isLoggedIn){
+      getUserData()
+    }
+  },[isLoggedIn])
 
   return (<>
   <div className='pt-24'>

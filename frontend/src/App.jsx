@@ -1,9 +1,10 @@
 import './App.css'
+import { useEffect } from 'react';
 import { Routes, Route, useLocation } from 'react-router-dom'
 import Home from './pages/Home.jsx'
 import Navbar from './components/Navbar.jsx'
 import Auth from './pages/Auth.jsx'
-import { ToastContainer} from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import VerifyEmail from './pages/VerifyEmail.jsx'
 import ResetPassword from './pages/ResetPassword.jsx'
@@ -18,11 +19,26 @@ import CreateJobs from './pages/CreateJobs.jsx'
 import RegisterCompany from './pages/RegisterCompany.jsx'
 import ContactUs from './pages/ContactUs.jsx'
 import UpdateJobs from './pages/UpdateJobs.jsx'
+import MyApplications from './pages/MyApplications.jsx'
 
 function App() {
   const location = useLocation();
   const hideNavbarRoutes = ['/login', '/verify-email', '/reset-password'];
   const showNavbar = !hideNavbarRoutes.includes(location.pathname);
+
+  useEffect(() => {
+    const saved = sessionStorage.getItem('jobPortalApplyToast');
+    if (!saved) return;
+
+    try {
+      const data = JSON.parse(saved);
+      toast.info(data.message || 'Application started successfully.');
+    } catch (error) {
+      toast.info('Application started successfully.');
+    } finally {
+      sessionStorage.removeItem('jobPortalApplyToast');
+    }
+  }, [location.pathname]);
   
   return (
     <>
@@ -46,6 +62,7 @@ function App() {
       <Route path='/createjobs' element={<PrivateRoute><CreateJobs/></PrivateRoute>}/>
       <Route path='/update-job/:id' element={<PrivateRoute><UpdateJobs/></PrivateRoute>}/>
       <Route path='/view-job/:id' element={<PrivateRoute><UpdateJobs/></PrivateRoute>}/>
+      <Route path='/my-applications' element={<PrivateRoute><MyApplications /></PrivateRoute>} />
       <Route path="/register-company" element={<RegisterCompany />} />
       <Route path="/contact-us" element={<ContactUs />} />
     </Routes>

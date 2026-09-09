@@ -10,24 +10,27 @@ axios.defaults.withCredentials = true;
 
 const CompanyProvider = ({children})=>{
     const [search,setSearch] = useState('')
+    const [allCompanies, setAllCompanies] = useState([]);
     const [companies, setCompanies] = useState([]);
     const {backendURL} = useContext(AuthContext);
-    
-    const fetchCompanies = async () => {
-    try {
-      const response = await axios.get(
-        `${backendURL}/api/company/companies/all?search=${search}`,
-      );
-      if (response.data.success) {
-        setCompanies(response.data.companies);
+
+    const fetchCompanies = async (query = search) => {
+      try {
+        const response = await axios.get(
+          `${backendURL}/api/company/companies/all?search=${encodeURIComponent(query || '')}`,
+        );
+        if (response.data.success) {
+          setAllCompanies(response.data.companies);
+          setCompanies(response.data.companies);
+        }
+      } catch (error) {
+        console.log(error.message);
       }
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+    };
 
   const value = {
     fetchCompanies,
+    allCompanies,
     companies,
     setCompanies,search,setSearch
   }

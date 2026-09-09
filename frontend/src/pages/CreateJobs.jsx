@@ -16,6 +16,7 @@ const CreateJob = () => {
     salary: "",
     jobType: "",
     experience: "",
+    applyLink: "",
   });
 
   const { fetchJobs, jobs, setJobs, keyword, setKeyword, location, setLocation, experiences, jobTypes, locations,createJobs }
@@ -248,6 +249,20 @@ const CreateJob = () => {
                 className="border rounded-xl p-4 w-full"
               />
 
+            </div>
+
+            <div>
+              <h3 className="border-l-4 border-indigo-600 pl-3 text-xl font-semibold mb-6">
+                Direct Apply Link
+              </h3>
+
+              <input
+                name="applyLink"
+                value={formData.applyLink}
+                onChange={handleChange}
+                placeholder="https://company.com/careers/apply?id=123"
+                className="border rounded-xl p-4 w-full"
+              />
             </div>
 
             <div className="flex justify-end gap-4 pt-4">
