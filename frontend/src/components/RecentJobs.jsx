@@ -39,7 +39,7 @@ const statusColor = {
   Paused: "bg-yellow-100 text-yellow-700",
 };
 
-const RecentJobs = ({ userData, userJobs,updateJob,deleteJob }) => {
+const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
 
@@ -98,7 +98,19 @@ const RecentJobs = ({ userData, userJobs,updateJob,deleteJob }) => {
           </thead>
 
           <tbody>
-            {userJobs.map((job) => (
+            {loading ? (
+              <tr>
+                <td colSpan="5" className="py-8 text-center text-sm text-gray-500">
+                  Loading jobs...
+                </td>
+              </tr>
+            ) : userJobs.length === 0 ? (
+              <tr>
+                <td colSpan="5" className="py-8 text-center text-sm text-gray-500">
+                  No jobs found for this recruiter.
+                </td>
+              </tr>
+            ) : userJobs.map((job) => (
               <tr  className="border-b hover:bg-gray-50" key={job._id}>
                 <td className="py-3 font-medium text-sm">
                   {job.title}

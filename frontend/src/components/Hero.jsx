@@ -44,15 +44,15 @@ const Hero = ({user}) => {
             )}
 
             {isLoggedIn && isStudent?
-            (<button className="border px-6 py-3 rounded-lg" onClick={()=>navigate(`/profile`)}>
+            (<button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-100 transition" onClick={()=>navigate(`/profile`)}>
               Upload Resume
             </button>):
             isLoggedIn && !isStudent?
             (
-            <button className="border px-6 py-3 rounded-lg" onClick={()=>navigate("/recruiter-dashboard")}>
+            <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-100 transition" onClick={()=>navigate("/recruiter-dashboard")}>
               Check Applicants
             </button>):(
-               <button className="border px-6 py-3 rounded-lg" onClick={()=>navigate("/register")}>
+               <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-100 transition" onClick={()=>navigate("/register")}>
               Register Company
             </button>
             )}

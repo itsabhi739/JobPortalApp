@@ -17,11 +17,11 @@ const Sidebar = ({user,companyLocation,viewid}) => {
   const navigate = useNavigate();
   const {logout} = useContext(AuthContext);
   return (
-    <div className="w-72 min-h-screen bg-white border-r shadow-sm flex flex-col">
+    <div className="w-72 min-h-screen bg-white border-r border-gray-200 shadow-sm flex flex-col">
 
       {/* Company */}
 
-      <div className="m-5 bg-[#F8FAFC] rounded-2xl p-5 border">
+      <div className="m-5 bg-[#F8FAFC] rounded-2xl p-5 border border-gray-200">
         <div className="flex items-center gap-4">
           <div className="h-14 w-14 rounded-full bg-[#2F368C] text-white flex items-center justify-center font-bold text-xl">
             G
@@ -38,7 +38,7 @@ const Sidebar = ({user,companyLocation,viewid}) => {
       {/* Navigation */}
 
       <div className="px-4 space-y-2 flex-1">
-        <button className="w-full flex items-center gap-4 bg-[#EEF2FF] text-[#2F368C] rounded-xl px-5 py-4 font-semibold">
+        <button className="w-full flex items-center gap-4 bg-primary text-white rounded-xl px-5 py-4 font-semibold hover:bg-primary/90 transition">
           <LayoutDashboard size={20} />
           Dashboard
         </button>
@@ -87,7 +87,7 @@ const Sidebar = ({user,companyLocation,viewid}) => {
 
       {/* Logout */}
 
-      <div className="border-t p-5">
+      <div className="border-t border-gray-200 p-5">
         <button className="w-full flex items-center justify-center gap-3 text-red-500 hover:bg-red-50 rounded-xl py-3" onClick={logout}>
           <LogOut size={18} />
           Logout

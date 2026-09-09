@@ -4,6 +4,8 @@ import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { Moon, Sun } from "lucide-react";
+import { ThemeContext } from "../context/ThemeContext";
 const Navbar = () => {
   const navigate = useNavigate();
   const { userData, backendURL, isLoggedIn, setUserData, setIsLoggedIn,logout } =
@@ -18,6 +20,8 @@ const Navbar = () => {
         toast.error(data.message)
       }
     }
+
+    const { isDarkMode, toggleTheme } = useContext(ThemeContext);
 
     const handleDashboard = () =>{
       if(!userData){
@@ -42,14 +46,14 @@ const Navbar = () => {
 
 
   return (
-    <div className="flex justify-between items-center h-20 px-6 sm:px-10 border-b bg-white">
+    <div className="flex justify-between items-center h-20 px-6 sm:px-10 border-b border-gray-200 bg-white">
       <img
         src="https://cdn.dribbble.com/userupload/42179759/file/original-8939a7332eb5bdc39b71ea43d0b14965.jpg?resize=800x600&vertical=center"
         alt="Logo"
         className="w-28 sm:w-32 h-19.5"
       />
 
-      <div className="menu flex items-center gap-6 text-gray-700 text-lg font-medium">
+      <div className="menu flex flex-1 items-center justify-center gap-6 text-gray-700 text-lg font-medium">
         <div className="home" onClick={()=>navigate('/')}>Home</div>
         <div className="jobs" onClick={()=>navigate('/jobs')}>Jobs</div>
         <div className="companies" onClick={()=>navigate('/companies')}>Companies</div>
@@ -59,7 +63,18 @@ const Navbar = () => {
         <div className="contactus" onClick={()=>navigate('/contact-us')}>Contact Us</div>
       </div>
 
-      {userData ? (
+      <div className="ml-auto flex items-center gap-4">
+        <button
+          type="button"
+          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={toggleTheme}
+          className="theme-toggle flex h-10 w-10 items-center justify-center rounded-full border border-gray-300 text-gray-700 transition hover:bg-gray-100"
+        >
+          {isDarkMode ? <Sun size={19} /> : <Moon size={19} />}
+        </button>
+
+        {userData ? (
         <div className="relative group w-10 h-10 rounded-full bg-black text-white text-xl flex items-center justify-center font-semibold cursor-pointer overflow-visible">
           {userData?.username?.[0].toUpperCase()}
           <div
@@ -78,14 +93,15 @@ const Navbar = () => {
             </ul>
           </div>
         </div>
-      ) : (
-        <button
-          className="flex items-center gap-2 border-2 border-primary text-primary rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all"
-          onClick={() => navigate("/login")}
-        >
-          Login
-        </button>
-      )}
+        ) : (
+          <button
+            className="flex items-center gap-2 border-2 border-primary text-primary rounded-full px-6 py-2 text-gray-800 hover:bg-gray-100 transition-all"
+            onClick={() => navigate("/login")}
+          >
+            Login
+          </button>
+        )}
+      </div>
     </div>
   );
 };

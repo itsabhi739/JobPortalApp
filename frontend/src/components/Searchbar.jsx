@@ -8,19 +8,19 @@ const SearchBar = () => {
           <input
             type="text"
             placeholder="Job Title"
-            className="border p-3 rounded-lg"
+            className="border border-gray-200 p-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
 
           <input
             type="text"
             placeholder="Location"
-            className="border p-3 rounded-lg"
+            className="border border-gray-200 p-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
 
           <input
             type="text"
             placeholder="Skills"
-            className="border p-3 rounded-lg"
+            className="border border-gray-200 p-3 rounded-lg outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
           />
 
           <button className="bg-blue-600 text-white rounded-lg">
