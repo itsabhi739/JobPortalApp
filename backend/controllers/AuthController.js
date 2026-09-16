@@ -5,6 +5,14 @@ import jwt from 'jsonwebtoken'
 import 'dotenv/config'
 import { sendRegisterSuccessMail, sendVerificationOTPMail, sendResetPasswordMail } from '../config/sendMails.js'
 
+const isProduction = process.env.NODE_ENV === 'production';
+const getTokenCookieOptions = (maxAgeMs = 60 * 60 * 1000) => ({
+    httpOnly: true,
+    secure: isProduction,
+    sameSite: isProduction ? 'none' : 'lax',
+    maxAge: maxAgeMs
+});
+
 export const register = async (req, res) => {
 
     const {username,email,password,phonenumber,role,companyName,companyId} = req.body;
@@ -94,15 +102,7 @@ export const register = async (req, res) => {
         //creating jwt token (temporary, only for verification)
         const jwtToken = jwt.sign({id:newUser._id},process.env.SECRET_KEY,{expiresIn:'1hr'})
         //giving response as saving in cookie
-        res.cookie('token',jwtToken,{
-            // for dev environment it'll run on http
-            httpOnly:true,
-            //for production environment it'll run on https
-            secure: process.env.NODE_ENV === 'production',
-            //in local we will have backend running on same port but may differ after deploying the app
-            sameSite:process.env.NODE_ENV === 'production' ? 'none' :'strict',
-            maxAge:1*60*60*1000
-        })
+        res.cookie('token',jwtToken, getTokenCookieOptions())
 
         sendRegisterSuccessMail(email);
 
@@ -157,15 +157,7 @@ export const login = async(req,res)=>{
         //creating jwt token
         const jwtToken = jwt.sign({id:user._id},process.env.SECRET_KEY,{expiresIn:'7d'})
         //giving response as saving in cookie
-        res.cookie('token',jwtToken,{
-            // for dev environment it'll run on http
-            httpOnly:true,
-            //for production environment it'll run on https
-            secure: process.env.NODE_ENV === 'production',
-            //in local we will have backend running on same port but may differ after deploying the app
-            sameSite:process.env.NODE_ENV === 'production' ? 'none' :'strict',
-            maxAge:7*24*60*60*1000
-        })
+         res.cookie('token',jwtToken, getTokenCookieOptions())
 
         return res.status(200).json({
             success:true,
@@ -189,10 +181,11 @@ export const login = async(req,res)=>{
 
 export const logout = async(req,res)=>{
     try{
-        res.clearCookie('token',{
-            httpOnly:true,
-            secure:process.env.NODE_ENV === 'production',
-            sameSite:process.env.NODE_ENV === 'production' ? 'none' : 'strict',
+        res.clearCookie('token', {
+            httpOnly: true,
+            secure: isProduction,
+            sameSite: isProduction ? 'none' : 'lax',
+            path: '/'
         })
         return res.status(200).json({
             success:true,

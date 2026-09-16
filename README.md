@@ -33,7 +33,7 @@ Create a `.env` file and add the required environment variables:
 ```env
 PORT=4000
 MONGODB_URI=your_mongodb_connection_string
-JWT_SECRET=your_jwt_secret
+SECRET_KEY=your_jwt_secret
 ```
 
 Start the backend server:

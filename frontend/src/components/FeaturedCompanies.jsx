@@ -30,7 +30,7 @@ const FeaturedCompanies = () => {
               key={company._id}
               className="border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition flex items-center justify-evenly"
             ><div className="h-10 w-10 object-fit">
-              <img src={company.logo} alt="" srcset="" />
+              <img src={company.logo} alt="" srcSet="" />
             </div>
             <div className="text-black">
               {company.name}
