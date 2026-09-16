@@ -16,7 +16,7 @@ const app = express();
 //middlewares
 app.use(express.json())
 app.use(cors({ origin: [
-  "https://job-portal-app-olive.vercel.app/",
+  "http://localhost:5173",
   process.env.FRONTEND_URL
 ],credentials:true}))
 app.use(cookieParser())
