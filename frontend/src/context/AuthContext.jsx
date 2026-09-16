@@ -18,7 +18,7 @@ export const AuthProvider = ({ children }) => {
   const [isStudent,setIsStudent] = useState(false);
 
   const inputClass =
-    "w-full border border-gray-300 rounded-lg px-4 py-3 outline-none focus:border-black transition-all placeholder:text-gray-400";
+    "w-full border border-[#5365E8] bg-[#111827] text-white rounded-xl px-4 py-3 outline-none shadow-sm transition-all placeholder:text-slate-400 focus:border-[#6675F0] focus:ring-4 focus:ring-blue-500/20";
 
   const getUserData = async () => {
     try {

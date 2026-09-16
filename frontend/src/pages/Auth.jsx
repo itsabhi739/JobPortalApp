@@ -3,7 +3,7 @@ import { useState } from "react";
 import {toast} from 'react-toastify'
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 const Auth = () => {
 
   const navigate = useNavigate();
@@ -113,26 +113,40 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
-      <div className={`w-full bg-white rounded-2xl shadow-lg p-8 ${isSignup ? 'max-w-2xl' : 'max-w-md'}`}>
+    <div className="min-h-screen flex items-center justify-center bg-[#0B1120] px-6">
+      <div className={`w-full border border-[#5365E8] bg-[#151E2E] rounded-2xl shadow-[0_18px_50px_rgba(47,54,140,0.15)] p-8 ${isSignup ? 'max-w-2xl' : 'max-w-md'}`}>
 
-        <h2 className="text-3xl font-bold text-center mb-2">
+        <div className="mb-4 text-center">
+          <Link to="/" className="inline-flex items-center gap-3 justify-center">
+            <img
+              src="/favicon.svg"
+              alt="AbhiJob logo"
+              className="h-11 w-11 rounded-xl object-cover shadow-sm"
+            />
+            <span className="text-2xl font-black tracking-tight">
+              <span className="text-blue-700">Abhi</span>
+              <span className="text-yellow-500">Job</span>
+            </span>
+          </Link>
+        </div>
+
+        <h2 className="text-2xl font-bold text-center mb-1">
           {isSignup ? "Create Account" : "Login"}
         </h2>
 
-        <p className="text-center text-gray-500 mb-8">
+        <p className="text-center text-gray-500 mb-5">
           {isSignup
             ? "Join us and start your journey."
             : "Welcome back! Please login to continue."}
         </p>
 
         <form onSubmit={handleSubmit}>
-          <div className={`${isSignup ? 'grid grid-cols-2 gap-4' : 'space-y-5'}`}>
+          <div className={`${isSignup ? 'grid grid-cols-2 gap-3' : 'space-y-3'}`}>
 
           {/* Username only for Signup */}
           {isSignup && (
             <div>
-              <label className="block mb-2 text-gray-700">
+              <label className="block mb-1 text-gray-700">
                 Username
               </label>
 
@@ -149,7 +163,7 @@ const Auth = () => {
 
           {/* Email */}
           <div>
-            <label className="block mb-2 text-gray-700">
+            <label className="block mb-1 text-gray-700">
               Email
             </label>
 
@@ -165,7 +179,7 @@ const Auth = () => {
 
           {/* Password */}
           <div>
-            <label className="block mb-2 text-gray-700">
+            <label className="block mb-1 text-gray-700">
               Password
             </label>
 
@@ -182,7 +196,7 @@ const Auth = () => {
           {/* Confirm Password only for Signup */}
           {isSignup && (
             <div>
-              <label className="block mb-2 text-gray-700">
+              <label className="block mb-1 text-gray-700">
                 Confirm Password
               </label>
 
@@ -200,7 +214,7 @@ const Auth = () => {
           {/* Phone Number only for Signup */}
           {isSignup && (
             <div>
-              <label className="block mb-2 text-gray-700">
+              <label className="block mb-1 text-gray-700">
                 Phone Number
               </label>
 
@@ -218,7 +232,7 @@ const Auth = () => {
           {/* Role Selection only for Signup */}
           {isSignup && (
             <div className="col-span-2">
-              <label className="block mb-3 text-gray-700">
+              <label className="block mb-2 text-gray-700">
                 Select Role
               </label>
 
@@ -250,7 +264,7 @@ const Auth = () => {
 
           {isSignup && role === 'Recruiter' && (
             <div>
-              <label className="block mb-2 text-gray-700">
+              <label className="block mb-1 text-gray-700">
                 Company Name
               </label>
 
@@ -281,12 +295,12 @@ const Auth = () => {
 
           <button
             type="submit"
-            className="w-full bg-black text-white py-3 rounded-lg hover:bg-gray-800 transition-all mt-6"
+            className="w-full bg-gradient-to-r from-[#2F368C] to-[#4F5AD8] text-white py-2.5 rounded-xl hover:brightness-110 transition-all mt-4 shadow-[0_12px_25px_rgba(47,54,140,0.2)]"
           >
             {isSignup ? "Create Account" : "Login"}
           </button>
 
-          <p className="text-center text-gray-600 mt-4">
+          <p className="text-center text-gray-600 mt-3">
             {isSignup
               ? "Already have an account?"
               : "Don't have an account?"}
