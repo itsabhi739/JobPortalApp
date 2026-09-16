@@ -15,7 +15,10 @@ const app = express();
 
 //middlewares
 app.use(express.json())
-app.use(cors({ origin: "http://localhost:5173",credentials:true}))
+app.use(cors({ origin: [
+  "http://localhost:5173",
+  process.env.FRONTEND_URL
+],credentials:true}))
 app.use(cookieParser())
 
 //checking response
@@ -40,6 +43,6 @@ const mongodbConnection = async () => {
 mongodbConnection();
 
 //listening to PORT : 5001
-app.listen(PORT,()=>{
+app.listen(PORT,"0.0.0.0",()=>{
     console.log(`App is listening to ${PORT}`)
 })
