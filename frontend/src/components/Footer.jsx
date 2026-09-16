@@ -8,7 +8,7 @@ const Footer = () => {
           {/* Logo & Description */}
           <div>
             <h2 className="text-2xl font-bold text-white">
-              PlacementPortal
+              AbhiJob
             </h2>
 
             <p className="mt-4 text-sm">
@@ -52,7 +52,7 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-2">
-              <li>Email: support@placementportal.com</li>
+              <li>Email: support@abhijob.com</li>
               <li>Phone: +91 98765 43210</li>
               <li>Bangalore, India</li>
             </ul>
@@ -61,7 +61,7 @@ const Footer = () => {
         </div>
 
         <div className="border-t border-slate-700 mt-10 pt-6 text-center text-sm">
-          © {new Date().getFullYear()} PlacementPortal. All rights reserved.
+          © {new Date().getFullYear()} AbhiJob. All rights reserved.
         </div>
 
       </div>

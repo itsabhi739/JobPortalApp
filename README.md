@@ -1,4 +1,4 @@
-# 🚀 JobPortalApp
+# 🚀 AbhiJob
 
 A full-stack **MERN Job Portal** that connects job seekers with recruiters. Recruiters can manage their companies and post job opportunities, while job seekers can discover, search, and apply for jobs.
 

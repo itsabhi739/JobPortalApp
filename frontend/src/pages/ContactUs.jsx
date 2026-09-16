@@ -187,7 +187,7 @@ const ContactUs = () => {
                   </h3>
 
                   <p className="text-indigo-700 font-medium">
-                    support@jobportal.com
+                    support@abhijob.com
                   </p>
 
                   <p className="text-sm text-gray-500 mt-1">

@@ -1,6 +1,6 @@
 import React from "react";
 import { useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -47,11 +47,17 @@ const Navbar = () => {
 
   return (
     <div className="flex justify-between items-center h-20 px-6 sm:px-10 border-b border-gray-200 bg-white">
-      <img
-        src="https://cdn.dribbble.com/userupload/42179759/file/original-8939a7332eb5bdc39b71ea43d0b14965.jpg?resize=800x600&vertical=center"
-        alt="Logo"
-        className="w-28 sm:w-32 h-19.5"
-      />
+      <Link to="/" className="flex items-center gap-3 shrink-0">
+        <img
+          src="/favicon.svg"
+          alt="AbhiJob logo"
+          className="h-11 w-11 rounded-xl object-cover shadow-sm"
+        />
+        <span className="hidden sm:inline text-xl font-black tracking-tight">
+          <span className="text-blue-700">Abhi</span>
+          <span className="text-yellow-500">Job</span>
+        </span>
+      </Link>
 
       <div className="menu flex flex-1 items-center justify-center gap-6 text-gray-700 text-lg font-medium">
         <div className="home" onClick={()=>navigate('/')}>Home</div>
