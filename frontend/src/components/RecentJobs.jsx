@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import Popup from "./Popup";
+import Loader from "./Loader";
+import { useNavigate } from "react-router-dom";
 
 const jobs = [
   {
@@ -42,6 +44,7 @@ const statusColor = {
 const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
+  const navigate = useNavigate();
 
   const convertDate = (updatedAt) => {
     const date = new Date(updatedAt).toLocaleDateString("en-IN", {
@@ -77,7 +80,7 @@ const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
           </p>
         </div>
 
-        <button className="text-[#2F368C] font-semibold hover:underline text-sm">
+        <button className="text-[#6055FF] font-semibold hover:underline text-sm">
           View All
         </button>
       </div>
@@ -101,7 +104,7 @@ const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
             {loading ? (
               <tr>
                 <td colSpan="5" className="py-8 text-center text-sm text-gray-500">
-                  Loading jobs...
+                  <Loader />
                 </td>
               </tr>
             ) : userJobs.length === 0 ? (
@@ -118,21 +121,21 @@ const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
 
                 <td className="text-sm">{job.location}</td>
                 <td>
-                  <span
-                    className={`px-2.5 py-1 rounded-full text-xs ${statusColor[job.status]}`}
-                  >
-                    {job.status}
-                  </span>
+                  <select value={job.status || "Active"} onChange={(event) => updateJob({ status: event.target.value }, job._id)} className={`px-2.5 py-1 rounded-full text-xs border-0 ${statusColor[job.status] || statusColor.Active}`}>
+                    <option value="Active">Active</option>
+                    <option value="Paused">Paused</option>
+                    <option value="Closed">Closed</option>
+                  </select>
                 </td>
 
                 <td className="text-sm">{convertDate(job.updatedAt)}</td>
 
                 <td>
-                  <div className="flex gap-3 text-[#2F368C] text-sm">
+                  <div className="flex gap-3 text-[#6055FF] text-sm">
 
                     <FaEye className="cursor-pointer hover:text-black" />
 
-                    <FaEdit className="cursor-pointer hover:text-green-600" onClick={()=>updateJob(job._id)} />
+                    <FaEdit className="cursor-pointer hover:text-green-600" onClick={()=>navigate(`/update-job/${job._id}`)} />
 
                     <FaTrash className="cursor-pointer hover:text-red-500" onClick={()=>handleDeleteClick(job._id)}/>
 

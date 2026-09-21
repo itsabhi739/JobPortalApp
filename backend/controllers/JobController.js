@@ -127,7 +127,7 @@ export const getJobs = async (req, res) => {
 export const getJobById = async (req, res) => {
     try {
         const id = req.params.id;
-        const job = await Job.findById(id);
+        const job = await Job.findById(id).populate("company", "name logo location website description");
         if (!job) {
             return res.status(400).json({ success: false, message: "Job not found" })
         }
@@ -203,6 +203,8 @@ export const applyToJob = async (req, res) => {
             return res.status(404).json({ success: false, message: "Job not found" });
         }
 
+        const applicant = await User.findById(userId).select('profile');
+
         const existingApplication = await Application.findOne({ job: jobId, applicant: userId });
         if (existingApplication) {
             return res.status(200).json({
@@ -216,6 +218,8 @@ export const applyToJob = async (req, res) => {
         const application = new Application({
             job: jobId,
             applicant: userId,
+            resume: applicant?.profile?.resume || "",
+            resumeOriginalName: applicant?.profile?.resumeOriginalName || "",
             status: "pending"
         });
 
@@ -251,6 +255,74 @@ export const getMyApplications = async (req, res) => {
             success: true,
             applications
         });
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+};
+
+export const getRecruiterApplications = async (req, res) => {
+    try {
+        const jobs = await Job.find({ createdBy: req.userId }).select('_id');
+        const applications = await Application.find({ job: { $in: jobs.map((job) => job._id) } })
+            .populate({ path: 'applicant', select: 'username email phonenumber profile' })
+            .populate({ path: 'job', populate: { path: 'company', select: 'name logo' } })
+            .sort({ createdAt: -1 });
+        return res.status(200).json({ success: true, applications });
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+};
+
+export const getRecruiterApplicant = async (req, res) => {
+    try {
+        const recruiterJobs = await Job.find({ createdBy: req.userId }).select('_id');
+        const application = await Application.findOne({
+            applicant: req.params.id,
+            job: { $in: recruiterJobs.map((job) => job._id) },
+        }).populate('applicant', 'username email phonenumber profile');
+        if (!application) return res.status(404).json({ success: false, message: 'Applicant not found' });
+
+        const applications = await Application.find({ applicant: req.params.id, job: { $in: recruiterJobs.map((job) => job._id) } })
+            .populate({ path: 'job', populate: { path: 'company', select: 'name logo' } })
+            .sort({ createdAt: -1 });
+        return res.status(200).json({ success: true, applicant: application.applicant, applications });
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+};
+
+export const updateApplicationStatus = async (req, res) => {
+    try {
+        const { status } = req.body;
+        const allowedStatuses = ['pending', 'shortlisted', 'accepted', 'rejected'];
+        if (!allowedStatuses.includes(status)) {
+            return res.status(400).json({ success: false, message: 'Invalid application status' });
+        }
+
+        const application = await Application.findById(req.params.id).populate('job', 'createdBy');
+        if (!application) return res.status(404).json({ success: false, message: 'Application not found' });
+        if (String(application.job.createdBy) !== String(req.userId)) {
+            return res.status(403).json({ success: false, message: 'You are not authorized to update this application' });
+        }
+
+        application.status = status;
+        await application.save();
+        return res.status(200).json({ success: true, application, message: 'Application status updated' });
+    } catch (e) {
+        return res.status(500).json({ success: false, message: e.message });
+    }
+};
+
+export const withdrawApplication = async (req, res) => {
+    try {
+        const application = await Application.findOne({ _id: req.params.id, applicant: req.userId });
+        if (!application) return res.status(404).json({ success: false, message: "Application not found" });
+        if (application.status !== 'pending') {
+            return res.status(400).json({ success: false, message: "Only pending applications can be withdrawn" });
+        }
+        await Application.findByIdAndDelete(application._id);
+        await Job.findByIdAndUpdate(application.job, { $pull: { application: application._id } });
+        return res.status(200).json({ success: true, message: "Application withdrawn" });
     } catch (e) {
         return res.status(500).json({ success: false, message: e.message });
     }

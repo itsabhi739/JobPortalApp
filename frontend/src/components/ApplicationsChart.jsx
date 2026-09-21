@@ -10,17 +10,24 @@ import {
   Legend,
 } from "recharts";
 
-const data = [
-  { month: "Jan", applications: 18 },
-  { month: "Feb", applications: 25 },
-  { month: "Mar", applications: 32 },
-  { month: "Apr", applications: 28 },
-  { month: "May", applications: 41 },
-  { month: "Jun", applications: 55 },
-  { month: "Jul", applications: 48 },
-];
+const ApplicationsChart = ({ applications = [] }) => {
+  const now = new Date();
+  const data = Array.from({ length: 7 }, (_, index) => {
+    const date = new Date(now);
+    date.setDate(now.getDate() - (6 - index) * 7);
+    const start = new Date(date);
+    start.setHours(0, 0, 0, 0);
+    const end = new Date(start);
+    end.setDate(start.getDate() + 7);
+    return {
+      week: `Week ${index + 1}`,
+      applications: applications.filter((application) => {
+        const createdAt = new Date(application.createdAt);
+        return createdAt >= start && createdAt < end;
+      }).length,
+    };
+  });
 
-const ApplicationsChart = () => {
   return (
     <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-4 lg:p-5 h-full">
       <div className="flex justify-between items-center mb-4 gap-3">
@@ -30,13 +37,13 @@ const ApplicationsChart = () => {
           </h2>
 
           <p className="text-gray-500 mt-1 text-sm">
-            Track the number of applications received every month.
+            Applications received over the last 7 weeks.
           </p>
         </div>
 
-        <select className="border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-[#2F368C] text-sm">
-          <option>Last 7 Months</option>
-          <option>Last Year</option>
+        <select className="border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-[#6055FF] text-sm">
+          <option>Last 7 Weeks</option>
+          <option>Last 6 Months</option>
         </select>
       </div>
 
@@ -60,7 +67,7 @@ const ApplicationsChart = () => {
             />
 
             <XAxis
-              dataKey="month"
+              dataKey="week"
               tick={{ fill: "#6B7280", fontSize: 14 }}
               axisLine={false}
               tickLine={false}
@@ -85,11 +92,11 @@ const ApplicationsChart = () => {
             <Line
               type="monotone"
               dataKey="applications"
-              stroke="#2F368C"
+              stroke="#6055FF"
               strokeWidth={4}
               dot={{
                 r: 5,
-                fill: "#2F368C",
+                fill: "#6055FF",
               }}
               activeDot={{
                 r: 8,

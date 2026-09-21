@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useSearchParams } from "react-router-dom";
+import Loader from "../components/Loader";
 
 const Jobs = () => {
   //calling hooks
@@ -28,6 +29,7 @@ const Jobs = () => {
     setKeyword,
     location,
     setLocation,
+    isLoading,
   } = useContext(JobsContext);
 
   const { getUserData, userData,isStudent,isLoggedIn } = useContext(AuthContext);
@@ -221,13 +223,13 @@ const Jobs = () => {
                 {!isStudent && (
                   <div className="job-buttons flex items-center justify-center">
                     <button
-                      className="bg-[#2F368C] hover:bg-[#434ec1] rounded-2xl m-2 py-4 px-4 gap-2 flex items-center  text-white"
+                      className="bg-[#6055FF] hover:bg-[#434ec1] rounded-2xl m-2 py-4 px-4 gap-2 flex items-center  text-white"
                       onClick={() => navigate("/createjobs")}
                     >
                       Create Job <FaPlus className="text-shadow-white" />
                     </button>
                     <button
-                      className="bg-[#2F368C] hover:bg-[#434ec1] rounded-2xl m-2 py-4 px-4 gap-2 flex items-center  text-white"
+                      className="bg-[#6055FF] hover:bg-[#434ec1] rounded-2xl m-2 py-4 px-4 gap-2 flex items-center  text-white"
                       onClick={() => setShowMyJobs(!showMyJobs)}
                     >
                        {showMyJobs ? "All Jobs" : "My Jobs"}
@@ -242,7 +244,7 @@ const Jobs = () => {
             </div>
 
             <div className="space-y-6">
-              {filteredJobs.map((job) => {
+              {isLoading ? <Loader /> : filteredJobs.map((job) => {
                 const isOwner =userData?.userId.toString() === (job?.createdBy?.toString())
                 return(
                 <div
@@ -286,19 +288,19 @@ const Jobs = () => {
                     <div className="mt-6 md:mt-0 flex flex-col gap-3">
                       {isStudent?(
                         <button
-                          className={`px-8 py-3 rounded-xl ${appliedJobIds.has(job._id?.toString()) ? "bg-green-600 text-white cursor-default" : "bg-[#2F368C] text-white"}`}
+                          className={`px-8 py-3 rounded-xl ${appliedJobIds.has(job._id?.toString()) ? "bg-green-600 text-white cursor-default" : "bg-[#6055FF] text-white"}`}
                           onClick={() => !appliedJobIds.has(job._id?.toString()) && handleApply(job)}
                           disabled={appliedJobIds.has(job._id?.toString())}
                         >
                           {appliedJobIds.has(job._id?.toString()) ? "Applied" : "Apply Now"}
                         </button>
                       ):isOwner?(
-                        <button className="bg-[#2F368C] text-white px-8 py-3 rounded-xl" onClick={()=>navigate(`/update-job/${job._id}`)}>
+                        <button className="bg-[#6055FF] text-white px-8 py-3 rounded-xl" onClick={()=>navigate(`/update-job/${job._id}`)}>
                         Edit
                       </button>
                       ):null}
 
-                      <button className="border border-[#2F368C] text-[#2F368C] px-8 py-3 rounded-xl">
+                      <button className="border border-[#6055FF] text-[#6055FF] px-8 py-3 rounded-xl" onClick={() => navigate(`/job/${job._id}`)}>
                         View Details
                       </button>
 

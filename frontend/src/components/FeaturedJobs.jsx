@@ -1,11 +1,12 @@
 import { useContext, useEffect } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { JobsContext } from "../context/JobsContext";
+import Loader from "./Loader";
 
 
 const FeaturedJobs = () => {
   const {backendURL,inputClass} = useContext(AuthContext);
-  const {fetchJobs,jobs,setJobs} = useContext(JobsContext);
+  const {fetchJobs,jobs,setJobs,isLoading} = useContext(JobsContext);
 
   useEffect(()=>{
     fetchJobs()
@@ -24,7 +25,7 @@ const FeaturedJobs = () => {
 
         <div className="grid md:grid-cols-3 gap-6">
 
-          {featuredJobs.map((job) => (
+          {isLoading ? <Loader className="col-span-full py-8" /> : featuredJobs.map((job) => (
             <div
               key={job._id}
               className="bg-white p-6 rounded-2xl shadow"

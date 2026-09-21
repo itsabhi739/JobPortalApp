@@ -6,13 +6,14 @@ import axios from "axios";
 import { CompanyContext } from "../context/CompanyContext";
 import { JobsContext } from "../context/JobsContext";
 import { useNavigate } from "react-router-dom";
+import Loader from "../components/Loader";
 
 
 const Companies = () => {
   
   const { backendURL } = useContext(AuthContext);
-  const {fetchCompanies,companies,setCompanies,search,setSearch} = useContext(CompanyContext);
-  const {fetchJobs, jobs} = useContext(JobsContext)
+  const {fetchCompanies,companies,setCompanies,search,setSearch,isLoading: companiesLoading} = useContext(CompanyContext);
+  const {fetchJobs, jobs, isLoading: jobsLoading} = useContext(JobsContext)
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -70,17 +71,17 @@ const Companies = () => {
         <section className="max-w-7xl mx-auto px-6 py-12">
           <div className="grid md:grid-cols-3 gap-6">
             <div className="bg-white rounded-2xl p-6 shadow text-center">
-              <h2 className="text-4xl font-bold text-[#2F368C]">{companies.length}</h2>
+              <h2 className="text-4xl font-bold text-[#6055FF]">{companies.length}</h2>
               <p className="text-gray-500 mt-2">Partner Companies</p>
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow text-center">
-              <h2 className="text-4xl font-bold text-[#2F368C]">1200+ </h2>
+              <h2 className="text-4xl font-bold text-[#6055FF]">1200+ </h2>
               <p className="text-gray-500 mt-2">Active Jobs</p>
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow text-center">
-              <h2 className="text-4xl font-bold text-[#2F368C]">95%</h2>
+              <h2 className="text-4xl font-bold text-[#6055FF]">95%</h2>
               <p className="text-gray-500 mt-2">Hiring Success Rate</p>
             </div>
           </div>
@@ -95,7 +96,7 @@ const Companies = () => {
           </div>
 
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {companies.map((company, index) => (
+            {companiesLoading || jobsLoading ? <Loader className="col-span-full py-8" /> : companies.map((company, index) => (
               <div key={index} className="w-80 bg-white rounded-xl shadow-md overflow-hidden hover:shadow-lg transition-all">
                 {/* Banner */}
                 <div className="relative h-32">
@@ -165,7 +166,7 @@ const Companies = () => {
 
         {/* CTA */}
         <section className="max-w-7xl mx-auto px-6 pb-20">
-          <div className="bg-[#2F368C] rounded-3xl p-12 text-center text-white">
+          <div className="bg-[#6055FF] rounded-3xl p-12 text-center text-white">
             <h2 className="text-4xl font-bold">Looking for Talent?</h2>
 
             <p className="mt-4 text-gray-200">

@@ -6,44 +6,25 @@ import {
   FaUserCheck,
 } from "react-icons/fa";
 
-const stats = [
-  {
-    title: "Total Jobs",
-    value: 12,
-    change: "+2 this month",
-    icon: <FaBriefcase />,
-    bg: "bg-blue-100",
-    text: "text-[#2F368C]",
-  },
-  {
-    title: "Active Jobs",
-    value: 8,
-    change: "2 expiring soon",
-    icon: <FaCheckCircle />,
-    bg: "bg-green-100",
-    text: "text-green-600",
-  },
-  {
-    title: "Applications",
-    value: 128,
-    change: "+18 this week",
-    icon: <FaUsers />,
-    bg: "bg-yellow-100",
-    text: "text-yellow-600",
-  },
-  {
-    title: "Shortlisted",
-    value: 24,
-    change: "+6 this week",
-    icon: <FaUserCheck />,
-    bg: "bg-purple-100",
-    text: "text-purple-600",
-  },
-];
-
-const StatCards = ({userJobs}) => {
-
-  const jobCount = userJobs.length
+const StatCards = ({ userJobs = [], jobs = userJobs, applications = [] }) => {
+  const now = new Date();
+  const isSameMonth = (date) => {
+    const value = new Date(date);
+    return value.getMonth() === now.getMonth() && value.getFullYear() === now.getFullYear();
+  };
+  const isThisWeek = (date) => {
+    const value = new Date(date);
+    const start = new Date(now);
+    start.setDate(now.getDate() - now.getDay());
+    start.setHours(0, 0, 0, 0);
+    return value >= start && value <= now;
+  };
+  const stats = [
+    { title: "Total Jobs", value: jobs.filter((job) => isSameMonth(job.createdAt)).length, change: `${jobs.length} available overall`, icon: <FaBriefcase />, bg: "bg-blue-100", text: "text-[#6055FF]" },
+    { title: "Active Jobs", value: jobs.filter((job) => job.status === "Active").length, change: "currently available", icon: <FaCheckCircle />, bg: "bg-green-100", text: "text-green-600" },
+    { title: "Applications", value: applications.length, change: `${applications.filter((application) => isThisWeek(application.createdAt)).length} this week`, icon: <FaUsers />, bg: "bg-yellow-100", text: "text-yellow-600" },
+    { title: "Shortlisted", value: applications.filter((application) => application.status === "shortlisted").length, change: "based on application status", icon: <FaUserCheck />, bg: "bg-purple-100", text: "text-purple-600" },
+  ];
 
   return (
     <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
@@ -59,7 +40,7 @@ const StatCards = ({userJobs}) => {
               </p>
 
               <h2 className="text-2xl font-bold mt-1">
-                {jobCount}
+                {stat.value}
               </h2>
 
               <p className="text-green-600 text-sm mt-1">

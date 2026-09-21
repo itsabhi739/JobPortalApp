@@ -7,6 +7,7 @@ import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import companyRouter from "./routes/companyRouter.js";
 import jobRouter from "./routes/jobRouter.js";
+import path from "path";
 
 
 const PORT = process.env.PORT||5001;
@@ -35,6 +36,7 @@ app.use(cors({
 }))
 app.set("trust proxy", 1);
 app.use(cookieParser())
+app.use('/uploads', express.static(path.resolve('uploads')));
 
 //checking response
 app.get('/',(req,res)=>res.send("API Working"))

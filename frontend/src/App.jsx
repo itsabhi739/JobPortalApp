@@ -20,6 +20,9 @@ import RegisterCompany from './pages/RegisterCompany.jsx'
 import ContactUs from './pages/ContactUs.jsx'
 import UpdateJobs from './pages/UpdateJobs.jsx'
 import MyApplications from './pages/MyApplications.jsx'
+import UserProfile from './pages/UserProfile.jsx'
+import JobDetails from './pages/JobDetails.jsx'
+import ApplicantProfile from './pages/ApplicantProfile.jsx'
 
 function App() {
   const location = useLocation();
@@ -63,6 +66,9 @@ function App() {
       <Route path='/update-job/:id' element={<PrivateRoute><UpdateJobs/></PrivateRoute>}/>
       <Route path='/view-job/:id' element={<PrivateRoute><UpdateJobs/></PrivateRoute>}/>
       <Route path='/my-applications' element={<PrivateRoute><MyApplications /></PrivateRoute>} />
+      <Route path='/profile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
+      <Route path='/job/:id' element={<PrivateRoute><JobDetails /></PrivateRoute>} />
+      <Route path='/applicant/:id' element={<PrivateRoute><ApplicantProfile /></PrivateRoute>} />
       <Route path="/register-company" element={<RegisterCompany />} />
       <Route path="/contact-us" element={<ContactUs />} />
     </Routes>

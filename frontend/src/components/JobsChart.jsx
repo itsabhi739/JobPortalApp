@@ -1,39 +1,37 @@
 import React from "react";
 import {
   ResponsiveContainer,
-  PieChart,
-  Pie,
-  Cell,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
 } from "recharts";
 
-const data = [
-  { name: "React", value: 32 },
-  { name: "Java", value: 24 },
-  { name: "Node", value: 18 },
-  { name: "Python", value: 15 },
-  { name: "UI/UX", value: 11 },
-];
+const JobChart = ({ jobs = [] }) => {
+  const now = new Date();
+  const data = Array.from({ length: 6 }, (_, index) => {
+    const date = new Date(now.getFullYear(), now.getMonth() - (5 - index), 1);
+    return {
+      month: date.toLocaleString("en-IN", { month: "short" }),
+      jobs: jobs.filter((job) => {
+        const createdAt = new Date(job.createdAt);
+        return createdAt.getMonth() === date.getMonth() && createdAt.getFullYear() === date.getFullYear();
+      }).length,
+    };
+  });
 
-const COLORS = [
-  "#2F368C",
-  "#F4BC19",
-  "#22C55E",
-  "#F97316",
-  "#8B5CF6",
-];
-
-const JobChart = () => {
   return (
     <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-4 lg:p-5 h-full">
       <div className="mb-4">
         <h2 className="text-lg font-bold text-gray-800">
-          Job Categories
+            Jobs Posted
         </h2>
 
         <p className="text-gray-500 mt-1 text-sm">
-          Applications received by job role.
+          Total jobs added over the last 6 months.
         </p>
       </div>
 
@@ -41,35 +39,14 @@ const JobChart = () => {
 
         <ResponsiveContainer width="100%" height="100%">
 
-          <PieChart>
-
-            <Pie
-              data={data}
-              dataKey="value"
-              nameKey="name"
-              innerRadius={70}
-              outerRadius={110}
-              paddingAngle={4}
-              label={({ name, percent }) =>
-                `${name} ${(percent * 100).toFixed(0)}%`
-              }
-            >
-              {data.map((entry, index) => (
-                <Cell
-                  key={index}
-                  fill={COLORS[index % COLORS.length]}
-                />
-              ))}
-            </Pie>
-
+          <BarChart data={data}>
+            <CartesianGrid strokeDasharray="4 4" vertical={false} />
+            <XAxis dataKey="month" axisLine={false} tickLine={false} />
+            <YAxis allowDecimals={false} axisLine={false} tickLine={false} />
             <Tooltip />
-
-            <Legend
-              verticalAlign="bottom"
-              height={36}
-            />
-
-          </PieChart>
+            <Legend />
+            <Bar dataKey="jobs" name="Jobs" fill="#6055FF" radius={[6, 6, 0, 0]} />
+          </BarChart>
 
         </ResponsiveContainer>
 

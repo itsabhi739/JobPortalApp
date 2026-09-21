@@ -12,9 +12,11 @@ const CompanyProvider = ({children})=>{
     const [search,setSearch] = useState('')
     const [allCompanies, setAllCompanies] = useState([]);
     const [companies, setCompanies] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
     const {backendURL} = useContext(AuthContext);
 
     const fetchCompanies = async (query = search) => {
+      setIsLoading(true);
       try {
         const response = await axios.get(
           `${backendURL}/api/company/companies/all?search=${encodeURIComponent(query || '')}`,
@@ -25,6 +27,8 @@ const CompanyProvider = ({children})=>{
         }
       } catch (error) {
         console.log(error.message);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -32,7 +36,8 @@ const CompanyProvider = ({children})=>{
     fetchCompanies,
     allCompanies,
     companies,
-    setCompanies,search,setSearch
+    setCompanies,search,setSearch,
+    isLoading
   }
     
     return <CompanyContext.Provider value={value}>

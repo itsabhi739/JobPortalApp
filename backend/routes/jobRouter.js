@@ -1,6 +1,6 @@
 import express from 'express'
 import { userAuth } from '../middlewares/userAuth.js';
-import { createJob, deleteJob, updateJobs, getJobById, getJobs,applyToJob, getMyApplications } from '../controllers/JobController.js';
+import { createJob, deleteJob, updateJobs, getJobById, getJobs,applyToJob, getMyApplications, getRecruiterApplications, getRecruiterApplicant, updateApplicationStatus, withdrawApplication } from '../controllers/JobController.js';
 
 const jobRouter = new express.Router();
 
@@ -14,6 +14,10 @@ jobRouter.post('/apply', userAuth(['Student']), applyToJob)
 //http://localhost:5001/api/job/apply
 
 jobRouter.get('/my-applications', userAuth(['Student']), getMyApplications)
+jobRouter.get('/recruiter-applications', userAuth(['Recruiter']), getRecruiterApplications)
+jobRouter.get('/recruiter-applicants/:id', userAuth(['Recruiter']), getRecruiterApplicant)
+jobRouter.patch('/applications/:id/status', userAuth(['Recruiter']), updateApplicationStatus)
+jobRouter.delete('/applications/:id', userAuth(['Student']), withdrawApplication)
 //http://localhost:5001/api/job/my-applications
 
 jobRouter.get('/get/:id',getJobById) 

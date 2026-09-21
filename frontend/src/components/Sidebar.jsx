@@ -9,28 +9,29 @@ import {
   Settings,
   LogOut,
   Star,
+  UserRound,
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-const Sidebar = ({user,companyLocation,viewid}) => {
+const Sidebar = ({user,companyLocation,viewid,isStudent = false}) => {
   const navigate = useNavigate();
   const {logout} = useContext(AuthContext);
+  const profilePhoto = user?.profile?.profilePhoto;
+  const profilePhotoUrl = profilePhoto?.startsWith("http") ? profilePhoto : profilePhoto ? `${import.meta.env.VITE_BACKEND_URL}${profilePhoto}` : "";
   return (
     <div className="w-72 min-h-screen bg-white border-r border-gray-200 shadow-sm flex flex-col">
 
-      {/* Company */}
+      {/* Profile */}
 
       <div className="m-5 bg-[#F8FAFC] rounded-2xl p-5 border border-gray-200">
         <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-full bg-[#2F368C] text-white flex items-center justify-center font-bold text-xl">
-            G
-          </div>
+          {profilePhotoUrl ? <img src={profilePhotoUrl} alt="Profile" className="h-14 w-14 rounded-full object-cover" /> : <div className="h-14 w-14 rounded-full bg-[#6055FF] text-white flex items-center justify-center font-bold text-xl">{user?.username?.[0]?.toUpperCase() || <UserRound size={24} />}</div>}
 
           <div>
-            <h3 className="font-semibold">{user?.companyName}</h3>
+            <h3 className="font-semibold">{isStudent ? user?.username : user?.companyName}</h3>
 
-            <p className="text-sm text-gray-500">{companyLocation}</p>
+            <p className="text-sm text-gray-500">{isStudent ? user?.email : companyLocation}</p>
           </div>
         </div>
       </div>
@@ -50,20 +51,20 @@ const Sidebar = ({user,companyLocation,viewid}) => {
         </button>
 
         <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4"
-        onClick={()=>navigate('/createjobs')}>
+        onClick={()=>navigate(isStudent ? '/jobs' : '/createjobs')}>
           <PlusCircle size={20} />
-          Create Job
+          {isStudent ? "Apply Job" : "Create Job"}
         </button>
 
-        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
+        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4" onClick={()=>navigate(isStudent ? '/my-applications' : '/recruiter-dashboard')}>
           <Users size={20} />
-          Applications
+          {isStudent ? "My Applications" : "Applications"}
         </button>
 
-        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
+        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4" onClick={()=>navigate(isStudent ? '/profile' : '/recruiter-dashboard')}>
           <Building2 size={20} />
           {/* <Building2 size={20} onClick={()=>navigate(`/view-job/:${viewid}`)}/> */}
-          Company Profile
+          {isStudent ? "Update Profile" : "Company Profile"}
         </button>
 
         <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
@@ -71,17 +72,17 @@ const Sidebar = ({user,companyLocation,viewid}) => {
           Analytics
         </button>
 
-        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
+        {!isStudent && <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4">
           <Star size={20} />
           Shortlisted
-        </button>
+        </button>}
       </div>
 
       {/* CTA */}
 
       <div className="p-5">
-        <button className="w-full bg-[#2F368C] hover:bg-[#434ec1] text-white rounded-xl py-4 font-semibold" onClick={()=>navigate("/createjobs")}>
-          + Create New Job
+        <button className="w-full bg-[#6055FF] hover:bg-[#434ec1] text-white rounded-xl py-4 font-semibold" onClick={()=>navigate(isStudent ? "/profile" : "/createjobs")}>
+          {isStudent ? "Update Profile" : "+ Create New Job"}
         </button>
       </div>
 
