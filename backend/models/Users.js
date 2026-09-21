@@ -16,6 +16,12 @@ const UserSchema = mongoose.Schema({
         skills:[{
             type:String
         }],
+        education:{type:String,default:""},
+        experience:{type:String,default:""},
+        location:{type:String,default:""},
+        linkedin:{type:String,default:""},
+        portfolio:{type:String,default:""},
+        designation:{type:String,default:""},
         resume:{type:String},
         resumeOriginalName:{type:String},
         company:{type:mongoose.Schema.Types.ObjectId,ref:'Company'},

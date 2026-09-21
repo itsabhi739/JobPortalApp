@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-primary: #2F368C;
+  --color-primary: #6055FF;
   --color-secondary: #F4BC19;
   --color-background: #F8FAFC;
   --color-card: #E4F0F0;
@@ -57,7 +57,7 @@ body {
 }
 
 .dark .bg-black {
-  background-color: #2F368C !important;
+  background-color: #6055FF !important;
 }
 
 .dark .bg-slate-900 {
@@ -77,6 +77,10 @@ body {
   color: #94A3B8 !important;
 }
 
+.dark .text-slate-800 {
+  color: #F8FAFC !important;
+}
+
 .dark .text-blue-700 {
   color: #93C5FD !important;
 }
@@ -93,14 +97,14 @@ body {
   color: #A5B4FC !important;
 }
 
-.dark .text-\[\#2F368C\],
+.dark .text-\[\#6055FF\],
 .dark .text-indigo-700,
 .dark .text-indigo-600 {
   color: #A5B4FC !important;
 }
 
 .dark .companies-hero {
-  background-image: linear-gradient(135deg, #1E246D 0%, #2F368C 55%, #5365E8 100%) !important;
+  background-image: linear-gradient(135deg, #1E246D 0%, #6055FF 55%, #5365E8 100%) !important;
 }
 
 .dark .border-gray-100,

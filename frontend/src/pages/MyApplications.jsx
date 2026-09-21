@@ -1,15 +1,14 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { JobsContext } from "../context/JobsContext";
+import Loader from "../components/Loader";
 
 const MyApplications = () => {
-  const { fetchMyApplications, myApplications } = useContext(JobsContext);
-  const [loading, setLoading] = useState(true);
+  const { fetchMyApplications, myApplications, isLoading } = useContext(JobsContext);
 
   useEffect(() => {
     const load = async () => {
       await fetchMyApplications();
-      setLoading(false);
     };
     load();
   }, []);
@@ -22,13 +21,13 @@ const MyApplications = () => {
             <h1 className="text-3xl font-bold text-slate-800">My Applications</h1>
             <p className="text-gray-500 mt-1">Track every job you have applied for.</p>
           </div>
-          <Link to="/jobs" className="text-[#2F368C] font-medium hover:underline">
+          <Link to="/jobs" className="text-[#6055FF] font-medium hover:underline">
             Back to jobs
           </Link>
         </div>
 
-        {loading ? (
-          <div className="bg-white rounded-2xl p-6 shadow-sm text-gray-500">Loading applications...</div>
+        {isLoading ? (
+          <div className="bg-white rounded-2xl p-6 shadow-sm text-gray-500"><Loader /></div>
         ) : myApplications.length === 0 ? (
           <div className="bg-white rounded-2xl p-6 shadow-sm text-gray-500">
             You have not applied to any jobs yet.

@@ -15,6 +15,8 @@ const Auth = () => {
   const [phonenumber, setPhoneNumber] = useState('')
   const [role, setRole] = useState('Student')
   const [companyName, setCompanyName] = useState('')
+  const [designation, setDesignation] = useState('')
+  const [location, setLocation] = useState('')
 
   const {backendURL,setIsLoggedIn,getUserData,inputClass} = useContext(AuthContext);
   const handleChange = (e)=>{
@@ -42,6 +44,8 @@ const Auth = () => {
     if(name === 'companyName'){
       setCompanyName(value)
     }
+    if(name === 'designation') setDesignation(value)
+    if(name === 'location') setLocation(value)
   }
 
   const handleSubmit = async(e)=>{
@@ -51,14 +55,16 @@ const Auth = () => {
         toast.error("Password and Confirm Password must be the same")
         return
       }
-      if (role === 'Recruiter' && !companyName) {
-        toast.error("Please enter your company name")
+      if (role === 'Recruiter' && (!companyName || !designation || !location)) {
+        toast.error("Please fill full name, phone, designation, company, and location")
         return
       }
 
        const payload = { username, email, password, phonenumber, role }
         if (role === 'Recruiter') {
           payload.companyName = companyName
+          payload.designation = designation
+          payload.location = location
         }
 
       try{
@@ -263,6 +269,7 @@ const Auth = () => {
           )}
 
           {isSignup && role === 'Recruiter' && (
+            <>
             <div>
               <label className="block mb-1 text-gray-700">
                 Company Name
@@ -277,6 +284,15 @@ const Auth = () => {
                 className={inputClass}
               />
             </div>
+            <div>
+              <label className="block mb-1 text-gray-700">Designation</label>
+              <input type="text" name="designation" value={designation} onChange={handleChange} placeholder="e.g. HR Manager" className={inputClass} required />
+            </div>
+            <div>
+              <label className="block mb-1 text-gray-700">Location</label>
+              <input type="text" name="location" value={location} onChange={handleChange} placeholder="Enter your location" className={inputClass} required />
+            </div>
+            </>
           )}
 
           {/* Forgot Password only for Login */}
@@ -295,7 +311,7 @@ const Auth = () => {
 
           <button
             type="submit"
-            className="w-full bg-gradient-to-r from-[#2F368C] to-[#4F5AD8] text-white py-2.5 rounded-xl hover:brightness-110 transition-all mt-4 shadow-[0_12px_25px_rgba(47,54,140,0.2)]"
+            className="w-full bg-linear-to-r from-[#6055FF] to-[#4F5AD8] text-white py-2.5 rounded-xl hover:brightness-110 transition-all mt-4 shadow-[0_12px_25px_rgba(47,54,140,0.2)]"
           >
             {isSignup ? "Create Account" : "Login"}
           </button>

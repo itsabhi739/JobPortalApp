@@ -16,7 +16,7 @@ const getTokenCookieOptions = (maxAgeMs = 60 * 60 * 1000) => ({
 
 export const register = async (req, res) => {
 
-    const {username,email,password,phonenumber,role,companyName,companyId} = req.body;
+    const {username,email,password,phonenumber,role,companyName,companyId,designation,location} = req.body;
 
     if(!email||!password||!username ||!phonenumber||!role){
         return res.status(400).json({
@@ -25,10 +25,10 @@ export const register = async (req, res) => {
         })
     }
 
-    if (role === 'Recruiter' && !companyName) {
+    if (role === 'Recruiter' && (!companyName || !designation || !location)) {
         return res.status(400).json({
             success: false,
-            message: "Recruiters must provide a company name"
+            message: "Recruiters must provide full name, phone, designation, company, and location"
         })
     }
     try{
@@ -79,7 +79,9 @@ export const register = async (req, res) => {
             phonenumber,
             role,
             profile:{
-                company: recruiterCompany?._id || null
+                company: recruiterCompany?._id || null,
+                designation: designation || "",
+                location: location || ""
             },
             verifyOtp: otp,
             verifyOtpExpireAt: Date.now() + (24*60*60*1000)

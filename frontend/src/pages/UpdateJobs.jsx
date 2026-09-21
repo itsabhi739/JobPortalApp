@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { JobsContext } from "../context/JobsContext";
 import { AuthContext } from "../context/AuthContext";
 import { CompanyContext } from "../context/CompanyContext";
+import Loader from "../components/Loader";
 
 const UpdateJobs = () => {
   const navigate = useNavigate();
@@ -62,9 +63,7 @@ const UpdateJobs = () => {
   if (!job) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <p className="text-xl font-semibold text-gray-600">
-          Loading job details...
-        </p>
+          <Loader />
       </div>
     );
   }

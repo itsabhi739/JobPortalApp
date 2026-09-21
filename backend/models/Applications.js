@@ -11,6 +11,8 @@ const applicationSchema = mongoose.Schema({
     ref:'User',
     required:true
    },
+   resume:{type:String,default:""},
+   resumeOriginalName:{type:String,default:""},
    status:{
     type:String,
     enum:['pending','shortlisted','accepted','rejected'],

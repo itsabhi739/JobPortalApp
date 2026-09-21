@@ -22,6 +22,8 @@ const Navbar = () => {
     }
 
     const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+    const profilePhoto = userData?.profile?.profilePhoto;
+    const profilePhotoUrl = profilePhoto?.startsWith("http") ? profilePhoto : profilePhoto ? `${backendURL}${profilePhoto}` : "";
 
     const handleDashboard = () =>{
       if(!userData){
@@ -82,7 +84,7 @@ const Navbar = () => {
 
         {userData ? (
         <div className="relative group w-10 h-10 rounded-full bg-black text-white text-xl flex items-center justify-center font-semibold cursor-pointer overflow-visible">
-          {userData?.username?.[0].toUpperCase()}
+          {profilePhotoUrl ? <img src={profilePhotoUrl} alt="Profile" className="w-full h-full rounded-full object-cover" /> : userData?.username?.[0].toUpperCase()}
           <div
             className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10"
           >
@@ -90,7 +92,7 @@ const Navbar = () => {
               {!userData.isVerified && (<li className="py-1 px-2 hover:bg-gray-200 cursor-pointer" onClick={sendVerificationOTP}>
                 Verify email
               </li>)}
-              <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={()=>navigate("/user-profile")}>
+              <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={()=>navigate("/profile")}>
                 Profile
               </li>
               <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={logout}>

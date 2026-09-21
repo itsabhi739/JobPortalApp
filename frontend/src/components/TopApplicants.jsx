@@ -50,7 +50,7 @@ const TopApplicants = () => {
           </p>
         </div>
 
-        <button className="text-[#2F368C] font-semibold hover:underline text-sm">
+        <button className="text-[#6055FF] font-semibold hover:underline text-sm">
           View All
         </button>
       </div>
@@ -99,7 +99,7 @@ const TopApplicants = () => {
 
               </div>
 
-              <button className="mt-2 text-sm bg-[#2F368C] hover:bg-[#434EC1] text-white px-3 py-1.5 rounded-lg">
+              <button className="mt-2 text-sm bg-[#6055FF] hover:bg-[#434EC1] text-white px-3 py-1.5 rounded-lg">
                 View
               </button>
 

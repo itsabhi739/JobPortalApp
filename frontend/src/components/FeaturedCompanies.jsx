@@ -2,11 +2,12 @@ import axios from "axios";
 import { useEffect, useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { CompanyContext } from "../context/CompanyContext";
+import Loader from "./Loader";
 
 const FeaturedCompanies = () => {
 
   const {backendURL,inputClass} = useContext(AuthContext);
-  const {fetchCompanies,allCompanies} = useContext(CompanyContext);
+  const {fetchCompanies,allCompanies,isLoading} = useContext(CompanyContext);
 
   useEffect(()=>{
     fetchCompanies('');
@@ -25,7 +26,7 @@ const FeaturedCompanies = () => {
 
         <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
 
-          {topCompanies.map((company) => (
+          {isLoading ? <Loader className="col-span-full py-8" /> : topCompanies.map((company) => (
             <div
               key={company._id}
               className="border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition flex items-center justify-evenly"

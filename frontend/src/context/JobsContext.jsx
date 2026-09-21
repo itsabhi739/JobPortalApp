@@ -16,11 +16,13 @@ const JobsProvider = ({children})=>{
     const [jobs, setJobs] = useState([]);
     const [myApplications, setMyApplications] = useState([]);
     const [showPopup, setShowPopup] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
     const {backendURL, userData} = useContext(AuthContext);
 
     const navigate = useNavigate();
     
     const fetchJobs = async () => {
+      setIsLoading(true);
     try {
       const response = await axios.get(
         `${backendURL}/api/job/jobs/all?keyword=${keyword}&&location=${location}`,
@@ -34,10 +36,13 @@ const JobsProvider = ({children})=>{
     } catch (error) {
       console.log(error.message);
       return [];
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const fetchMyApplications = async () => {
+    setIsLoading(true);
     try {
       const response = await axios.get(`${backendURL}/api/job/my-applications`);
       if (response.data.success) {
@@ -46,10 +51,13 @@ const JobsProvider = ({children})=>{
     } catch (error) {
       console.log(error.message);
       setMyApplications([]);
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const applyToJob = async (jobId) => {
+    setIsLoading(true);
     try {
       const response = await axios.post(`${backendURL}/api/job/apply`, { jobId });
       if (response.data.success) {
@@ -59,10 +67,13 @@ const JobsProvider = ({children})=>{
       return response.data;
     } catch (error) {
       return { success: false, message: error.response?.data?.message || error.message };
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const createJobs = async (payload) => {
+    setIsLoading(true);
     try{
       const response = await axios.post(`${backendURL}/api/job/create`, payload);
       if (response.data.success) {
@@ -73,10 +84,13 @@ const JobsProvider = ({children})=>{
       }
     }catch(e){
       toast.error(e.response?.data?.message || e.message || "Failed to create job");
+    } finally {
+      setIsLoading(false);
     }
   };
 
    const updateJob = async (payload,id) => {
+    setIsLoading(true);
     try{
       const response = await axios.patch(`${backendURL}/api/job/update/${id}`, payload);
       if (response.data.success) {
@@ -86,10 +100,13 @@ const JobsProvider = ({children})=>{
       }
     }catch(e){
       toast.error(e.response?.data?.message || e.message || "Failed to create job");
+    } finally {
+      setIsLoading(false);
     }
   };
   
    const deleteJob = async (id) => {
+    setIsLoading(true);
     try{
       const response = await axios.delete(`${backendURL}/api/job/delete/${id}`);
       if (response.data.success) {
@@ -100,6 +117,8 @@ const JobsProvider = ({children})=>{
       }
     }catch(e){
       toast.error(e.response?.data?.message || e.message || "Failed to create job");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -140,7 +159,8 @@ const JobsProvider = ({children})=>{
     createJobs,
     updateJob,
     deleteJob,
-    viewJob
+    viewJob,
+    isLoading
   }
     
     return <JobsContext.Provider value={value}>
