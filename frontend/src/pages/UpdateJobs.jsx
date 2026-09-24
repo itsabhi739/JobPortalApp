@@ -191,7 +191,7 @@ const UpdateJobs = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Job Title"
-                  className="border rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
+                  className="border border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
 
                 <input
@@ -199,7 +199,7 @@ const UpdateJobs = () => {
                   value={formData.position}
                   onChange={handleChange}
                   placeholder="Position"
-                  className="border rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
+                  className="border border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
 
               </div>
@@ -210,7 +210,7 @@ const UpdateJobs = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Job Description..."
-                className="border rounded-xl p-4 w-full mt-6 focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="border border-gray-200 rounded-xl p-4 w-full mt-6 focus:ring-2 focus:ring-indigo-500 outline-none"
               />
 
             </div>
@@ -229,7 +229,7 @@ const UpdateJobs = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 >
                   <option value="">
                     Select Location
@@ -250,7 +250,7 @@ const UpdateJobs = () => {
                   name="jobType"
                   value={formData.jobType}
                   onChange={handleChange}
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 >
                   <option value="">
                     Select Job Type
@@ -272,7 +272,7 @@ const UpdateJobs = () => {
                   value={formData.salary}
                   onChange={handleChange}
                   placeholder="Salary (10-14 LPA)"
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 />
 
                 <input
@@ -280,7 +280,7 @@ const UpdateJobs = () => {
                   value={formData.experience}
                   onChange={handleChange}
                   placeholder="Experience (Years)"
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 />
 
               </div>
@@ -300,7 +300,7 @@ const UpdateJobs = () => {
                 value={formData.requirements}
                 onChange={handleChange}
                 placeholder="React, Node.js, MongoDB, JWT"
-                className="border rounded-xl p-4 w-full"
+                className="border border-gray-200 rounded-xl p-4 w-full"
               />
 
             </div>
@@ -317,7 +317,7 @@ const UpdateJobs = () => {
                 name="status"
                 value={formData.status}
                 onChange={handleChange}
-                className="border rounded-xl p-4 w-full md:w-1/2"
+                className="border border-gray-200 rounded-xl p-4 w-full md:w-1/2"
               >
                 <option value="Active">Active</option>
                 <option value="Paused">Paused</option>
