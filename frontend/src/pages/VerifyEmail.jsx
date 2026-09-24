@@ -86,7 +86,7 @@ const EmailVerify = () => {
               value={otp}
               onChange={(e) => setOtp(e.target.value.replace(/\D/g, ""))}
               placeholder="Enter OTP"
-              className="w-full border border-gray-300 rounded-lg px-4 py-3 text-center text-2xl tracking-[0.5em] outline-none focus:border-black"
+                className="w-full border border-gray-200 rounded-lg px-4 py-3 text-center text-2xl tracking-[0.5em] outline-none focus:border-slate-500"
             />
           </div>
 

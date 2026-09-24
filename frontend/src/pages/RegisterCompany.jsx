@@ -201,7 +201,7 @@ const RegisterCompany = () => {
                     name="location"
                     value={formData.location}
                     onChange={handleChange}
-                    className="w-full mt-2 border rounded-xl p-3"
+                    className="w-full mt-2 border border-gray-200 rounded-xl p-3"
                   >
                     <option value="">Select Location</option>
                     <option value="Bangalore">Bangalore</option>
@@ -215,7 +215,7 @@ const RegisterCompany = () => {
                 <div>
                   <label className="font-medium">Industry</label>
 
-                  <select className="w-full mt-2 border rounded-xl p-3">
+                  <select className="w-full mt-2 border border-gray-200 rounded-xl p-3">
                     <option>Select Industry</option>
                     <option>Software</option>
                     <option>Finance</option>
@@ -228,7 +228,7 @@ const RegisterCompany = () => {
                 <div>
                   <label className="font-medium">Company Size</label>
 
-                  <select className="w-full mt-2 border rounded-xl p-3">
+                  <select className="w-full mt-2 border border-gray-200 rounded-xl p-3">
                     <option>Select Size</option>
                     <option>1-10</option>
                     <option>11-50</option>

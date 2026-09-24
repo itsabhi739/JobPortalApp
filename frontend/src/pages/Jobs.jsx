@@ -169,7 +169,7 @@ const Jobs = () => {
               <div>
                 <label className="font-medium block mb-2">Job Type</label>
                 <select
-                  className="w-full border rounded-lg p-3"
+                  className="w-full border border-gray-200 rounded-lg p-3"
                   value={selectedJobType}
                   onChange={(e) =>setSelectedJobType(e.target.value)}
                 >
@@ -183,7 +183,7 @@ const Jobs = () => {
                 <label className="font-medium block mb-2">Experience</label>
 
                 <select
-                  className="w-full border rounded-lg p-3"
+                  className="w-full border border-gray-200 rounded-lg p-3"
                   onChange={(e) => setSelectedExperience(e.target.value)}
                 >
                   <option value={"All"}>All</option>
@@ -201,7 +201,7 @@ const Jobs = () => {
                   value={selectedLocation}
                   onChange={(e)=>setSelectedLocation(e.target.value)}
                   placeholder="Location"
-                  className="w-full border rounded-lg p-3"
+                  className="w-full border border-gray-200 rounded-lg p-3"
                 />
               </div>
 

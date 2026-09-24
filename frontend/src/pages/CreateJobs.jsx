@@ -151,7 +151,7 @@ const CreateJob = () => {
                   value={formData.title}
                   onChange={handleChange}
                   placeholder="Job Title"
-                  className="border rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
+                  className="border border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
 
                 <input
@@ -159,7 +159,7 @@ const CreateJob = () => {
                   value={formData.position}
                   onChange={handleChange}
                   placeholder="Position"
-                  className="border rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
+                  className="border border-gray-200 rounded-xl p-4 focus:ring-2 focus:ring-indigo-500 outline-none"
                 />
 
               </div>
@@ -170,7 +170,7 @@ const CreateJob = () => {
                 value={formData.description}
                 onChange={handleChange}
                 placeholder="Job Description..."
-                className="border rounded-xl p-4 w-full mt-6 focus:ring-2 focus:ring-indigo-500 outline-none"
+                className="border border-gray-200 rounded-xl p-4 w-full mt-6 focus:ring-2 focus:ring-indigo-500 outline-none"
               />
 
             </div>
@@ -189,7 +189,7 @@ const CreateJob = () => {
                   name="location"
                   value={formData.location}
                   onChange={handleChange}
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 >
                   <option>Select Location</option>
 
@@ -203,7 +203,7 @@ const CreateJob = () => {
                   name="jobType"
                   value={formData.jobType}
                   onChange={handleChange}
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 >
                   <option>Select Job Type</option>
 
@@ -218,7 +218,7 @@ const CreateJob = () => {
                   value={formData.salary}
                   onChange={handleChange}
                   placeholder="Salary (10-14 LPA)"
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 />
 
                 <input
@@ -226,7 +226,7 @@ const CreateJob = () => {
                   value={formData.experience}
                   onChange={handleChange}
                   placeholder="Experience (Years)"
-                  className="border rounded-xl p-4"
+                  className="border border-gray-200 rounded-xl p-4"
                 />
 
               </div>
@@ -246,7 +246,7 @@ const CreateJob = () => {
                 value={formData.requirements}
                 onChange={handleChange}
                 placeholder="React, Node.js, MongoDB, JWT"
-                className="border rounded-xl p-4 w-full"
+                className="border border-gray-200 rounded-xl p-4 w-full"
               />
 
             </div>
@@ -261,7 +261,7 @@ const CreateJob = () => {
                 value={formData.applyLink}
                 onChange={handleChange}
                 placeholder="https://company.com/careers/apply?id=123"
-                className="border rounded-xl p-4 w-full"
+                className="border border-gray-200 rounded-xl p-4 w-full"
               />
             </div>
 

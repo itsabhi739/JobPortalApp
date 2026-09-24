@@ -4,6 +4,8 @@ import {toast} from 'react-toastify'
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { Moon, Sun } from "lucide-react";
+import { ThemeContext } from "../context/ThemeContext";
 const Auth = () => {
 
   const navigate = useNavigate();
@@ -18,7 +20,11 @@ const Auth = () => {
   const [designation, setDesignation] = useState('')
   const [location, setLocation] = useState('')
 
-  const {backendURL,setIsLoggedIn,getUserData,inputClass} = useContext(AuthContext);
+  const {backendURL,setIsLoggedIn,getUserData} = useContext(AuthContext);
+  const { isDarkMode, toggleTheme } = useContext(ThemeContext);
+  const authInputClass = isDarkMode
+    ? "w-full border border-[#273449] bg-[#111827] text-white rounded-xl px-4 py-3 outline-none shadow-sm transition-all placeholder:text-slate-400 focus:border-slate-500 focus:ring-4 focus:ring-slate-500/20"
+    : "w-full border border-gray-300 bg-white text-slate-800 rounded-xl px-4 py-3 outline-none shadow-sm transition-all placeholder:text-gray-400 focus:border-[#6055FF] focus:ring-4 focus:ring-blue-500/20";
   const handleChange = (e)=>{
 
     const {name,value} = e.target;
@@ -119,8 +125,17 @@ const Auth = () => {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[#0B1120] px-6">
-      <div className={`w-full border border-[#5365E8] bg-[#151E2E] rounded-2xl shadow-[0_18px_50px_rgba(47,54,140,0.15)] p-8 ${isSignup ? 'max-w-2xl' : 'max-w-md'}`}>
+    <div className={`min-h-screen flex items-center justify-center px-6 ${isDarkMode ? "bg-[#0B1120]" : "bg-slate-50"}`}>
+      <div className={`relative w-full rounded-2xl shadow-[0_18px_50px_rgba(47,54,140,0.15)] p-8 ${isSignup ? 'max-w-2xl' : 'max-w-md'} ${isDarkMode ? "border border-[#273449] bg-[#151E2E]" : "border border-gray-200 bg-white"}`}>
+        <button
+          type="button"
+          aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
+          onClick={toggleTheme}
+          className={`absolute right-5 top-5 flex h-10 w-10 items-center justify-center rounded-full border transition ${isDarkMode ? "border-[#273449] text-yellow-400 hover:bg-[#1C273A]" : "border-gray-300 text-slate-700 hover:bg-gray-100"}`}
+        >
+          {isDarkMode ? <Sun size={18} /> : <Moon size={18} />}
+        </button>
 
         <div className="mb-4 text-center">
           <Link to="/" className="inline-flex items-center gap-3 justify-center">
@@ -136,11 +151,11 @@ const Auth = () => {
           </Link>
         </div>
 
-        <h2 className="text-2xl font-bold text-center mb-1">
+        <h2 className={`text-2xl font-bold text-center mb-1 ${isDarkMode ? "text-white" : "text-slate-800"}`}>
           {isSignup ? "Create Account" : "Login"}
         </h2>
 
-        <p className="text-center text-gray-500 mb-5">
+        <p className={`text-center mb-5 ${isDarkMode ? "text-slate-300" : "text-gray-500"}`}>
           {isSignup
             ? "Join us and start your journey."
             : "Welcome back! Please login to continue."}
@@ -152,7 +167,7 @@ const Auth = () => {
           {/* Username only for Signup */}
           {isSignup && (
             <div>
-              <label className="block mb-1 text-gray-700">
+              <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
                 Username
               </label>
 
@@ -160,7 +175,7 @@ const Auth = () => {
                 type="text"
                 name = 'username'
                 placeholder="Enter username"
-                className={inputClass}
+                className={authInputClass}
                 value={username}
                 onChange={handleChange}
               />
@@ -169,7 +184,7 @@ const Auth = () => {
 
           {/* Email */}
           <div>
-            <label className="block mb-1 text-gray-700">
+            <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
               Email
             </label>
 
@@ -179,13 +194,13 @@ const Auth = () => {
               value={email}
               onChange={handleChange}
               placeholder="Enter your email"
-              className={inputClass}
+              className={authInputClass}
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block mb-1 text-gray-700">
+            <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
               Password
             </label>
 
@@ -195,14 +210,14 @@ const Auth = () => {
               value={password}
               onChange={handleChange}
               placeholder="Enter password"
-              className={inputClass}
+              className={authInputClass}
             />
           </div>
 
           {/* Confirm Password only for Signup */}
           {isSignup && (
             <div>
-              <label className="block mb-1 text-gray-700">
+              <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
                 Confirm Password
               </label>
 
@@ -212,7 +227,7 @@ const Auth = () => {
                 value={confirmPassword}
                 onChange={handleChange}
                 placeholder="Confirm password"
-                className={inputClass}
+                className={authInputClass}
               />
             </div>
           )}
@@ -220,7 +235,7 @@ const Auth = () => {
           {/* Phone Number only for Signup */}
           {isSignup && (
             <div>
-              <label className="block mb-1 text-gray-700">
+              <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
                 Phone Number
               </label>
 
@@ -230,7 +245,7 @@ const Auth = () => {
                 value={phonenumber}
                 onChange={handleChange}
                 placeholder="Enter phone number"
-                className={inputClass}
+                className={authInputClass}
               />
             </div>
           )}
@@ -238,12 +253,12 @@ const Auth = () => {
           {/* Role Selection only for Signup */}
           {isSignup && (
             <div className="col-span-2">
-              <label className="block mb-2 text-gray-700">
+              <label className={`block mb-2 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
                 Select Role
               </label>
 
               <div className="flex gap-6">
-                <label className="flex items-center gap-2">
+                <label className={`flex items-center gap-2 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
                   <input
                     type="radio"
                     name="role"
@@ -254,7 +269,7 @@ const Auth = () => {
                   Student
                 </label>
 
-                <label className="flex items-center gap-2">
+                <label className={`flex items-center gap-2 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
                   <input
                     type="radio"
                     name="role"
@@ -271,7 +286,7 @@ const Auth = () => {
           {isSignup && role === 'Recruiter' && (
             <>
             <div>
-              <label className="block mb-1 text-gray-700">
+              <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>
                 Company Name
               </label>
 
@@ -281,16 +296,16 @@ const Auth = () => {
                 value={companyName}
                 onChange={handleChange}
                 placeholder="Enter company name"
-                className={inputClass}
+                className={authInputClass}
               />
             </div>
             <div>
-              <label className="block mb-1 text-gray-700">Designation</label>
-              <input type="text" name="designation" value={designation} onChange={handleChange} placeholder="e.g. HR Manager" className={inputClass} required />
+              <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>Designation</label>
+              <input type="text" name="designation" value={designation} onChange={handleChange} placeholder="e.g. HR Manager" className={authInputClass} required />
             </div>
             <div>
-              <label className="block mb-1 text-gray-700">Location</label>
-              <input type="text" name="location" value={location} onChange={handleChange} placeholder="Enter your location" className={inputClass} required />
+              <label className={`block mb-1 ${isDarkMode ? "text-slate-200" : "text-slate-700"}`}>Location</label>
+              <input type="text" name="location" value={location} onChange={handleChange} placeholder="Enter your location" className={authInputClass} required />
             </div>
             </>
           )}
@@ -316,7 +331,7 @@ const Auth = () => {
             {isSignup ? "Create Account" : "Login"}
           </button>
 
-          <p className="text-center text-gray-600 mt-3">
+          <p className={`text-center mt-3 ${isDarkMode ? "text-slate-300" : "text-gray-600"}`}>
             {isSignup
               ? "Already have an account?"
               : "Don't have an account?"}
