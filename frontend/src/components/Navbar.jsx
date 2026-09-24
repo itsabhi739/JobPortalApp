@@ -1,13 +1,14 @@
-import React from "react";
-import { useContext } from "react";
+import React, { useContext, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
-import { Moon, Sun } from "lucide-react";
+import { Menu, Moon, Sun, X } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
 const Navbar = () => {
   const navigate = useNavigate();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [profileMenuOpen, setProfileMenuOpen] = useState(false);
   const { userData, backendURL, isLoggedIn, setUserData, setIsLoggedIn,logout } =
     useContext(AuthContext);
 
@@ -44,11 +45,17 @@ const Navbar = () => {
         navigate("/login")
         toast.info("User not logged in cannot access dashboard")
       }
+      setMobileMenuOpen(false);
     }
+
+    const navigateFromMenu = (path) => {
+      navigate(path);
+      setMobileMenuOpen(false);
+    };
 
 
   return (
-    <div className="flex justify-between items-center h-20 px-6 sm:px-10 border-b border-gray-200 bg-white">
+    <div className="relative flex flex-wrap justify-between items-center min-h-20 px-4 sm:px-10 border-b border-gray-200 bg-white">
       <Link to="/" className="flex items-center gap-3 shrink-0">
         <img
           src="/favicon.svg"
@@ -61,17 +68,17 @@ const Navbar = () => {
         </span>
       </Link>
 
-      <div className="menu flex flex-1 items-center justify-center gap-6 text-gray-700 text-lg font-medium">
-        <div className="home" onClick={()=>navigate('/')}>Home</div>
-        <div className="jobs" onClick={()=>navigate('/jobs')}>Jobs</div>
-        <div className="companies" onClick={()=>navigate('/companies')}>Companies</div>
+      <div className="menu hidden lg:flex flex-1 items-center justify-center gap-6 text-gray-700 text-lg font-medium">
+        <button className="home" onClick={()=>navigate('/')}>Home</button>
+        <button className="jobs" onClick={()=>navigate('/jobs')}>Jobs</button>
+        <button className="companies" onClick={()=>navigate('/companies')}>Companies</button>
         {isLoggedIn?(
-        <div className="dashboard" onClick={handleDashboard}>Dashboard</div>
+        <button className="dashboard" onClick={handleDashboard}>Dashboard</button>
         ):null}
-        <div className="contactus" onClick={()=>navigate('/contact-us')}>Contact Us</div>
+        <button className="contactus" onClick={()=>navigate('/contact-us')}>Contact Us</button>
       </div>
 
-      <div className="ml-auto flex items-center gap-4">
+      <div className="ml-auto flex items-center gap-2 sm:gap-4">
         <button
           type="button"
           aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
@@ -83,19 +90,19 @@ const Navbar = () => {
         </button>
 
         {userData ? (
-        <div className="relative group w-10 h-10 rounded-full bg-black text-white text-xl flex items-center justify-center font-semibold cursor-pointer overflow-visible">
+        <div className="relative group w-10 h-10 rounded-full bg-black text-white text-xl flex items-center justify-center font-semibold cursor-pointer overflow-visible" onClick={() => setProfileMenuOpen((open) => !open)}>
           {profilePhotoUrl ? <img src={profilePhotoUrl} alt="Profile" className="w-full h-full rounded-full object-cover" /> : userData?.username?.[0].toUpperCase()}
           <div
-            className="absolute hidden group-hover:block top-0 right-0 z-10 text-black rounded pt-10"
+            className={`${profileMenuOpen ? "block" : "hidden group-hover:block"} absolute top-0 right-0 z-10 text-black rounded pt-10`}
           >
             <ul className="list-none m-0 p-2 bg-gray-100 text-sm">
-              {!userData.isVerified && (<li className="py-1 px-2 hover:bg-gray-200 cursor-pointer" onClick={sendVerificationOTP}>
+              {!userData.isVerified && (<li className="py-2 px-2 hover:bg-gray-200 cursor-pointer whitespace-nowrap" onClick={sendVerificationOTP}>
                 Verify email
               </li>)}
-              <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={()=>navigate("/profile")}>
+              <li className="py-2 px-2 hover:bg-gray-200 cursor-pointer pr-10 whitespace-nowrap" onClick={()=>navigate("/profile")}>
                 Profile
               </li>
-              <li className="py-1 px-2 hover:bg-gray-200 cursor-pointer pr-10" onClick={logout}>
+              <li className="py-2 px-2 hover:bg-gray-200 cursor-pointer pr-10 whitespace-nowrap" onClick={logout}>
                 Logout
               </li>  
             </ul>
@@ -109,7 +116,27 @@ const Navbar = () => {
             Login
           </button>
         )}
+
+        <button
+          type="button"
+          aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
+          onClick={() => setMobileMenuOpen((open) => !open)}
+          className="lg:hidden flex h-10 w-10 items-center justify-center rounded-lg border border-gray-300 text-gray-700"
+        >
+          {mobileMenuOpen ? <X size={22} /> : <Menu size={22} />}
+        </button>
+
       </div>
+
+      {mobileMenuOpen && <div className="lg:hidden basis-full py-3 border-t border-gray-200 mt-2">
+        <nav className="flex flex-col gap-1 text-gray-700 font-medium">
+          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/')}>Home</button>
+          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/jobs')}>Jobs</button>
+          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/companies')}>Companies</button>
+          {isLoggedIn && <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={handleDashboard}>Dashboard</button>}
+          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/contact-us')}>Contact Us</button>
+        </nav>
+      </div>}
     </div>
   );
 };
