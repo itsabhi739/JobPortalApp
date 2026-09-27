@@ -5,21 +5,21 @@ import { Application } from "../models/Applications.js";
 
 export const createJob = async (req, res) => {
     try {
-        const { title, description, requirements, location, salary, jobType,experience, company, position,applyLink} = req.body;
+        const { title, description, requirements, location, salary, jobType,experience, position,applyLink} = req.body;
         const userId = req.userId;
         const user = await User.findById(userId);
 
         if (!user) {
-            return res.status(400).json({ success: false, message: "User not found" })
+            return res.status(404).json({ success: false, message: "User not found" })
         }
 
         if (user.role !== 'Recruiter') {
-            return res.status(401).json({ success: false, message: "You are not authorized to create jobs" })
+            return res.status(403).json({ success: false, message: "You are not authorized to create jobs" })
         }
 
-        const companyId = company || user.profile?.company;
-        if (!title || !description || !requirements?.length || !location || !salary || !jobType || !experience || !companyId || !position) {
-            return res.status(400).json({ success: false, message: "Job Details are missing" })
+        const companyId = user.profile?.company;
+        if (!companyId) {
+            return res.status(403).json({ success: false, message: "Recruiter is not associated with a company" })
         }
         const normalizedLink = applyLink && typeof applyLink === "string" ? applyLink.trim() : "";
         const companyExists = await Company.findById(companyId);
@@ -31,7 +31,9 @@ export const createJob = async (req, res) => {
             });
         }
 
-        const requirementsArray = requirements.split(',').map((skill) => skill.trim()).filter((skill) => skill);
+        const requirementsArray = Array.isArray(requirements)
+            ? requirements.map((skill) => skill.trim()).filter(Boolean)
+            : requirements.split(',').map((skill) => skill.trim()).filter(Boolean);
 
         const job = new Job({
             title,
@@ -51,7 +53,8 @@ export const createJob = async (req, res) => {
         return res.status(201).json({ success: true, message: "Job created successfully" });
 
     } catch (e) {
-        return res.status(500).json({ success: false, message: e.message })
+        console.error("Create job error:", e);
+        return res.status(500).json({ success: false, message: "Unable to create job" })
     }
 }
 
@@ -64,23 +67,30 @@ export const deleteJob = async (req, res) => {
             return res.status(400).json({ success: false, message: "User not found: deleteJob" })
         }
         if (user.role !== "Recruiter" && user.role !== "Admin") {
-            return res.status(400).json({ success: false, message: "User dont have req permission to delete the job" })
+            return res.status(403).json({ success: false, message: "You are not authorized" })
         }
 
-        const job = await Job.findByIdAndDelete(jobId);
+        const job = await Job.findById(jobId);
 
         if (!job) {
             return res.status(404).json({ success: false, message: "Job not found" });
         }
+
+        if (user.role !== "Admin" && job.createdBy.toString() !== userId.toString()) {
+            return res.status(403).json({ success: false, message: "You are not authorized" });
+        }
+
+        await job.deleteOne();
         res.status(200).json({
             success: true,
             message: "Job deleted successfully",
         });
 
     } catch (e) {
+        console.error("Delete job error:", e);
         res.status(500).json({
             success: false,
-            message: e.message,
+            message: "Unable to delete job",
         });
     }
 }
@@ -144,14 +154,19 @@ export const updateJobs = async(req , res)=>{
         const {title,
       description,requirements,location,salary,jobType,experience,position,status,applyLink} = req.body;
 
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ success: false, message: "User not found" });
+        }
+
         const job = await Job.findById(id);
         if(!job){
-            return res.status(400).json({success:false , message: "Job Not found"})
+            return res.status(404).json({success:false , message: "Job not found"})
         }
-        if (job.createdBy.toString() !== userId.toString()) {
+        if (user.role !== "Admin" && job.createdBy.toString() !== userId.toString()) {
             return res.status(403).json({
                 success: false,
-                message: "You are not authorized to update this job",
+                message: "You are not authorized to update the job",
             });
         }
 
@@ -182,9 +197,10 @@ export const updateJobs = async(req , res)=>{
         });
 
     }catch(e){
+        console.error("Update job error:", e);
         return res.status(500).json({
         success: false,
-        message: e.message,
+        message: "Unable to update job",
     });
     }
 }
@@ -212,6 +228,13 @@ export const applyToJob = async (req, res) => {
                 alreadyApplied: true,
                 message: "You have already applied to this job.",
                 application: existingApplication
+            });
+        }
+
+        if (job.status !== "Active") {
+            return res.status(409).json({
+                success: false,
+                message: "This job is not currently accepting applications",
             });
         }
 

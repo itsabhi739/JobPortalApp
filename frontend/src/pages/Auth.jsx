@@ -57,16 +57,24 @@ const Auth = () => {
   const handleSubmit = async(e)=>{
     e.preventDefault();
     if(isSignup){
+      if (username.trim().length < 4) {
+        toast.error("Username must be at least 4 characters long");
+        return;
+      }
+      if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9]).{8,}$/.test(password)) {
+        toast.error("Password must be at least 8 characters and include uppercase, lowercase, number, and special character");
+        return;
+      }
       if(password !== confirmPassword){
         toast.error("Password and Confirm Password must be the same")
         return
       }
-      if (role === 'Recruiter' && (!companyName || !designation || !location)) {
+      if (role === 'Recruiter' && (!companyName.trim() || !designation.trim() || !location.trim())) {
         toast.error("Please fill full name, phone, designation, company, and location")
         return
       }
 
-       const payload = { username, email, password, phonenumber, role }
+       const payload = { username: username.trim(), email, password, phonenumber, role }
         if (role === 'Recruiter') {
           payload.companyName = companyName
           payload.designation = designation
@@ -178,6 +186,8 @@ const Auth = () => {
                 className={authInputClass}
                 value={username}
                 onChange={handleChange}
+                minLength={4}
+                required
               />
             </div>
           )}
@@ -193,6 +203,7 @@ const Auth = () => {
               name="email"
               value={email}
               onChange={handleChange}
+              required
               placeholder="Enter your email"
               className={authInputClass}
             />
@@ -209,6 +220,10 @@ const Auth = () => {
               name="password"
               value={password}
               onChange={handleChange}
+              minLength={isSignup ? 8 : undefined}
+              pattern={isSignup ? "(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9]).{8,}" : undefined}
+              title={isSignup ? "Use at least 8 characters with uppercase, lowercase, a number, and a special character" : undefined}
+              required
               placeholder="Enter password"
               className={authInputClass}
             />
@@ -295,6 +310,7 @@ const Auth = () => {
                 name="companyName"
                 value={companyName}
                 onChange={handleChange}
+                required
                 placeholder="Enter company name"
                 className={authInputClass}
               />

@@ -1,14 +1,15 @@
 import express from 'express'
 import { register,login, logout, verifyEmail, verifyEmailOTP,ResetPassword,SendResetPasswordOTP } from '../controllers/AuthController.js'
 import { userAuth, authWithoutVerification } from '../middlewares/userAuth.js';
+import { validateLoginSchema, validateRegisterSchema } from '../middlewares/validateRequest.js';
 
 const authRouter = express.Router();
 
 
-authRouter.post('/register',register)
+authRouter.post('/register',validateRegisterSchema,register)
 // http://localhost:5001/api/auth/register
 
-authRouter.post('/login',login)
+authRouter.post('/login',validateLoginSchema,login)
 // http://localhost:5001/api/auth/login
 
 authRouter.post('/logout',userAuth(),logout)

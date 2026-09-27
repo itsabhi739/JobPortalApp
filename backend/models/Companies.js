@@ -3,7 +3,8 @@ import mongoose from "mongoose";
 const companySchema = mongoose.Schema({
     name: {
         type: String,
-        required: true
+        required: true,
+        trim: true
     },
     description: {
         type: String,
@@ -19,6 +20,7 @@ const companySchema = mongoose.Schema({
     },
     location: {
         type: String,
+        trim: true
     },
     userId: [{
         type: mongoose.Schema.Types.ObjectId,
@@ -26,5 +28,9 @@ const companySchema = mongoose.Schema({
     }],
 }, { timestamps: true });
 
+companySchema.index(
+    { name: 1, location: 1 },
+    { unique: true, collation: { locale: "en", strength: 2 } }
+);
 
 export const Company = mongoose.model('Company',companySchema)
