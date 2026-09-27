@@ -34,10 +34,7 @@ const CreateJob = () => {
 
   const handleSubmit = async (e) => {
       e.preventDefault();
-      const payload = {
-        ...formData,
-        ...(userData?.company ? { company: userData.company } : {})
-      };
+      const payload = { ...formData };
       await createJobs(payload);
     }
   return (

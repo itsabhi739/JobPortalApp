@@ -111,8 +111,7 @@ export const register = async (req, res) => {
 
         res.status(201).json({
             success:true,
-            message:"User created successfully. Please verify your email with the OTP sent.",
-            token:jwtToken
+            message:"User created successfully. Please verify your email with the OTP sent."
         })
 
 
@@ -165,7 +164,6 @@ export const login = async(req,res)=>{
         return res.status(200).json({
             success:true,
             message:"User logged in successfully",
-            token:jwtToken,
             user:{
                 id:user._id,
                 username:user.username,

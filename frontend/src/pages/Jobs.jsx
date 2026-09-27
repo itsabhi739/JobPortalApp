@@ -246,6 +246,7 @@ const Jobs = () => {
             <div className="space-y-6">
               {isLoading ? <Loader /> : filteredJobs.map((job) => {
                 const isOwner =userData?.userId.toString() === (job?.createdBy?.toString())
+                const isActive = job.status === "Active";
                 return(
                 <div
                   key={job._id}
@@ -255,9 +256,14 @@ const Jobs = () => {
 
                     <div>
 
-                      <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                        {job.jobType}
-                      </span>
+                      <div className="flex flex-wrap gap-2">
+                        <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                          {job.jobType}
+                        </span>
+                        <span className={`px-3 py-1 rounded-full text-sm ${isActive ? "bg-green-100 text-green-700" : "bg-slate-100 text-slate-700"}`}>
+                          {job.status || "Status unavailable"}
+                        </span>
+                      </div>
 
                       <h3 className="text-2xl font-bold mt-3">{job.title}</h3>
 
@@ -288,11 +294,11 @@ const Jobs = () => {
                     <div className="mt-6 md:mt-0 flex flex-col gap-3">
                       {isStudent?(
                         <button
-                          className={`px-8 py-3 rounded-xl ${appliedJobIds.has(job._id?.toString()) ? "bg-green-600 text-white cursor-default" : "bg-[#6055FF] text-white"}`}
-                          onClick={() => !appliedJobIds.has(job._id?.toString()) && handleApply(job)}
-                          disabled={appliedJobIds.has(job._id?.toString())}
+                          className={`px-8 py-3 rounded-xl ${appliedJobIds.has(job._id?.toString()) ? "bg-green-600 text-white cursor-default" : "bg-[#6055FF] text-white"} disabled:opacity-60`}
+                          onClick={() => !appliedJobIds.has(job._id?.toString()) && isActive && handleApply(job)}
+                          disabled={appliedJobIds.has(job._id?.toString()) || !isActive}
                         >
-                          {appliedJobIds.has(job._id?.toString()) ? "Applied" : "Apply Now"}
+                          {appliedJobIds.has(job._id?.toString()) ? "Applied" : isActive ? "Apply Now" : "Not accepting applications"}
                         </button>
                       ):isOwner?(
                         <button className="bg-[#6055FF] text-white px-8 py-3 rounded-xl" onClick={()=>navigate(`/update-job/${job._id}`)}>
