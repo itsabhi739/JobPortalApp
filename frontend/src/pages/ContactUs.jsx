@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import axios from "axios";
 import {
   Mail,
   Phone,
@@ -20,25 +21,45 @@ const ContactUs = () => {
     subject: "",
     message: "",
   });
+  const [isSending, setIsSending] = useState(false);
+  const [submissionMessage, setSubmissionMessage] = useState("");
+  const [submissionError, setSubmissionError] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
 
+    setSubmissionMessage("");
     setFormData((prev) => ({
       ...prev,
       [name]: value,
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log(formData);
+    setIsSending(true);
+    setSubmissionMessage("");
+
+    try {
+      const backendURL = import.meta.env.VITE_BACKEND_URL;
+      const { data } = await axios.post(`${backendURL}/api/contact`, formData);
+      setSubmissionError(false);
+      setSubmissionMessage(data.message);
+      setFormData({ name: "", email: "", subject: "", message: "" });
+    } catch (error) {
+      setSubmissionError(true);
+      setSubmissionMessage(
+        error.response?.data?.message || "Unable to send your message right now. Please try again later."
+      );
+    } finally {
+      setIsSending(false);
+    }
   };
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
 
-      <section className="relative min-h-[344px] bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
+      <section className="relative min-h-86 bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
           <div className="max-w-7xl mx-auto px-6">
             <h1 className="text-5xl font-bold">Get in Touch With Us</h1>
 
@@ -49,7 +70,7 @@ const ContactUs = () => {
 
         </section>
 
-      <section className="relative z-10 max-w-7xl mx-auto -mt-[5cm] px-6 py-12">
+      <section className="relative z-10 max-w-7xl mx-auto mt-[-5cm] px-6 py-12">
 
         <div className="grid lg:grid-cols-3 gap-8">
 
@@ -60,6 +81,16 @@ const ContactUs = () => {
               Send Us a Message
             </h2>
 
+            {submissionMessage && (
+              <p
+                role="status"
+                aria-live="polite"
+                className={`mb-6 rounded-xl p-4 ${submissionError ? "bg-red-50 text-red-700" : "bg-green-50 text-green-700"}`}
+              >
+                {submissionMessage}
+              </p>
+            )}
+
             <form
               onSubmit={handleSubmit}
               className="space-y-6"
@@ -68,42 +99,50 @@ const ContactUs = () => {
 
               <div className="grid md:grid-cols-2 gap-5">
 
-                <div className="relative">
-
-                  <User
-                    size={20}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
-
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Your Name"
-                    required
-                    className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  />
+                <div>
+                  <label htmlFor="contact-name" className="mb-2 block text-sm font-medium text-gray-700">
+                    Your Name <span className="text-red-500" aria-hidden="true">*</span>
+                  </label>
+                  <div className="relative">
+                    <User
+                      size={20}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                      id="contact-name"
+                      type="text"
+                      name="name"
+                      value={formData.name}
+                      onChange={handleChange}
+                      placeholder="Your Name"
+                      required
+                      className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    />
+                  </div>
 
                 </div>
 
 
-                <div className="relative">
-
-                  <Mail
-                    size={20}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                  />
-
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="Your Email"
-                    required
-                    className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                  />
+                <div>
+                  <label htmlFor="contact-email" className="mb-2 block text-sm font-medium text-gray-700">
+                    Your Email <span className="text-red-500" aria-hidden="true">*</span>
+                  </label>
+                  <div className="relative">
+                    <Mail
+                      size={20}
+                      className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                    />
+                    <input
+                      id="contact-email"
+                      type="email"
+                      name="email"
+                      value={formData.email}
+                      onChange={handleChange}
+                      placeholder="Your Email"
+                      required
+                      className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                    />
+                  </div>
 
                 </div>
 
@@ -112,51 +151,60 @@ const ContactUs = () => {
 
               {/* Subject */}
 
-              <div className="relative">
-
-                <FileText
-                  size={20}
-                  className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
-                />
-
-                <input
-                  type="text"
-                  name="subject"
-                  value={formData.subject}
-                  onChange={handleChange}
-                  placeholder="Subject"
-                  required
-                  className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
+              <div>
+                <label htmlFor="contact-subject" className="mb-2 block text-sm font-medium text-gray-700">
+                  Subject <span className="text-red-500" aria-hidden="true">*</span>
+                </label>
+                <div className="relative">
+                  <FileText
+                    size={20}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400"
+                  />
+                  <input
+                    id="contact-subject"
+                    type="text"
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    placeholder="Subject"
+                    required
+                    className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  />
+                </div>
 
               </div>
 
 
-              <div className="relative">
-
-                <MessageSquare
-                  size={20}
-                  className="absolute left-4 top-5 text-gray-400"
-                />
-
-                <textarea
-                  name="message"
-                  value={formData.message}
-                  onChange={handleChange}
-                  placeholder="Your Message"
-                  rows={6}
-                  required
-                  className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none resize-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
-                />
+              <div>
+                <label htmlFor="contact-message" className="mb-2 block text-sm font-medium text-gray-700">
+                  Your Message <span className="text-red-500" aria-hidden="true">*</span>
+                </label>
+                <div className="relative">
+                  <MessageSquare
+                    size={20}
+                    className="absolute left-4 top-5 text-gray-400"
+                  />
+                  <textarea
+                    id="contact-message"
+                    name="message"
+                    value={formData.message}
+                    onChange={handleChange}
+                    placeholder="Your Message"
+                    rows={6}
+                    required
+                    className="w-full border border-gray-200 rounded-xl py-4 pl-12 pr-4 outline-none resize-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent"
+                  />
+                </div>
 
               </div>
 
               <button
                 type="submit"
-                className="bg-[#F4BC19] hover:bg-yellow-400 text-black px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition"
+                disabled={isSending}
+                className="bg-[#F4BC19] hover:bg-yellow-400 disabled:cursor-not-allowed disabled:opacity-60 text-black px-7 py-4 rounded-xl font-semibold flex items-center gap-2 transition"
               >
                 <Send size={19} />
-                Send Message
+                {isSending ? "Sending..." : "Send Message"}
               </button>
 
             </form>
