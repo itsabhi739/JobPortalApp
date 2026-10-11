@@ -104,3 +104,10 @@ export const validateLoginSchema = validateBody(Joi.object({
     email: Joi.string().trim().email().required(),
     password: Joi.string().required(),
 }));
+
+export const validateContactSchema = validateBody(Joi.object({
+    name: Joi.string().trim().min(1).max(100).required(),
+    email: Joi.string().trim().email().max(254).required(),
+    subject: Joi.string().trim().min(1).max(200).required(),
+    message: Joi.string().trim().min(1).max(5000).required(),
+}));

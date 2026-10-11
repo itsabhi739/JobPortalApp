@@ -7,6 +7,7 @@ import authRouter from "./routes/authRouter.js";
 import userRouter from "./routes/userRouter.js";
 import companyRouter from "./routes/companyRouter.js";
 import jobRouter from "./routes/jobRouter.js";
+import contactRouter from "./routes/contactRouter.js";
 import path from "path";
 
 
@@ -45,6 +46,7 @@ app.use('/api/auth',authRouter)
 app.use('/api/user',userRouter)
 app.use('/api/company',companyRouter)
 app.use('/api/job',jobRouter)
+app.use('/api/contact',contactRouter)
 //creating the connection
 const mongodbConnection = async () => {
   try {
