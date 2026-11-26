@@ -21,11 +21,13 @@ const JobsProvider = ({children})=>{
 
     const navigate = useNavigate();
     
-    const fetchJobs = async () => {
+    const fetchJobs = async (filters = {}) => {
       setIsLoading(true);
+    const searchKeyword = filters.keyword ?? keyword;
+    const searchLocation = filters.location ?? location;
     try {
       const response = await axios.get(
-        `${backendURL}/api/job/jobs/all?keyword=${keyword}&&location=${location}`,
+        `${backendURL}/api/job/jobs/all?keyword=${encodeURIComponent(searchKeyword)}&location=${encodeURIComponent(searchLocation)}`,
       );
       if (response.data.success) {
         const fetchedJobs = response.data.jobs || [];
@@ -95,11 +97,14 @@ const JobsProvider = ({children})=>{
       const response = await axios.patch(`${backendURL}/api/job/update/${id}`, payload);
       if (response.data.success) {
         toast.success(response.data.message);
+        return true;
       } else {
         toast.error(response.data.message);
+        return false;
       }
     }catch(e){
       toast.error(e.response?.data?.message || e.message || "Failed to create job");
+      return false;
     } finally {
       setIsLoading(false);
     }
@@ -112,11 +117,14 @@ const JobsProvider = ({children})=>{
       if (response.data.success) {
         toast.success(response.data.message);
         await fetchJobs();
+        return true;
       } else {
         toast.error(response.data.message);
+        return false;
       }
     }catch(e){
       toast.error(e.response?.data?.message || e.message || "Failed to create job");
+      return false;
     } finally {
       setIsLoading(false);
     }

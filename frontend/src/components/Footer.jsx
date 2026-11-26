@@ -1,4 +1,8 @@
+import { Link } from "react-router-dom";
+
 const Footer = () => {
+  const linkClass = "hover:text-white transition-colors";
+
   return (
     <footer className="bg-slate-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-6 py-12">
@@ -24,10 +28,10 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-2">
-              <li><a href="/">Home</a></li>
-              <li><a href="/jobs">Jobs</a></li>
-              <li><a href="/companies">Companies</a></li>
-              <li><a href="/contact">Contact</a></li>
+              <li><Link className={linkClass} to="/">Home</Link></li>
+              <li><Link className={linkClass} to="/jobs">Jobs</Link></li>
+              <li><Link className={linkClass} to="/companies">Companies</Link></li>
+              <li><Link className={linkClass} to="/contact-us">Contact</Link></li>
             </ul>
           </div>
 
@@ -38,10 +42,10 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-2">
-              <li>Browse Jobs</li>
-              <li>Upload Resume</li>
-              <li>Track Applications</li>
-              <li>Career Guidance</li>
+              <li><Link className={linkClass} to="/jobs">Browse Jobs</Link></li>
+              <li><Link className={linkClass} to="/profile">Upload Resume</Link></li>
+              <li><Link className={linkClass} to="/my-applications">Track Applications</Link></li>
+              <li><Link className={linkClass} to="/contact-us">Career Guidance</Link></li>
             </ul>
           </div>
 
@@ -52,9 +56,9 @@ const Footer = () => {
             </h3>
 
             <ul className="space-y-2">
-              <li>Email: support@abhijob.com</li>
-              <li>Phone: +91 98765 43210</li>
-              <li>Bangalore, India</li>
+              <li>Email: <a className={linkClass} href="mailto:support@abhijob.com">support@abhijob.com</a></li>
+              <li>Phone: <a className={linkClass} href="tel:+919876543210">+91 98765 43210</a></li>
+              <li><a className={linkClass} href="https://maps.google.com/?q=Bangalore%2C%20India" target="_blank" rel="noreferrer">Bangalore, India</a></li>
             </ul>
           </div>
 

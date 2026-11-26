@@ -19,10 +19,13 @@ const Companies = () => {
   useEffect(() => {
     const timer = setTimeout(()=>{
       fetchCompanies();
-      fetchJobs();
+      fetchJobs({ keyword: "", location: "" });
     },500)
     return ()=> clearTimeout(timer);
   },[search]);
+
+  const activeJobs = jobs.filter((job) => job.status === "Active");
+  const hiringLocations = new Set(activeJobs.map((job) => job.location).filter(Boolean)).size;
 
   const getCompanyJobCount = (companyId) => jobs.filter((job) => {
     const jobCompanyId = job.company?._id || job.company;
@@ -76,13 +79,13 @@ const Companies = () => {
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow text-center">
-              <h2 className="text-4xl font-bold text-[#6055FF]">1200+ </h2>
+              <h2 className="text-4xl font-bold text-[#6055FF]">{activeJobs.length}</h2>
               <p className="text-gray-500 mt-2">Active Jobs</p>
             </div>
 
             <div className="bg-white rounded-2xl p-6 shadow text-center">
-              <h2 className="text-4xl font-bold text-[#6055FF]">95%</h2>
-              <p className="text-gray-500 mt-2">Hiring Success Rate</p>
+              <h2 className="text-4xl font-bold text-[#6055FF]">{hiringLocations}</h2>
+              <p className="text-gray-500 mt-2">Hiring Locations</p>
             </div>
           </div>
         </section>

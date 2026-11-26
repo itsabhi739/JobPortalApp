@@ -1,5 +1,4 @@
-import React, { useEffect } from 'react'
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react'
 import { AuthContext } from '../context/AuthContext';
 import Hero from '../components/Hero';
 import SearchBar from '../components/Searchbar';
@@ -18,7 +17,7 @@ const Home = () => {
 
   return (<>
   <div className='pt-24'>
-    <Hero user ={userData}/>
+    <Hero />
     <SearchBar/>
     <FeaturedCompanies user={userData}/>
     <FeaturedJobs user={userData}/>

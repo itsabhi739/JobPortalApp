@@ -1,4 +1,3 @@
-import React from "react";
 import { FaBriefcase, FaPlus, FaFileAlt } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -55,20 +54,20 @@ const Welcome = ({user, jobs = [], applications = [], isStudent = false}) => {
 
           <div className="space-y-3 mt-4 text-sm">
             <div className="flex justify-between">
-              <span className="text-gray-200">{isStudent ? "Applications Today" : "New Applications"}</span>
-              <span className="font-bold">{isStudent ? newApplications : 12}</span>
+              <span className="text-gray-200">Applications Today</span>
+              <span className="font-bold">{newApplications}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-200">{isStudent ? "Active Jobs Available" : "Active Jobs"}</span>
-              <span className="font-bold">{isStudent ? activeJobs : 8}</span>
+              <span className="font-bold">{activeJobs}</span>
             </div>
             <div className="flex justify-between">
-              <span className="text-gray-200">{isStudent ? "Total Applications" : "Interviews Today"}</span>
-              <span className="font-bold">{isStudent ? applications.length : 3}</span>
+              <span className="text-gray-200">Total Applications</span>
+              <span className="font-bold">{applications.length}</span>
             </div>
             <div className="flex justify-between">
               <span className="text-gray-200">Shortlisted</span>
-              <span className="font-bold">{isStudent ? shortlisted : 24}</span>
+              <span className="font-bold">{shortlisted}</span>
             </div>
           </div>
         </div>

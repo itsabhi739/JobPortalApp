@@ -1,86 +1,64 @@
-import React from "react";
-import { FaStar } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
-const applicants = [
-  {
-    id: 1,
-    name: "Rahul Sharma",
-    role: "React Developer",
-    experience: "3 Years",
-    score: "98%",
-    image: "https://i.pravatar.cc/150?img=11",
-  },
-  {
-    id: 2,
-    name: "Priya Singh",
-    role: "Java Developer",
-    experience: "2 Years",
-    score: "96%",
-    image: "https://i.pravatar.cc/150?img=32",
-  },
-  {
-    id: 3,
-    name: "Ankit Verma",
-    role: "Node.js Developer",
-    experience: "4 Years",
-    score: "94%",
-    image: "https://i.pravatar.cc/150?img=15",
-  },
-  {
-    id: 4,
-    name: "Neha Patel",
-    role: "UI/UX Designer",
-    experience: "2 Years",
-    score: "92%",
-    image: "https://i.pravatar.cc/150?img=25",
-  },
-];
+const assetUrl = (asset) => asset?.startsWith("http") ? asset : asset ? `${import.meta.env.VITE_BACKEND_URL}${asset}` : "";
 
-const TopApplicants = () => {
+const TopApplicants = ({ applications = [] }) => {
+  const navigate = useNavigate();
+  const seenApplicants = new Set();
+  const recentApplicants = applications.filter((application) => {
+    const applicantId = application.applicant?._id;
+    if (!applicantId || seenApplicants.has(applicantId)) return false;
+    seenApplicants.add(applicantId);
+    return true;
+  }).slice(0, 4);
+
   return (
     <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-4 lg:p-5 h-full">
       <div className="flex justify-between items-center mb-4">
         <div>
           <h2 className="text-lg font-bold text-gray-800">
-            Top Applicants
+            Recent Applicants
           </h2>
 
           <p className="text-gray-500 text-sm">
-            Best candidates for your jobs
+            Candidates who recently applied
           </p>
         </div>
-
-        <button className="text-[#6055FF] font-semibold hover:underline text-sm">
-          View All
-        </button>
       </div>
 
       <div className="space-y-3">
-
-        {applicants.map((applicant) => (
+        {recentApplicants.length === 0 ? (
+          <p className="py-4 text-sm text-gray-500">No applicants yet.</p>
+        ) : recentApplicants.map((application) => (
           <div
-            key={applicant.id}
+            key={application._id}
             className="flex items-center justify-between hover:bg-gray-50 p-2 rounded-2xl transition"
           >
             <div className="flex items-center gap-3">
-              <img
-                src={applicant.image}
-                alt={applicant.name}
-                className="w-12 h-12 rounded-full object-cover"
-              />
+              {application.applicant.profile?.profilePhoto ? (
+                <img
+                  src={assetUrl(application.applicant.profile.profilePhoto)}
+                  alt=""
+                  className="w-12 h-12 rounded-full object-cover"
+                />
+              ) : (
+                <div className="w-12 h-12 rounded-full bg-blue-100 text-[#6055FF] flex items-center justify-center font-semibold">
+                  {application.applicant.username?.[0]?.toUpperCase() || "?"}
+                </div>
+              )}
 
               <div>
 
                 <h3 className="font-semibold text-gray-800">
-                  {applicant.name}
+                  {application.applicant.username || "Student"}
                 </h3>
 
                 <p className="text-gray-500 text-sm">
-                  {applicant.role}
+                  {application.job?.title || "Job"}
                 </p>
 
                 <p className="text-xs text-gray-400">
-                  {applicant.experience}
+                  {application.status || "pending"}
                 </p>
 
               </div>
@@ -88,18 +66,11 @@ const TopApplicants = () => {
             </div>
 
             <div className="text-right">
-
-              <div className="flex items-center gap-1 justify-end text-yellow-500">
-
-                <FaStar />
-
-                <span className="font-semibold">
-                  {applicant.score}
-                </span>
-
-              </div>
-
-              <button className="mt-2 text-sm bg-[#6055FF] hover:bg-[#434EC1] text-white px-3 py-1.5 rounded-lg">
+              <button
+                type="button"
+                onClick={() => navigate(`/applicant/${application.applicant._id}`)}
+                className="text-sm bg-[#6055FF] hover:bg-[#434EC1] text-white px-3 py-1.5 rounded-lg"
+              >
                 View
               </button>
 
