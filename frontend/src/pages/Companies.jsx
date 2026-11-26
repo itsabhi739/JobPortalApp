@@ -124,7 +124,7 @@ const Companies = () => {
 
                 {/* Content */}
                 <div className="pt-10 px-4 pb-4">
-                  <h2 className="text-lg font-semibold truncate">
+                  <h2 className="cursor-pointer text-lg font-semibold truncate hover:text-[#6055FF]" onClick={() => navigate(`/company/${company._id}`)}>
                     {company.name}
                   </h2>
 

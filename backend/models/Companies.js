@@ -14,6 +14,10 @@ const companySchema = mongoose.Schema({
         type:String,
         required:false
     },
+    coverImage: {
+        type: String,
+        required: false
+    },
     website: {
         type: String,
         unique:true

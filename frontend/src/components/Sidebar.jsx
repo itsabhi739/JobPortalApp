@@ -14,7 +14,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 
-const Sidebar = ({user,companyLocation,viewid,isStudent = false}) => {
+const Sidebar = ({user,companyLocation,companyId,viewid,isStudent = false}) => {
   const navigate = useNavigate();
   const {logout} = useContext(AuthContext);
   const profilePhoto = user?.profile?.profilePhoto;
@@ -61,7 +61,7 @@ const Sidebar = ({user,companyLocation,viewid,isStudent = false}) => {
           {isStudent ? "My Applications" : "Applications"}
         </button>
 
-        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4" onClick={()=>navigate(isStudent ? '/profile' : '/recruiter-dashboard')}>
+        <button className="w-full flex items-center gap-4 hover:bg-gray-100 rounded-xl px-5 py-4" onClick={()=>navigate(isStudent ? '/profile' : companyId ? `/company/${companyId}` : '/recruiter-dashboard')}>
           <Building2 size={20} />
           {/* <Building2 size={20} onClick={()=>navigate(`/view-job/:${viewid}`)}/> */}
           {isStudent ? "Update Profile" : "Company Profile"}

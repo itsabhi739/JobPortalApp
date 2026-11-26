@@ -1,4 +1,5 @@
 import { Company } from "../models/Companies.js";
+import { Job } from "../models/Jobs.js";
 import User from "../models/Users.js";
 
 const registerCompany = async (req, res) => {
@@ -22,7 +23,13 @@ const registerCompany = async (req, res) => {
             website: website || undefined,
                 location: normalizedLocation,
         });
+        if (req.userId) {
+            newCompany.userId = [req.userId];
+        }
         await newCompany.save();
+        if (req.userId) {
+            await User.findByIdAndUpdate(req.userId, { "profile.company": newCompany._id });
+        }
         return res.status(201).json({ success: true, message: "Company created successfully",
             companyId: newCompany._id});
 
@@ -40,9 +47,13 @@ const getCompanyById = async (req, res) => {
         const id = req.params.id;
         const company = await Company.findById(id);
         if (!company) {
-            return res.status(400).json({ success: false, message: `Company not found with id: ${id}` })
+            return res.status(404).json({ success: false, message: "Company not found" })
         }
-        return res.status(200).json({ company, success: true })
+        const [jobs, userCount] = await Promise.all([
+            Job.find({ company: id, status: "Active" }).sort({ createdAt: -1 }),
+            User.countDocuments({ "profile.company": company._id }),
+        ]);
+        return res.status(200).json({ company, jobs, userCount, success: true })
 
     } catch (e) {
         console.error("Get company error:", e);
@@ -91,7 +102,7 @@ const getAllCompanies = async (req, res) => {
 
 const updateCompanies = async (req, res) => {
     try {
-        const { name, description, website, location } = req.body;
+        const { name, description, website, location, logo, coverImage } = req.body;
         const id = req.params.id;
         const company = await Company.findById(id);
 
@@ -119,9 +130,15 @@ const updateCompanies = async (req, res) => {
         if (location) {
             company.location = location
         }
+        if (logo !== undefined) {
+            company.logo = logo
+        }
+        if (coverImage !== undefined) {
+            company.coverImage = coverImage
+        }
 
         await company.save()
-        return res.status(200).json({ success: true, message: "Company updated successfully" })
+        return res.status(200).json({ success: true, message: "Company updated successfully", company })
 
     } catch (e) {
         if (e.code === 11000) {

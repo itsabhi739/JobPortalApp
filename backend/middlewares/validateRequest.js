@@ -64,6 +64,8 @@ export const validateCompanyUpdateSchema = validateBody(Joi.object({
     description: Joi.string().trim().min(1).optional(),
     website: Joi.string().trim().uri().allow("").optional(),
     location: Joi.string().trim().allow("").optional(),
+    logo: Joi.string().trim().uri().allow("").optional(),
+    coverImage: Joi.string().trim().uri().allow("").optional(),
 }).min(1));
 
 const passwordSchema = Joi.string()
