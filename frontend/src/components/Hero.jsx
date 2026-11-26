@@ -1,13 +1,16 @@
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import { CompanyContext } from "../context/CompanyContext";
+import { JobsContext } from "../context/JobsContext";
 
 
-const Hero = ({user}) => {
+const Hero = () => {
   const navigate = useNavigate();
-  const {isLoggedIn,setIsLoggedIn,userData,setUserData,getUserData,inputClass,authLoading,logout,isStudent} = useContext(AuthContext);
-  const {companies} = useContext(CompanyContext)
+  const {isLoggedIn,isStudent} = useContext(AuthContext);
+  const {allCompanies} = useContext(CompanyContext);
+  const {jobs} = useContext(JobsContext);
+  const activeJobs = jobs.filter((job) => job.status === "Active").length;
   
   return (
     <section className="bg-background py-20">
@@ -15,7 +18,7 @@ const Hero = ({user}) => {
 
         <div>
           <span className="bg-blue-100 text-primary px-4 py-2 rounded-full">
-            #1 Placement Portal
+            Your Career Starts Here
           </span>
 
           <h1 className="text-5xl font-bold mt-6 leading-tight">
@@ -52,7 +55,7 @@ const Hero = ({user}) => {
             <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-100 transition" onClick={()=>navigate("/recruiter-dashboard")}>
               Check Applicants
             </button>):(
-               <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-100 transition" onClick={()=>navigate("/register")}>
+               <button className="border border-gray-300 text-gray-700 px-6 py-3 rounded-lg hover:bg-gray-100 transition" onClick={()=>navigate("/register-company")}>
               Register Company
             </button>
             )}
@@ -60,18 +63,18 @@ const Hero = ({user}) => {
 
           <div className="flex gap-10 mt-10">
             <div>
-              <h3 className="text-2xl font-bold">{companies.length}+</h3>
+              <h3 className="text-2xl font-bold">{allCompanies.length}</h3>
               <p>Companies</p>
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold">10K+</h3>
-              <p>Students</p>
+              <h3 className="text-2xl font-bold">{activeJobs}</h3>
+              <p>Active Jobs</p>
             </div>
 
             <div>
-              <h3 className="text-2xl font-bold">2K+</h3>
-              <p>Placements</p>
+              <h3 className="text-2xl font-bold">{jobs.length}</h3>
+              <p>Total Jobs</p>
             </div>
           </div>
         </div>

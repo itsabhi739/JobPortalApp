@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import { useContext, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom';
 import Sidebar from '../components/Sidebar'
 import Welcome from '../components/Welcome';
@@ -16,7 +16,7 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     if (userData) {
-      fetchJobs();
+      fetchJobs({ keyword: "", location: "" });
       fetchMyApplications();
     }
   }, [userData]);

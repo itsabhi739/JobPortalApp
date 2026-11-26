@@ -1,39 +1,8 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import Popup from "./Popup";
 import Loader from "./Loader";
 import { useNavigate } from "react-router-dom";
-
-const jobs = [
-  {
-    id: 1,
-    title: "React Developer",
-    applications: 25,
-    status: "Active",
-    posted: "2 Jul 2026",
-  },
-  {
-    id: 2,
-    title: "Java Developer",
-    applications: 18,
-    status: "Active",
-    posted: "30 Jun 2026",
-  },
-  {
-    id: 3,
-    title: "Node.js Developer",
-    applications: 42,
-    status: "Closed",
-    posted: "25 Jun 2026",
-  },
-  {
-    id: 4,
-    title: "UI/UX Designer",
-    applications: 12,
-    status: "Paused",
-    posted: "20 Jun 2026",
-  },
-];
 
 const statusColor = {
   Active: "bg-green-100 text-green-700",
@@ -41,7 +10,7 @@ const statusColor = {
   Paused: "bg-yellow-100 text-yellow-700",
 };
 
-const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
+const RecentJobs = ({ userJobs, loading, updateJob,deleteJob }) => {
   const [showPopup, setShowPopup] = useState(false);
   const [selectedJobId, setSelectedJobId] = useState(null);
   const navigate = useNavigate();
@@ -80,7 +49,7 @@ const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
           </p>
         </div>
 
-        <button className="text-[#6055FF] font-semibold hover:underline text-sm">
+        <button type="button" onClick={() => navigate("/jobs")} className="text-[#6055FF] font-semibold hover:underline text-sm">
           View All
         </button>
       </div>
@@ -128,12 +97,14 @@ const RecentJobs = ({ userData, userJobs, loading, updateJob,deleteJob }) => {
                   </select>
                 </td>
 
-                <td className="text-sm">{convertDate(job.updatedAt)}</td>
+                <td className="text-sm">{convertDate(job.createdAt)}</td>
 
                 <td>
                   <div className="flex gap-3 text-[#6055FF] text-sm">
 
-                    <FaEye className="cursor-pointer hover:text-black" />
+                    <button type="button" aria-label={`View ${job.title}`} onClick={() => navigate(`/job/${job._id}`)} className="hover:text-black">
+                      <FaEye />
+                    </button>
 
                     <FaEdit className="cursor-pointer hover:text-green-600" onClick={()=>navigate(`/update-job/${job._id}`)} />
 

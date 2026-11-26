@@ -1,4 +1,3 @@
-import React from "react";
 import {
   FaBriefcase,
   FaCheckCircle,
@@ -20,7 +19,7 @@ const StatCards = ({ userJobs = [], jobs = userJobs, applications = [] }) => {
     return value >= start && value <= now;
   };
   const stats = [
-    { title: "Total Jobs", value: jobs.filter((job) => isSameMonth(job.createdAt)).length, change: `${jobs.length} available overall`, icon: <FaBriefcase />, bg: "bg-blue-100", text: "text-[#6055FF]" },
+    { title: "Total Jobs", value: jobs.length, change: `${jobs.filter((job) => isSameMonth(job.createdAt)).length} added this month`, icon: <FaBriefcase />, bg: "bg-blue-100", text: "text-[#6055FF]" },
     { title: "Active Jobs", value: jobs.filter((job) => job.status === "Active").length, change: "currently available", icon: <FaCheckCircle />, bg: "bg-green-100", text: "text-green-600" },
     { title: "Applications", value: applications.length, change: `${applications.filter((application) => isThisWeek(application.createdAt)).length} this week`, icon: <FaUsers />, bg: "bg-yellow-100", text: "text-yellow-600" },
     { title: "Shortlisted", value: applications.filter((application) => application.status === "shortlisted").length, change: "based on application status", icon: <FaUserCheck />, bg: "bg-purple-100", text: "text-purple-600" },

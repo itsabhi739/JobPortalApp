@@ -1,4 +1,4 @@
-import React from "react";
+import { useState } from "react";
 import {
   ResponsiveContainer,
   LineChart,
@@ -11,22 +11,32 @@ import {
 } from "recharts";
 
 const ApplicationsChart = ({ applications = [] }) => {
+  const [range, setRange] = useState("weeks");
   const now = new Date();
-  const data = Array.from({ length: 7 }, (_, index) => {
-    const date = new Date(now);
-    date.setDate(now.getDate() - (6 - index) * 7);
-    const start = new Date(date);
-    start.setHours(0, 0, 0, 0);
-    const end = new Date(start);
-    end.setDate(start.getDate() + 7);
-    return {
-      week: `Week ${index + 1}`,
-      applications: applications.filter((application) => {
-        const createdAt = new Date(application.createdAt);
-        return createdAt >= start && createdAt < end;
-      }).length,
-    };
-  });
+  const data = range === "weeks"
+    ? Array.from({ length: 7 }, (_, index) => {
+      const start = new Date(now.getFullYear(), now.getMonth(), now.getDate() - now.getDay() - (6 - index) * 7);
+      const end = new Date(start);
+      end.setDate(start.getDate() + 7);
+      return {
+        period: `Week ${index + 1}`,
+        applications: applications.filter((application) => {
+          const createdAt = new Date(application.createdAt);
+          return createdAt >= start && createdAt < end && createdAt <= now;
+        }).length,
+      };
+    })
+    : Array.from({ length: 6 }, (_, index) => {
+      const start = new Date(now.getFullYear(), now.getMonth() - (5 - index), 1);
+      const end = new Date(now.getFullYear(), now.getMonth() - (4 - index), 1);
+      return {
+        period: start.toLocaleString("en-IN", { month: "short" }),
+        applications: applications.filter((application) => {
+          const createdAt = new Date(application.createdAt);
+          return createdAt >= start && createdAt < end && createdAt <= now;
+        }).length,
+      };
+    });
 
   return (
     <div className="bg-white rounded-3xl shadow-md border border-gray-100 p-4 lg:p-5 h-full">
@@ -37,13 +47,13 @@ const ApplicationsChart = ({ applications = [] }) => {
           </h2>
 
           <p className="text-gray-500 mt-1 text-sm">
-            Applications received over the last 7 weeks.
+            Applications received over the {range === "weeks" ? "last 7 weeks" : "last 6 months"}.
           </p>
         </div>
 
-        <select className="border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-[#6055FF] text-sm">
-          <option>Last 7 Weeks</option>
-          <option>Last 6 Months</option>
+        <select value={range} onChange={(event) => setRange(event.target.value)} className="border border-gray-200 rounded-xl px-3 py-2 outline-none focus:border-[#6055FF] text-sm">
+          <option value="weeks">Last 7 Weeks</option>
+          <option value="months">Last 6 Months</option>
         </select>
       </div>
 
@@ -67,7 +77,7 @@ const ApplicationsChart = ({ applications = [] }) => {
             />
 
             <XAxis
-              dataKey="week"
+              dataKey="period"
               tick={{ fill: "#6B7280", fontSize: 14 }}
               axisLine={false}
               tickLine={false}

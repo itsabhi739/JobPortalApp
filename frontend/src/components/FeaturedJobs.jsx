@@ -1,15 +1,15 @@
 import { useContext, useEffect } from "react";
-import { AuthContext } from "../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 import { JobsContext } from "../context/JobsContext";
 import Loader from "./Loader";
 
 
 const FeaturedJobs = () => {
-  const {backendURL,inputClass} = useContext(AuthContext);
-  const {fetchJobs,jobs,setJobs,isLoading} = useContext(JobsContext);
+  const navigate = useNavigate();
+  const {fetchJobs,jobs,isLoading} = useContext(JobsContext);
 
   useEffect(()=>{
-    fetchJobs()
+    fetchJobs({ keyword: "", location: "" })
   },[])
 
   const featuredJobs = jobs.slice(0,6);
@@ -35,7 +35,7 @@ const FeaturedJobs = () => {
               </h3>
 
               <p className="text-gray-500 mt-2">
-                {job.company?.title}
+                {job.company?.name}
               </p>
 
               <div className="flex gap-2 mt-4">
@@ -52,8 +52,8 @@ const FeaturedJobs = () => {
                 </span>
               </div>
 
-              <button className="mt-5 bg-blue-600 text-white w-full py-2 rounded-lg">
-                Apply Now
+              <button type="button" onClick={() => navigate(`/job/${job._id}`)} className="mt-5 bg-blue-600 text-white w-full py-2 rounded-lg">
+                View Job
               </button>
             </div>
           ))}

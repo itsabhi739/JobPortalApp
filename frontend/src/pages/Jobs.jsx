@@ -123,7 +123,9 @@ const Jobs = () => {
           </h1>
 
           <p className="mt-4 text-lg text-gray-200">
-            Explore thousands of opportunities from top companies.
+            {isLoading
+              ? "Finding opportunities that match your search..."
+              : `${filteredJobs.length} ${filteredJobs.length === 1 ? "job opportunity is" : "job opportunities are"} currently listed from top companies.`}
           </p>
 
           {/* Search */}
@@ -274,19 +276,14 @@ const Jobs = () => {
                         <span>₹{job.salary}</span>
                       </div>
 
-                      <div className="flex gap-2 mt-4">
-                        <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                          React
-                        </span>
-
-                        <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                          JavaScript
-                        </span>
-
-                        <span className="bg-gray-100 px-3 py-1 rounded-full text-sm">
-                          Tailwind
-                        </span>
-
+                      <div className="flex flex-wrap gap-2 mt-4">
+                        {Array.isArray(job.requirements) && job.requirements.length > 0
+                          ? job.requirements.map((requirement, index) => (
+                            <span key={`${requirement}-${index}`} className="bg-gray-100 px-3 py-1 rounded-full text-sm">
+                              {requirement}
+                            </span>
+                          ))
+                          : <span className="text-sm text-gray-500">No skills listed</span>}
                       </div>
 
                     </div>

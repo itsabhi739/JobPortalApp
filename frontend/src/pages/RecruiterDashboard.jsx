@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import Sidebar from '../components/Sidebar'
 import Welcome from '../components/Welcome';
 import StatCards from '../components/StatCards';
@@ -16,15 +16,10 @@ import { toast } from 'react-toastify';
 const RecruiterDashboard = () => {
   const {
     backendURL,
-    isLoggedIn,
-    setIsLoggedIn,
     userData,
-    setUserData,
-    getUserData,
-    inputClass,
   } = useContext(AuthContext);
   const { companies } = useContext(CompanyContext);
-  const {jobs,fetchJobs,updateJob,deleteJob,viewJob} = useContext(JobsContext)
+  const {jobs,fetchJobs,updateJob,deleteJob} = useContext(JobsContext)
   const [userJobs,setUserJobs] = useState([]);
   const [userCompany,setUserCompany] = useState(null);
   const [jobsLoading, setJobsLoading] = useState(true);
@@ -48,10 +43,8 @@ const RecruiterDashboard = () => {
     if(!userData) return;
 
     let isCurrent = true;
-    setJobsLoading(true);
-
     const loadRecruiterJobs = async () => {
-      const fetchedJobs = await fetchJobs();
+      const fetchedJobs = await fetchJobs({ keyword: "", location: "" });
       if (!isCurrent) return;
       getJobsAndCompany(fetchedJobs);
       setJobsLoading(false);
@@ -92,13 +85,17 @@ const RecruiterDashboard = () => {
   };
 
   const handleJobUpdate = async (payload, id) => {
-    await updateJob(payload, id);
-    setUserJobs((current) => current.map((job) => job._id === id ? { ...job, ...payload } : job));
+    const updated = await updateJob(payload, id);
+    if (updated) {
+      setUserJobs((current) => current.map((job) => job._id === id ? { ...job, ...payload } : job));
+    }
   };
 
   const handleJobDelete = async (id) => {
-    await deleteJob(id);
-    setUserJobs((current) => current.filter((job) => job._id !== id));
+    const deleted = await deleteJob(id);
+    if (deleted) {
+      setUserJobs((current) => current.filter((job) => job._id !== id));
+    }
   };
 
   return (
@@ -106,17 +103,17 @@ const RecruiterDashboard = () => {
       <Sidebar user={userData} companyLocation={userCompany?.location} companyId={recruiterCompanyId} />
       <div className="flex-1 bg-[#F8FAFC] min-h-screen p-4 lg:p-6">
         <div className="space-y-4 lg:space-y-5">
-          <Welcome user={userData} />
-          <StatCards userJobs={userJobs} />
+          <Welcome user={userData} jobs={userJobs} applications={applications} />
+          <StatCards userJobs={userJobs} applications={applications} />
 
           <div className="grid gap-4 xl:grid-cols-3">
-            <ApplicationsChart />
-            <JobsChart />
-            <TopApplicants />
+            <ApplicationsChart applications={applications} />
+            <JobsChart jobs={userJobs} />
+            <TopApplicants applications={applications} />
           </div>
 
           <div className="grid gap-4 xl:grid-cols-[1.45fr_0.85fr]">
-            <RecentJobs user={userData} userJobs={userJobs} loading={jobsLoading} updateJob={handleJobUpdate} deleteJob={handleJobDelete}/>
+            <RecentJobs userJobs={userJobs} loading={jobsLoading} updateJob={handleJobUpdate} deleteJob={handleJobDelete}/>
             <Notifications applications={applications} recruiterView onStatusChange={updateApplicationStatus} onApplicantClick={(id) => window.location.assign(`/applicant/${id}`)} loading={applicationsLoading} />
           </div>
         </div>
