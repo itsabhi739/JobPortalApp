@@ -7,7 +7,7 @@ const companyRouter = new express.Router();
 
 companyRouter.post('/register',validateCompanyRegistrationSchema,registerCompany) //http://localhost:5001/api/company/register
 
-companyRouter.get('/get/:id',userAuth(),getCompanyById ) //http://localhost:5001/api/company/get/{id}
+companyRouter.get('/get/:id',getCompanyById ) //http://localhost:5001/api/company/get/{id}
 
 companyRouter.get('/companies',userAuth(['Admin','Recruiter']),getAllCompaniesByUser) //http://localhost:5001/api/company/companies
 

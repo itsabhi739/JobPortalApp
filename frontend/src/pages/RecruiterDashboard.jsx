@@ -30,6 +30,7 @@ const RecruiterDashboard = () => {
   const [jobsLoading, setJobsLoading] = useState(true);
   const [applications, setApplications] = useState([]);
   const [applicationsLoading, setApplicationsLoading] = useState(true);
+  const recruiterCompanyId = userData?.company || userData?.profile?.company;
 
   const getJobsAndCompany = (fetchedJobs = jobs)=>{
     const company = companies.find(
@@ -102,7 +103,7 @@ const RecruiterDashboard = () => {
 
   return (
     <div className="flex min-h-screen bg-slate-50">
-      <Sidebar user={userData} companyLocation={userCompany?.location} />
+      <Sidebar user={userData} companyLocation={userCompany?.location} companyId={recruiterCompanyId} />
       <div className="flex-1 bg-[#F8FAFC] min-h-screen p-4 lg:p-6">
         <div className="space-y-4 lg:space-y-5">
           <Welcome user={userData} />

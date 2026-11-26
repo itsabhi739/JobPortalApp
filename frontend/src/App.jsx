@@ -23,6 +23,7 @@ import MyApplications from './pages/MyApplications.jsx'
 import UserProfile from './pages/UserProfile.jsx'
 import JobDetails from './pages/JobDetails.jsx'
 import ApplicantProfile from './pages/ApplicantProfile.jsx'
+import CompanyProfile from './pages/CompanyProfile.jsx'
 
 function App() {
   const location = useLocation();
@@ -58,6 +59,7 @@ function App() {
       <Route path='/' element={<Home/>}/>
       <Route path='/jobs' element={<Jobs/>}/>
       <Route path='/companies' element={<Companies/>}/>
+      <Route path='/company/:id' element={<CompanyProfile/>}/>
       <Route path='/admin-dashboard' element={<PrivateRoute><AdminDashboard/></PrivateRoute>}/>
       <Route path='/student-dashboard' element={<PrivateRoute><StudentDashboard/></PrivateRoute>}/>
       <Route path='/recruiter-dashboard' element={<PrivateRoute><RecruiterDashboard/></PrivateRoute>}/>
