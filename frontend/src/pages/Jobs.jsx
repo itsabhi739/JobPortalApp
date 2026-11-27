@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext.jsx";
 import { useSearchParams } from "react-router-dom";
 import Loader from "../components/Loader";
+import Seo from "../components/Seo";
 
 const Jobs = () => {
   //calling hooks
@@ -33,7 +34,11 @@ const Jobs = () => {
   } = useContext(JobsContext);
 
   const { getUserData, userData,isStudent,isLoggedIn } = useContext(AuthContext);
-  const [searchParams] = useSearchParams();useEffect(() => {
+  const [searchParams] = useSearchParams();
+  useEffect(() => {
+    const urlKeyword = searchParams.get("keyword");
+    if (urlKeyword) setKeyword(urlKeyword);
+  }, [searchParams]);useEffect(() => {
     const timer = setTimeout(()=>{
       fetchJobs();
       if(isLoggedIn && isStudent) {
@@ -112,7 +117,12 @@ const Jobs = () => {
 
   return (
     // <div className="mt-32">
-    <div className="bg-[#F8FAFC] min-h-screen">
+    <main className="bg-[#F8FAFC] min-h-screen">
+      <Seo
+        title={keyword ? `${keyword} Jobs & Internships` : "Browse Jobs & Internships"}
+        description="Browse the latest full-time, part-time, remote and internship openings for students and freshers on AbhiJob. Filter by job type, experience and location, then apply in one click."
+        path="/jobs"
+      />
 
       {/* Hero */}
       <section className="relative bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
@@ -321,7 +331,7 @@ const Jobs = () => {
         </div>
 
       </section>
-    </div>
+    </main>
     // </div>
 
   );

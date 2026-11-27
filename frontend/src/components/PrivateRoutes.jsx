@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { Navigate } from "react-router-dom";
 import Loader from "./Loader";
+import Seo from "./Seo";
 
 
 export const PrivateRoute = ({ children }) => {
@@ -19,5 +20,11 @@ export const PrivateRoute = ({ children }) => {
     return <Navigate to="/verify-email" replace />;
   }
 
-  return children;
+  // Every private page is kept out of search results.
+  return (
+    <>
+      <Seo title="My Account" noindex />
+      {children}
+    </>
+  );
 };

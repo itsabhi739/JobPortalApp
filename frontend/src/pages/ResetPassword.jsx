@@ -1,3 +1,4 @@
+import Seo from "../components/Seo";
 import React, { useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
@@ -51,6 +52,7 @@ const ResetPassword = () => {
 
   return (
     <>
+      <Seo title="Reset Password" noindex />
       {!isEmailSent && !isOTPSubmitted && (
       <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
         <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">

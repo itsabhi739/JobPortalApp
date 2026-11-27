@@ -1,10 +1,19 @@
 import React, { useContext, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, NavLink, useNavigate } from "react-router-dom";
 import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { Menu, Moon, Sun, X } from "lucide-react";
 import { ThemeContext } from "../context/ThemeContext";
+
+// Real <a href> links so crawlers can discover these pages.
+const NAV_LINKS = [
+  { to: "/", label: "Home" },
+  { to: "/jobs", label: "Jobs" },
+  { to: "/companies", label: "Companies" },
+  { to: "/contact-us", label: "Contact Us" },
+];
+
 const Navbar = () => {
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -18,7 +27,7 @@ const Navbar = () => {
         navigate('/verify-email')
         toast.success(data.message)
       }catch(e){
-        toast.error(data.message)
+        toast.error(e.response?.data?.message || e.message)
       }
     }
 
@@ -48,18 +57,15 @@ const Navbar = () => {
       setMobileMenuOpen(false);
     }
 
-    const navigateFromMenu = (path) => {
-      navigate(path);
-      setMobileMenuOpen(false);
-    };
-
 
   return (
-    <div className="relative flex flex-wrap justify-between items-center min-h-20 px-4 sm:px-10 border-b border-gray-200 bg-white">
-      <Link to="/" className="flex items-center gap-3 shrink-0">
+    <header className="relative flex flex-wrap justify-between items-center min-h-20 px-4 sm:px-10 border-b border-gray-200 bg-white">
+      <Link to="/" className="flex items-center gap-3 shrink-0" aria-label="AbhiJob home">
         <img
           src="/favicon.svg"
           alt="AbhiJob logo"
+          width="44"
+          height="44"
           className="h-11 w-11 rounded-xl object-cover shadow-sm"
         />
         <span className="hidden sm:inline text-xl font-black tracking-tight">
@@ -68,15 +74,14 @@ const Navbar = () => {
         </span>
       </Link>
 
-      <div className="menu hidden lg:flex flex-1 items-center justify-center gap-6 text-gray-700 text-lg font-medium">
-        <button className="home" onClick={()=>navigate('/')}>Home</button>
-        <button className="jobs" onClick={()=>navigate('/jobs')}>Jobs</button>
-        <button className="companies" onClick={()=>navigate('/companies')}>Companies</button>
+      <nav aria-label="Main navigation" className="menu hidden lg:flex flex-1 items-center justify-center gap-6 text-gray-700 text-lg font-medium">
+        {NAV_LINKS.map(({ to, label }) => (
+          <NavLink key={to} to={to} end={to === '/'} className={({ isActive }) => isActive ? "text-[#6055FF]" : undefined}>{label}</NavLink>
+        ))}
         {isLoggedIn?(
         <button className="dashboard" onClick={handleDashboard}>Dashboard</button>
         ):null}
-        <button className="contactus" onClick={()=>navigate('/contact-us')}>Contact Us</button>
-      </div>
+      </nav>
 
       <div className="ml-auto flex items-center gap-2 sm:gap-4">
         <button
@@ -129,15 +134,14 @@ const Navbar = () => {
       </div>
 
       {mobileMenuOpen && <div className="lg:hidden basis-full py-3 border-t border-gray-200 mt-2">
-        <nav className="flex flex-col gap-1 text-gray-700 font-medium">
-          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/')}>Home</button>
-          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/jobs')}>Jobs</button>
-          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/companies')}>Companies</button>
+        <nav aria-label="Mobile navigation" className="flex flex-col gap-1 text-gray-700 font-medium">
+          {NAV_LINKS.map(({ to, label }) => (
+            <Link key={to} to={to} className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => setMobileMenuOpen(false)}>{label}</Link>
+          ))}
           {isLoggedIn && <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={handleDashboard}>Dashboard</button>}
-          <button className="text-left px-3 py-3 rounded-lg hover:bg-gray-100" onClick={() => navigateFromMenu('/contact-us')}>Contact Us</button>
         </nav>
       </div>}
-    </div>
+    </header>
   );
 };
 

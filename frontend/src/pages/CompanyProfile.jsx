@@ -15,6 +15,8 @@ import {
 import axios from "axios";
 import { AuthContext } from "../context/AuthContext";
 import Loader from "../components/Loader";
+import Seo from "../components/Seo";
+import { SITE_URL } from "../seoConfig";
 
 const emptyForm = {
   name: "",
@@ -121,6 +123,7 @@ const CompanyProfile = () => {
   if (!company) {
     return (
       <main className="min-h-screen bg-[#F8FAFC] px-6 py-20">
+        <Seo title="Company Not Found" noindex />
         <div className="mx-auto max-w-3xl rounded-2xl border border-red-100 bg-white p-8 text-center shadow-sm">
           <h1 className="text-2xl font-bold ">Company profile unavailable</h1>
           <p className="mt-3 text-red-700">{errorMessage}</p>
@@ -134,6 +137,21 @@ const CompanyProfile = () => {
 
   return (
     <main className="company-profile-page min-h-screen bg-[#F8FAFC] pb-16">
+      <Seo
+        title={`${company.name} Jobs, Careers & Company Profile`}
+        description={`${company.name}${company.location ? ` (${company.location})` : ""} is hiring on AbhiJob with ${jobs.length} open position${jobs.length === 1 ? "" : "s"}. ${company.description || ""}`}
+        path={`/company/${id}`}
+        image={company.logo || undefined}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: company.name,
+          description: company.description,
+          url: company.website || `${SITE_URL}/company/${id}`,
+          ...(company.logo && { logo: company.logo }),
+          ...(company.location && { address: { "@type": "PostalAddress", addressLocality: company.location } }),
+        }}
+      />
       <section
         className="relative overflow-hidden bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white"
         style={company.coverImage ? {

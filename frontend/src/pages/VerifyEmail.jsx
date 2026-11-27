@@ -1,3 +1,4 @@
+import Seo from "../components/Seo";
 import React, { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { toast } from "react-toastify";
@@ -51,6 +52,7 @@ const EmailVerify = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 px-6">
+      <Seo title="Verify Email" noindex />
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         {/* Logo */}
         <div className="flex justify-center mb-6">

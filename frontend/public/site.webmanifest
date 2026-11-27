@@ -1,6 +1,11 @@
 {
-  "name": "AbhiJob",
+  "name": "AbhiJob - Placement Management System",
   "short_name": "AbhiJob",
+  "description": "Find jobs and internships, and hire top student talent with AbhiJob.",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "en-IN",
+  "categories": ["business", "education", "productivity"],
   "icons": [
     {
       "src": "/web-app-manifest-192x192.png",
@@ -15,7 +20,7 @@
       "purpose": "maskable"
     }
   ],
-  "theme_color": "#000000",
-  "background_color": "#000000",
+  "theme_color": "#1E246D",
+  "background_color": "#ffffff",
   "display": "standalone"
 }
