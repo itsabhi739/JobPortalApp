@@ -1,3 +1,4 @@
+import Seo from "../components/Seo";
 import { useState } from "react";
 import axios from "axios";
 import {
@@ -58,6 +59,11 @@ const ContactUs = () => {
 
   return (
     <div className="min-h-screen bg-[#F8FAFC]">
+      <Seo
+        title="Contact Us - Placement & Career Support"
+        description="Get in touch with the AbhiJob team for placement support, career guidance, recruiter onboarding or help with your account. Email support@abhijob.com or send us a message."
+        path="/contact-us"
+      />
 
       <section className="relative min-h-86 bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
           <div className="max-w-7xl mx-auto px-6">

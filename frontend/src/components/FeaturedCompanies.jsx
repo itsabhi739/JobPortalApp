@@ -3,13 +3,12 @@ import { useEffect, useContext, useState } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { CompanyContext } from "../context/CompanyContext";
 import Loader from "./Loader";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 
 const FeaturedCompanies = () => {
 
   const {backendURL,inputClass} = useContext(AuthContext);
   const {fetchCompanies,allCompanies,isLoading} = useContext(CompanyContext);
-  const navigate = useNavigate();
 
   useEffect(()=>{
     fetchCompanies('');
@@ -29,17 +28,17 @@ const FeaturedCompanies = () => {
         <div className="grid grid-cols-2 md:grid-cols-6 gap-6">
 
           {isLoading ? <Loader className="col-span-full py-8" /> : topCompanies.map((company) => (
-            <div
+            <Link
               key={company._id}
-              onClick={() => navigate(`/company/${company._id}`)}
+              to={`/company/${company._id}`}
               className="cursor-pointer border border-gray-200 rounded-xl p-6 text-center hover:shadow-lg transition flex items-center justify-evenly"
             ><div className="h-10 w-10 object-fit">
-              <img src={company.logo} alt="" srcSet="" />
+              <img src={company.logo} alt={`${company.name} logo`} width="40" height="40" loading="lazy" decoding="async" />
             </div>
             <div className="text-black">
               {company.name}
             </div>
-            </div>
+            </Link>
           ))}
 
         </div>

@@ -1,11 +1,10 @@
 import { useContext, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { JobsContext } from "../context/JobsContext";
 import Loader from "./Loader";
 
 
 const FeaturedJobs = () => {
-  const navigate = useNavigate();
   const {fetchJobs,jobs,isLoading} = useContext(JobsContext);
 
   useEffect(()=>{
@@ -26,7 +25,7 @@ const FeaturedJobs = () => {
         <div className="grid md:grid-cols-3 gap-6">
 
           {isLoading ? <Loader className="col-span-full py-8" /> : featuredJobs.map((job) => (
-            <div
+            <article
               key={job._id}
               className="bg-white p-6 rounded-2xl shadow"
             >
@@ -52,10 +51,10 @@ const FeaturedJobs = () => {
                 </span>
               </div>
 
-              <button type="button" onClick={() => navigate(`/job/${job._id}`)} className="mt-5 bg-blue-600 text-white w-full py-2 rounded-lg">
+              <Link to={`/job/${job._id}`} className="block text-center mt-5 bg-blue-600 text-white w-full py-2 rounded-lg" aria-label={`View ${job.title} job`}>
                 View Job
-              </button>
-            </div>
+              </Link>
+            </article>
           ))}
 
         </div>

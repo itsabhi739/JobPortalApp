@@ -5,6 +5,7 @@ import SearchBar from '../components/Searchbar';
 import FeaturedCompanies from '../components/FeaturedCompanies';
 import FeaturedJobs from '../components/FeaturedJobs';
 import Footer from '../components/Footer';
+import Seo from '../components/Seo';
 
 const Home = () => {
   const { getUserData, userData, isLoggedIn } = useContext(AuthContext)
@@ -16,13 +17,14 @@ const Home = () => {
   },[isLoggedIn])
 
   return (<>
-  <div className='pt-24'>
+  <Seo path="/" />
+  <main className='pt-24'>
     <Hero />
     <SearchBar/>
     <FeaturedCompanies user={userData}/>
     <FeaturedJobs user={userData}/>
-    <Footer/>
-  </div>
+  </main>
+  <Footer/>
   </>
   );
 }

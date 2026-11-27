@@ -14,7 +14,8 @@ import Companies from './pages/Companies.jsx'
 import AdminDashboard from './pages/AdminDashboard.jsx'
 import StudentDashboard from './pages/StudentDashboard.jsx'
 import RecruiterDashboard from './pages/RecruiterDashboard.jsx'
-import { Search } from 'lucide-react'
+import Search from './pages/Search.jsx'
+import NotFound from './pages/NotFound.jsx'
 import CreateJobs from './pages/CreateJobs.jsx'
 import RegisterCompany from './pages/RegisterCompany.jsx'
 import ContactUs from './pages/ContactUs.jsx'
@@ -69,10 +70,11 @@ function App() {
       <Route path='/view-job/:id' element={<PrivateRoute><UpdateJobs/></PrivateRoute>}/>
       <Route path='/my-applications' element={<PrivateRoute><MyApplications /></PrivateRoute>} />
       <Route path='/profile' element={<PrivateRoute><UserProfile /></PrivateRoute>} />
-      <Route path='/job/:id' element={<PrivateRoute><JobDetails /></PrivateRoute>} />
+      <Route path='/job/:id' element={<JobDetails />} />
       <Route path='/applicant/:id' element={<PrivateRoute><ApplicantProfile /></PrivateRoute>} />
       <Route path="/register-company" element={<RegisterCompany />} />
       <Route path="/contact-us" element={<ContactUs />} />
+      <Route path="*" element={<NotFound />} />
     </Routes>
     <ToastContainer/>
     </>

@@ -1,0 +1,18 @@
+User-agent: *
+Allow: /
+
+# Private / account pages - no value in search results
+Disallow: /login
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /admin-dashboard
+Disallow: /student-dashboard
+Disallow: /recruiter-dashboard
+Disallow: /createjobs
+Disallow: /update-job/
+Disallow: /view-job/
+Disallow: /my-applications
+Disallow: /profile
+Disallow: /applicant/
+
+Sitemap: https://abhijob-portal-app-olive.vercel.app/sitemap.xml

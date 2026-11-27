@@ -6,6 +6,59 @@ import { toast } from "react-toastify";
 import { AuthContext } from "../context/AuthContext";
 import { JobsContext } from "../context/JobsContext";
 import Loader from "../components/Loader";
+import Seo from "../components/Seo";
+import { SITE_URL } from "../seoConfig";
+
+const EMPLOYMENT_TYPES = {
+  "Full Time": "FULL_TIME",
+  "Part Time": "PART_TIME",
+  Internship: "INTERN",
+  Remote: "FULL_TIME",
+};
+
+// schema.org JobPosting -> eligible for the Google Jobs search experience.
+const buildJobPosting = (job, id) => {
+  const isRemote = job.jobType === "Remote" || /remote/i.test(job.location || "");
+  const salaryNumber = Number(String(job.salary || "").replace(/[,₹\s]/g, ""));
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "JobPosting",
+    title: job.title,
+    description: [job.description, job.requirements?.length ? `Requirements: ${job.requirements.join(", ")}` : ""]
+      .filter(Boolean)
+      .join("\n\n"),
+    identifier: { "@type": "PropertyValue", name: "AbhiJob", value: id },
+    url: `${SITE_URL}/job/${id}`,
+    ...(job.createdAt && { datePosted: new Date(job.createdAt).toISOString().split("T")[0] }),
+    employmentType: EMPLOYMENT_TYPES[job.jobType] || "OTHER",
+    hiringOrganization: {
+      "@type": "Organization",
+      name: job.company?.name || "AbhiJob",
+      ...(job.company?.website && { sameAs: job.company.website }),
+      ...(job.company?.logo && { logo: job.company.logo }),
+    },
+    jobLocation: {
+      "@type": "Place",
+      address: { "@type": "PostalAddress", addressLocality: job.location, addressCountry: "IN" },
+    },
+    ...(isRemote && {
+      jobLocationType: "TELECOMMUTE",
+      applicantLocationRequirements: { "@type": "Country", name: "India" },
+    }),
+    // Only emit a salary when it is a plain number; free text like "5-8 LPA" would be invalid.
+    ...(Number.isFinite(salaryNumber) && salaryNumber > 0 && {
+      baseSalary: {
+        "@type": "MonetaryAmount",
+        currency: "INR",
+        value: { "@type": "QuantitativeValue", value: salaryNumber, unitText: salaryNumber >= 100000 ? "YEAR" : "MONTH" },
+      },
+    }),
+    ...(job.experience && { experienceRequirements: job.experience }),
+    ...(job.requirements?.length && { skills: job.requirements.join(", ") }),
+    directApply: !job.applyLink,
+  };
+};
 
 const JobDetails = () => {
   const { id } = useParams();
@@ -41,12 +94,22 @@ const JobDetails = () => {
   };
 
   if (loading) return <div className="min-h-screen flex items-center justify-center"><Loader /></div>;
-  if (!job) return <div className="min-h-screen flex items-center justify-center text-gray-500">Job not found.</div>;
+  if (!job) return <main className="min-h-screen flex items-center justify-center text-gray-500"><Seo title="Job Not Found" noindex />Job not found.</main>;
 
   const jobIsActive = job.status === "Active";
+  const companyName = job.company?.name || "a top company";
 
   return (
     <main className="min-h-screen bg-slate-50 px-6 py-10">
+      <Seo
+        title={`${job.title} at ${companyName}${job.location ? ` in ${job.location}` : ""}`}
+        description={`${job.jobType || "Job"} opening for ${job.title} at ${companyName}${job.location ? `, ${job.location}` : ""}. Experience: ${job.experience || "Any"}. Salary: ₹${job.salary}. ${job.description || ""}`}
+        path={`/job/${id}`}
+        type="article"
+        image={job.company?.logo || undefined}
+        // Google requires JobPosting markup to be removed once a job stops accepting applications.
+        jsonLd={jobIsActive ? buildJobPosting(job, id) : undefined}
+      />
       <div className="max-w-5xl mx-auto">
         <button type="button" onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#6055FF] font-medium mb-6">
           <ArrowLeft size={18} /> Back

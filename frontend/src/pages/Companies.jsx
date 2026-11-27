@@ -5,8 +5,9 @@ import { AuthContext } from "../context/AuthContext";
 import axios from "axios";
 import { CompanyContext } from "../context/CompanyContext";
 import { JobsContext } from "../context/JobsContext";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
+import Seo from "../components/Seo";
 
 
 const Companies = () => {
@@ -42,7 +43,12 @@ const Companies = () => {
   }
 
   return (
-      <div className="bg-[#F8FAFC] min-h-screen">
+      <main className="bg-[#F8FAFC] min-h-screen">
+        <Seo
+          title="Top Companies Hiring Students & Freshers"
+          description="Explore top companies hiring on AbhiJob. View company profiles, hiring locations and open positions, and apply to jobs and internships that match your skills."
+          path="/companies"
+        />
         {/* Hero Section */}
         <section className="companies-hero relative bg-linear-to-br from-[#1E246D] via-[#2F368C] to-[#5365E8] text-white overflow-hidden py-16">
           <div className="max-w-7xl mx-auto px-6">
@@ -105,7 +111,9 @@ const Companies = () => {
                 <div className="relative h-32">
                   <img
                     src={company.logo}
-                    alt={company.name}
+                    alt={`${company.name} banner`}
+                    loading="lazy"
+                    decoding="async"
                     className="w-full h-full object-cover"
                   />
 
@@ -118,7 +126,9 @@ const Companies = () => {
                         src={
                           "https://imgs.search.brave.com/R4Wo-7mW5H1hTMdFXxmzgJS6ZSl5vMgYv-510tJ-GOk/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9pLmxv/Z29zLWRvd25sb2Fk/LmNvbS8xMTM5NzEv/Mjk1ODUtczEyODAt/NmQzMmNlMjM5YzAz/Mjg3NWFkYWU4NTk0/ZGQ3MjUxYzEucG5n/L1RhdGFfQ29uc3Vs/dGFuY3lfU2Vydmlj/ZXNfTG9nb18yMDIw/X2Z1bGxfc3RhY2tl/ZC1zMTI4MC5wbmc"
                         }
-                        alt={company.name}
+                        alt={`${company.name} logo`}
+                        loading="lazy"
+                        decoding="async"
                         className="w-full h-full object-contain"
                       />
                     </div>
@@ -127,9 +137,9 @@ const Companies = () => {
 
                 {/* Content */}
                 <div className="pt-10 px-4 pb-4">
-                  <h2 className="cursor-pointer text-lg font-semibold truncate hover:text-[#6055FF]" onClick={() => navigate(`/company/${company._id}`)}>
-                    {company.name}
-                  </h2>
+                  <h3 className="text-lg font-semibold truncate hover:text-[#6055FF]">
+                    <Link to={`/company/${company._id}`}>{company.name}</Link>
+                  </h3>
 
                   <div className="flex items-center gap-1 text-gray-500 text-sm mt-1">
                     <MapPin size={14} />
@@ -181,7 +191,7 @@ const Companies = () => {
             </button>
           </div>
         </section>
-      </div>
+      </main>
   );
 };
 

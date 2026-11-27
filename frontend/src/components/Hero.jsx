@@ -28,8 +28,8 @@ const Hero = () => {
           </h1>
 
           <p className="text-gray-600 mt-5 text-lg">
-            Connect with top companies, apply for internships,
-            and get placed through our smart placement platform.
+            Connect with top companies, apply for jobs and internships,
+            and get placed through AbhiJob, a smart placement management system for students and recruiters.
           </p>
 
           <div className="flex gap-4 mt-8">
@@ -61,26 +61,26 @@ const Hero = () => {
             )}
           </div>
 
-          <div className="flex gap-10 mt-10">
-            <div>
-              <h3 className="text-2xl font-bold">{allCompanies.length}</h3>
-              <p>Companies</p>
+          <dl className="flex gap-10 mt-10">
+            <div className="flex flex-col-reverse">
+              <dt>Companies</dt>
+              <dd className="text-2xl font-bold">{allCompanies.length}</dd>
             </div>
 
-            <div>
-              <h3 className="text-2xl font-bold">{activeJobs}</h3>
-              <p>Active Jobs</p>
+            <div className="flex flex-col-reverse">
+              <dt>Active Jobs</dt>
+              <dd className="text-2xl font-bold">{activeJobs}</dd>
             </div>
 
-            <div>
-              <h3 className="text-2xl font-bold">{jobs.length}</h3>
-              <p>Total Jobs</p>
+            <div className="flex flex-col-reverse">
+              <dt>Total Jobs</dt>
+              <dd className="text-2xl font-bold">{jobs.length}</dd>
             </div>
-          </div>
+          </dl>
         </div>
 
         <div>
-          <img src="https://imgs.search.brave.com/aCibjpLseejKFW1zWGlMJrDOhUdiN2LxxvdhVRYfdCw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hbGFj/cml0eXMuaW4vd3At/Y29udGVudC91cGxv/YWRzLzIwMjQvMTIv/Q29uc3VsdGluZy1E/ZXNpZ24tUHJvZmVz/c2lvbmFscy1mb3It/T2ZmaWNlLVdhbGxw/YXBlci53ZWJw" alt="" className="w-full" />
+          <img src="https://imgs.search.brave.com/aCibjpLseejKFW1zWGlMJrDOhUdiN2LxxvdhVRYfdCw/rs:fit:860:0:0:0/g:ce/aHR0cHM6Ly9hbGFj/cml0eXMuaW4vd3At/Y29udGVudC91cGxv/YWRzLzIwMjQvMTIv/Q29uc3VsdGluZy1E/ZXNpZ24tUHJvZmVz/c2lvbmFscy1mb3It/T2ZmaWNlLVdhbGxw/YXBlci53ZWJw" alt="Students and recruiters collaborating in a modern office" width="860" height="573" fetchPriority="high" decoding="async" className="w-full h-auto" />
         </div>
       </div>
     </section>

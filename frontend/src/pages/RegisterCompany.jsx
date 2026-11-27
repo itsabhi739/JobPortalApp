@@ -1,3 +1,4 @@
+import Seo from "../components/Seo";
 import { useContext, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -87,6 +88,11 @@ const RegisterCompany = () => {
 
   return (
     <div className="min-h-screen bg-slate-50">
+      <Seo
+        title="Register Your Company & Hire Freshers"
+        description="Register your company on AbhiJob to post jobs and internships, manage applicants and hire talented students and freshers through our placement management system."
+        path="/register-company"
+      />
       {/* Hero Section */}
       <section className="bg-linear-to-r from-indigo-900 via-indigo-700 to-blue-600">
         <div className="max-w-7xl mx-auto px-8 py-14 flex justify-between items-center">

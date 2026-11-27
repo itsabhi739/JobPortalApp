@@ -11,9 +11,9 @@ const Footer = () => {
 
           {/* Logo & Description */}
           <div>
-            <h2 className="text-2xl font-bold text-white">
+            <p className="text-2xl font-bold text-white">
               AbhiJob
-            </h2>
+            </p>
 
             <p className="mt-4 text-sm">
               Helping students connect with top companies and

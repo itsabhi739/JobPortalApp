@@ -1,3 +1,4 @@
+import Seo from "../components/Seo";
 import { useContext } from "react";
 import { useState } from "react";
 import {toast} from 'react-toastify'
@@ -134,6 +135,7 @@ const Auth = () => {
 
   return (
     <div className={`min-h-screen flex items-center justify-center px-6 ${isDarkMode ? "bg-[#0B1120]" : "bg-slate-50"}`}>
+      <Seo title={isSignup ? "Create an Account" : "Login"} description="Log in or create your AbhiJob account to apply for jobs or hire talent." noindex />
       <div className={`relative w-full rounded-2xl shadow-[0_18px_50px_rgba(47,54,140,0.15)] p-8 ${isSignup ? 'max-w-2xl' : 'max-w-md'} ${isDarkMode ? "border border-[#273449] bg-[#151E2E]" : "border border-gray-200 bg-white"}`}>
         <button
           type="button"
